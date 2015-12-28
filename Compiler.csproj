@@ -43,22 +43,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="backend\Backend.cs" />
+    <Compile Include="backend\BackendFactory.cs" />
+    <Compile Include="backend\compiler\CodeGenerator.cs" />
+    <Compile Include="backend\interpreter\Executor.cs" />
+    <Compile Include="frontend\EofToken.cs" />
+    <Compile Include="frontend\FrontendFactory.cs" />
+    <Compile Include="frontend\pascal\PascalParserTopDown.cs" />
+    <Compile Include="frontend\pascal\PascalScanner.cs" />
+    <Compile Include="message\Message.cs" />
+    <Compile Include="message\MessageHandler.cs" />
+    <Compile Include="message\IMessageListener.cs" />
     <Compile Include="frontend\Parser.cs" />
     <Compile Include="frontend\Scanner.cs" />
     <Compile Include="frontend\Source.cs" />
     <Compile Include="frontend\Token.cs" />
+    <Compile Include="frontend\TokenType.cs" />
     <Compile Include="intermediate\ICode.cs" />
     <Compile Include="intermediate\ISymbolTable.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="message\IMessageProducer.cs" />
+    <Compile Include="message\MessageType.cs" />
+    <Compile Include="Pascal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="src\hello.pas" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="backend\" />
-    <Folder Include="message\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

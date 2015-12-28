@@ -4,92 +4,116 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Compiler.message;
 
 namespace Compiler.frontend
 {
     public class Source
     {
-        static char EOL { get { return '\n'; } }
-        static char EOF { get { return '\0'; } }
+        public static char Eol => '\n';
+        public static char Eof => (char) 0;
+        public int LineNum { get; private set; }
+        public int CurrentPos { get; private set; }
 
-        private StreamReader reader;
-        private string line;
-        private int lineNum = 0;
-        private int currentPos = -2;
+        private readonly StreamReader _reader;
+        private string _line;
+
+        private readonly MessageHandler _messageHandler;
 
         public Source(StreamReader reader)
         {
-            this.reader = reader;
+            this._reader = reader;
+            LineNum = 0;
+            CurrentPos = -2;
+            _messageHandler = new MessageHandler();
         }
 
-        public char currentChar()
+        public char CurrentChar()
         {
-            if (currentPos == -2)
+            // First time
+            if (CurrentPos == -2)
             {
-                readLine();
-                return nextChar();
+                ReadLine();
+                return NextChar();
             }
-            else if (line == null)
+            // At the end of file
+            else if (_line == null)
             {
-                return EOF;
+                return Eof;
             }
-            else if ((currentPos == -1) || (currentPos == line.Length))
+            // At the end of line
+            else if ((CurrentPos == -1) || (CurrentPos == _line.Length))
             {
-                return EOL;
+                return Eol;
             }
-            else if (currentPos > line.Length)
+            // Need to read the next line
+            else if (CurrentPos > _line.Length)
             {
-                readLine();
-                return nextChar();
+                ReadLine();
+                return NextChar();
             }
+            // Return the character at the current position.
             else
             {
-                return line[currentPos];
+                return _line[CurrentPos];
             }
         }
 
-        public char nextChar()
+        public char NextChar()
         {
-            ++currentPos;
-            return currentChar();
+            ++CurrentPos;
+            return CurrentChar();
         }
 
-        public char peekChar()
+        public char PeekChar()
         {
-            currentChar();
-            if (line == null)
+            CurrentChar();
+            if (_line == null)
             {
-                return EOF;
+                return Eof;
             }
-            int nextPos = currentPos + 1;
-            return nextPos < line.Length ? line[nextPos] : EOL;
+            var nextPos = CurrentPos + 1;
+            return nextPos < _line.Length ? _line[nextPos] : Eol;
         }
 
-        private void readLine()
+        private void ReadLine()
         {
-            line = reader.ReadLine();
-            currentPos = -1;
+            _line = _reader.ReadLine();
+            CurrentPos = -1;
 
-            if (line != null)
+            if (_line != null)
             {
-                lineNum++;
+                LineNum++;
             }
         }
 
-        private void close()
+        public void Close()
         {
-            if (reader != null)
+            if (_reader == null) return;
+            try
             {
-                try
-                {
-                    reader.Close();
-                }
-                catch (IOException ex)
-                {
-                    Console.Write(ex.StackTrace);
-                    throw ex;
-                }
+                _reader.Close();
             }
+            catch (IOException ex)
+            {
+                Console.Write(ex.StackTrace);
+                throw ex;
+            }
+        }
+
+        public void AddMessageListener(IMessageListener listener)
+        {
+            _messageHandler.AddListener(listener);
+        }
+
+        public void RemoveMessageListener(IMessageListener listener)
+        {
+            _messageHandler.RemoveListener(listener);
+        }
+
+        public void SendMessage(Message message)
+        {
+            _messageHandler.SendMessage(message);
         }
     }
 }

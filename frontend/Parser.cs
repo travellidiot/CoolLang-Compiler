@@ -4,14 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Compiler.intermediate;
+using Compiler.message;
 
 namespace Compiler.frontend
 {
-    public abstract class Parser
+    public abstract class Parser : IMessageProducer
     {
-        protected static ISymbolTable SymbolTable = null;
-        protected Scanner scanner;
-        protected ICode iCode;
+        public static ISymbolTable SymbolTable { get; protected set; } = null;
+        public static MessageHandler MessageHandler { get; protected set; } = new MessageHandler();
+        public Scanner Scanner { get; protected set; }
+        public ICode ICode { get; protected set; }
 
         /// <summary>
         /// Constructor
@@ -19,12 +21,12 @@ namespace Compiler.frontend
         /// <param name="scanner">The scanner to be used with this parser</param>
         protected Parser(Scanner scanner)
         {
-            this.scanner = scanner;
-            this.iCode = null;
+            this.Scanner = scanner;
+            this.ICode = null;
         }
 
         /// <summary>
-        /// Parse a source program and generate the intermediate code and the symbol table.
+        /// Parse a Source program and generate the intermediate code and the symbol table.
         /// To be implemented by a language-specific parser subclass.
         /// </summary>
         public abstract void Parse();
@@ -33,12 +35,27 @@ namespace Compiler.frontend
 
         public Token CurrentToken()
         {
-            return scanner.CurrentToken();
+            return Scanner.CurrentToken;
         }
 
         public Token NextToken()
         {
-            return scanner.NetToken();
+            return Scanner.NetToken();
+        }
+
+        public void AddMessageListener(IMessageListener listener)
+        {
+            MessageHandler.AddListener(listener);
+        }
+
+        public void RemoveMessageListener(IMessageListener listener)
+        {
+            MessageHandler.RemoveListener(listener);
+        }
+
+        public void SendMessage(Message message)
+        {
+            MessageHandler.SendMessage(message);
         }
     }
 }
