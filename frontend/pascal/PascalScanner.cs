@@ -1,4 +1,6 @@
-﻿namespace Compiler.frontend.pascal
+﻿using static Compiler.frontend.Source;
+
+namespace Compiler.frontend.pascal
 {
     public class PascalScanner : Scanner
     {
@@ -10,8 +12,8 @@
         {
             var currentChar = CurrentChar();
 
-            var token = currentChar == Source.Eof ? new EofToken(Source) : new Token(Source);
-
+            var token = currentChar == Eof ? new EofToken(Source) : new Token(Source);
+            
             return token;
         }
     }

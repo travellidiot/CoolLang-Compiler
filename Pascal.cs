@@ -25,8 +25,8 @@ namespace Compiler
         {
             try
             {
-                Boolean intermediate = flags.IndexOf('i') > -1;
-                Boolean xref = flags.IndexOf('x') > -1;
+                bool intermediate = flags.IndexOf('i') > -1;
+                bool xref = flags.IndexOf('x') > -1;
 
                 _source = new Source(new StreamReader(filePath));
                 _source.AddMessageListener(new SourceMessageListener());
