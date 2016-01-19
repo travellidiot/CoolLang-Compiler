@@ -10,7 +10,7 @@
             Source = source;
         }
 
-        public Token NetToken()
+        public Token NextToken()
         {
             CurrentToken = ExtractToken();
             return CurrentToken;

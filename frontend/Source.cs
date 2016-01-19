@@ -11,7 +11,7 @@ namespace Compiler.frontend
     public class Source
     {
         public static char Eol => '\n';
-        public static char Eof => (char)0;
+        public static char Eof => unchecked((char)-1);
         public int LineNum { get; private set; }
         public int CurrentPos { get; private set; }
 

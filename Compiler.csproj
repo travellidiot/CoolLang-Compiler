@@ -47,9 +47,14 @@
     <Compile Include="backend\BackendFactory.cs" />
     <Compile Include="backend\compiler\CodeGenerator.cs" />
     <Compile Include="backend\interpreter\Executor.cs" />
+    <Compile Include="frontend\cool\tokens\CoolErrorToken.cs" />
+    <Compile Include="frontend\cool\tokens\CoolStringToken.cs" />
+    <Compile Include="frontend\cool\tokens\CoolSpecialToken.cs" />
+    <Compile Include="frontend\cool\tokens\CoolNumberToken.cs" />
     <Compile Include="frontend\cool\CoolScanner.cs" />
     <Compile Include="frontend\cool\CoolToken.cs" />
     <Compile Include="frontend\cool\CoolTokenType.cs" />
+    <Compile Include="frontend\cool\tokens\CoolWordToken.cs" />
     <Compile Include="frontend\EofToken.cs" />
     <Compile Include="frontend\FrontendFactory.cs" />
     <Compile Include="frontend\pascal\PascalParserTopDown.cs" />

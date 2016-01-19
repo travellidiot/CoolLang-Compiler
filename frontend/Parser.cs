@@ -40,7 +40,7 @@ namespace Compiler.frontend
 
         public Token NextToken()
         {
-            return Scanner.NetToken();
+            return Scanner.NextToken();
         }
 
         public void AddMessageListener(IMessageListener listener)

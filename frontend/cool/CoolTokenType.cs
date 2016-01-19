@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Compiler.frontend.cool
 {
-    enum TokenType
+    internal enum TokenType
     {
         // Operators
-        DArraw,      // "=>"
+        DArraw,     // "=>"
         Assign,     // "<-"
         LE,         // "<="
         GE,         // ">="
@@ -56,28 +56,43 @@ namespace Compiler.frontend.cool
         StringConst,
         TypeId,
         ObjectId,
+        Error,
     }
 
-    class CoolTokenType
+    internal class CoolTokenType : ITokenType
     {
         private readonly TokenType _type;
         public string Text => _type.ToString().ToLower();
 
-        public static HashSet<string> ReservedWords = new HashSet<string>(
-            Enum.GetValues(typeof (TokenType))
-                .Cast<TokenType>()
-                .Where(token => token <= TokenType.Class && token >= TokenType.Not)
-                .Select(token => token.ToString()));
+        public static Dictionary<string, TokenType> SpecialWords = new Dictionary<string, TokenType>()
+        #region
+        {
+            {"=>", TokenType.DArraw},
+            {"<-", TokenType.Assign},
+            {"<=", TokenType.LE},
+            {">=", TokenType.GE},
+            {"/", TokenType.Slash},
+            {"+", TokenType.Add},
+            {"-", TokenType.Minus},
+            {"*", TokenType.Star},
+            {"(", TokenType.Lp},
+            {")", TokenType.Rp},
+            {"=", TokenType.Equal},
+            {"<", TokenType.LT},
+            {">", TokenType.GT},
+            {".", TokenType.Dot},
+            {"~", TokenType.Anti},
+            {",", TokenType.Comma},
+            {";", TokenType.Semic},
+            {":", TokenType.Colon},
+            {"@", TokenType.Dispatch},
+            {"{", TokenType.LB},
+            {"}", TokenType.RB}
+        };
+        #endregion
 
 
-        public static Dictionary<string, TokenType> SpecialWords =
-            Enum.GetValues(typeof (TokenType))
-                .Cast<TokenType>()
-                .Where(token => token >= TokenType.DArraw && token <= TokenType.RB)
-                .ToDictionary(token => token.ToString().ToLower());
-
-
-        CoolTokenType(TokenType type)
+        internal CoolTokenType(TokenType type)
         {
             this._type = type;
         }

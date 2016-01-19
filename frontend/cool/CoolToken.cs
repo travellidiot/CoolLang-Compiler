@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Compiler.frontend.cool
 {
-    class CoolToken : Token
+    public class CoolToken : Token
     {
         protected CoolToken(Source source) : base(source)
         {
