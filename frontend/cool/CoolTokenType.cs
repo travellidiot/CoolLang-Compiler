@@ -10,18 +10,20 @@ namespace Compiler.frontend.cool
     {
         // Operators
         DArraw,     // "=>"
+        Equal,      // "="
+        LT,         // "<"
         Assign,     // "<-"
         LE,         // "<="
+        GT,         // ">"
         GE,         // ">="
         Slash,      // "/"
         Add,        // "+"
         Minus,      // "-"
         Star,       // "*"
-        Lp,         // "("
-        Rp,         // ")"
-        Equal,      // "="
-        LT,         // "<"
-        GT,         // ">"
+        RC,         // "*)"
+        LP,         // "("
+        LC,         // "(*"
+        RP,         // ")"
         Dot,        // "."
         Anti,       // "~"
         Comma,      // ","
@@ -57,6 +59,7 @@ namespace Compiler.frontend.cool
         TypeId,
         ObjectId,
         Error,
+        Comment,
     }
 
     internal class CoolTokenType : ITokenType
@@ -68,18 +71,20 @@ namespace Compiler.frontend.cool
         #region
         {
             {"=>", TokenType.DArraw},
+            {"=", TokenType.Equal},
+            {"<", TokenType.LT},
             {"<-", TokenType.Assign},
             {"<=", TokenType.LE},
+            {">", TokenType.GT},
             {">=", TokenType.GE},
             {"/", TokenType.Slash},
             {"+", TokenType.Add},
             {"-", TokenType.Minus},
             {"*", TokenType.Star},
-            {"(", TokenType.Lp},
-            {")", TokenType.Rp},
-            {"=", TokenType.Equal},
-            {"<", TokenType.LT},
-            {">", TokenType.GT},
+            {"*)", TokenType.RC},
+            {"(", TokenType.LP},
+            {"(*", TokenType.LC},
+            {")", TokenType.RP},
             {".", TokenType.Dot},
             {"~", TokenType.Anti},
             {",", TokenType.Comma},

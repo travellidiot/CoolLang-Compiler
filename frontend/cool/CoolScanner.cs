@@ -38,6 +38,7 @@ namespace Compiler.frontend.cool
             {
                 token = new CoolStringToken(Source);
             }
+            // Some keys have more than one character, but the first character is also in the keys
             else if (CoolTokenType.SpecialWords.ContainsKey(currentChar.ToString().ToLower()))
             {
                 token = new CoolSpecialToken(Source);
