@@ -11,9 +11,9 @@ namespace Compiler.frontend
     public abstract class Parser : IMessageProducer
     {
         public static ISymbolTable SymbolTable { get; protected set; } = null;
-        public static MessageHandler MessageHandler { get; protected set; } = new MessageHandler();
         public Scanner Scanner { get; protected set; }
         public ICode ICode { get; protected set; }
+        public event MessageEventHandler MessageHandler;
 
         /// <summary>
         /// Constructor
@@ -43,19 +43,9 @@ namespace Compiler.frontend
             return Scanner.NextToken();
         }
 
-        public void AddMessageListener(IMessageListener listener)
-        {
-            MessageHandler.AddListener(listener);
-        }
-
-        public void RemoveMessageListener(IMessageListener listener)
-        {
-            MessageHandler.RemoveListener(listener);
-        }
-
         public void SendMessage(Message message)
         {
-            MessageHandler.SendMessage(message);
+            MessageHandler?.Invoke(this, message);
         }
     }
 }

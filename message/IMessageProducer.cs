@@ -1,9 +1,9 @@
 ﻿namespace Compiler.message
 {
+    public delegate void MessageEventHandler(object sender, Message e);
     public interface IMessageProducer
     {
-        void AddMessageListener(IMessageListener listener);
-        void RemoveMessageListener(IMessageListener listener);
+        event MessageEventHandler MessageHandler;
         void SendMessage(Message message);
     }
 }

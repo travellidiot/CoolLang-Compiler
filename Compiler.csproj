@@ -60,7 +60,6 @@
     <Compile Include="frontend\pascal\PascalParserTopDown.cs" />
     <Compile Include="frontend\pascal\PascalScanner.cs" />
     <Compile Include="message\Message.cs" />
-    <Compile Include="message\MessageHandler.cs" />
     <Compile Include="message\IMessageListener.cs" />
     <Compile Include="frontend\Parser.cs" />
     <Compile Include="frontend\Scanner.cs" />

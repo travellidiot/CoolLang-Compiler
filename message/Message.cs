@@ -1,6 +1,8 @@
-﻿namespace Compiler.message
+﻿using System;
+
+namespace Compiler.message
 {
-    public class Message
+    public class Message : EventArgs
     {
         public MessageType Type { get; }
         public object Body { get; }

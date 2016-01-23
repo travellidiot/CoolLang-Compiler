@@ -29,13 +29,16 @@ namespace Compiler
                 bool xref = flags.IndexOf('x') > -1;
 
                 _source = new Source(new StreamReader(filePath));
-                _source.AddMessageListener(new SourceMessageListener());
+                //_source.AddMessageListener(new SourceMessageListener());
+                var sourceMessageListener = new SourceMessageListener(_source);
 
                 _parser = FrontendFactory.CreateParser("pascal", "top-down", _source);
-                _parser.AddMessageListener(new ParserMessageListener());
+                //_parser.AddMessageListener(new ParserMessageListener());
+                var parserMessageListener = new ParserMessageListener(_parser);
 
                 _backend = BackendFactory.CreateBackend(operation);
-                _backend.AddMessageListener(new BackendMessageListener());
+                //_backend.AddMessageListener(new BackendMessageListener());
+                var backendMessageListener = new BackendMessageListener(_backend);
 
                 _parser.Parse();
                 _source.Close();
@@ -102,13 +105,18 @@ namespace Compiler
 
         private class ParserMessageListener : IMessageListener
         {
-            public void MessageReceived(Message message)
+            public ParserMessageListener(IMessageProducer messageProducer)
+            {
+                messageProducer.MessageHandler += MessageReceived;
+            }
+
+            public void MessageReceived(object sender, Message message)
             {
                 MessageType type = message.Type;
 
                 switch (type)
                 {
-                    case ParserSummary:
+                    case MessageType.ParserSummary:
                         {
                             var bodies = (object[])message.Body;
                             int statementCount = (int)bodies[0];
@@ -136,7 +144,11 @@ namespace Compiler
 
         private class BackendMessageListener : IMessageListener
         {
-            public void MessageReceived(Message message)
+            public BackendMessageListener(IMessageProducer producer)
+            {
+                producer.MessageHandler += MessageReceived;
+            }
+            public void MessageReceived(object sender, Message message)
             {
                 MessageType type = message.Type;
 
@@ -174,7 +186,11 @@ namespace Compiler
 
         private class SourceMessageListener : IMessageListener
         {
-            public void MessageReceived(Message message)
+            public SourceMessageListener(IMessageProducer producer)
+            {
+                producer.MessageHandler += MessageReceived;
+            }
+            public void MessageReceived(object sender, Message message)
             {
                 var type = message.Type;
                 var bodies = (object[]) message.Body;

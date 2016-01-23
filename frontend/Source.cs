@@ -8,24 +8,22 @@ using Compiler.message;
 
 namespace Compiler.frontend
 {
-    public class Source
+    public class Source : IMessageProducer
     {
         public static char Eol => '\n';
         public static char Eof => unchecked((char)-1);
         public int LineNum { get; private set; }
         public int CurrentPos { get; private set; }
 
+        public event MessageEventHandler MessageHandler;
         private readonly StreamReader _reader;
         private string _line;
-
-        private readonly MessageHandler _messageHandler;
 
         public Source(StreamReader reader)
         {
             this._reader = reader;
             LineNum = 0;
             CurrentPos = -2;
-            _messageHandler = new MessageHandler();
         }
 
         public char CurrentChar()
@@ -101,19 +99,9 @@ namespace Compiler.frontend
             }
         }
 
-        public void AddMessageListener(IMessageListener listener)
-        {
-            _messageHandler.AddListener(listener);
-        }
-
-        public void RemoveMessageListener(IMessageListener listener)
-        {
-            _messageHandler.RemoveListener(listener);
-        }
-
         public void SendMessage(Message message)
         {
-            _messageHandler.SendMessage(message);
+            MessageHandler?.Invoke(this, message);
         }
     }
 }
