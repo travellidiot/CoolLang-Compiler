@@ -18,7 +18,7 @@ namespace Compiler
         private Parser _parser;
         private Source _source;
         private ICode _iCode;
-        private ISymbolTable _symbolTable;
+        private ISymTabStack _symTabStack;
         private Backend _backend;
 
         public Pascal(string operation, string filePath, string flags)
@@ -44,9 +44,14 @@ namespace Compiler
                 _source.Close();
 
                 _iCode = _parser.ICode;
-                _symbolTable = Parser.SymbolTable;
+                _symTabStack = Parser.SymTabStack;
 
-                _backend.Process(_iCode, _symbolTable);
+                if (xref)
+                {
+
+                }
+
+                _backend.Process(_iCode, _symTabStack);
             }
             catch (Exception ex)
             {

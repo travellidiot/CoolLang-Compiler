@@ -15,7 +15,7 @@ namespace Compiler.frontend
         public int LineNum { get; private set; }
         public int CurrentPos { get; private set; }
 
-        public event MessageEventHandler MessageHandler;
+        public event EventHandler<Message> MessageHandler;
         private readonly StreamReader _reader;
         private string _line;
 

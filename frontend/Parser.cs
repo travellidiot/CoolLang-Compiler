@@ -10,10 +10,10 @@ namespace Compiler.frontend
 {
     public abstract class Parser : IMessageProducer
     {
-        public static ISymbolTable SymbolTable { get; protected set; } = null;
+        public static ISymTabStack SymTabStack { get; protected set; } = SymTabFactory.CreateSymTabStack();
         public Scanner Scanner { get; protected set; }
         public ICode ICode { get; protected set; }
-        public event MessageEventHandler MessageHandler;
+        public event EventHandler<Message> MessageHandler;
 
         /// <summary>
         /// Constructor

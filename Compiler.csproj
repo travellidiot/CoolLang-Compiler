@@ -59,6 +59,14 @@
     <Compile Include="frontend\FrontendFactory.cs" />
     <Compile Include="frontend\pascal\PascalParserTopDown.cs" />
     <Compile Include="frontend\pascal\PascalScanner.cs" />
+    <Compile Include="intermediate\ISymTabEntry.cs" />
+    <Compile Include="intermediate\SymTabFactory.cs" />
+    <Compile Include="intermediate\ISymTabKey.cs" />
+    <Compile Include="intermediate\ISymTabStack.cs" />
+    <Compile Include="intermediate\symtabimpl\SymTabEntryImpl.cs" />
+    <Compile Include="intermediate\symtabimpl\SymTabImpl.cs" />
+    <Compile Include="intermediate\symtabimpl\SymTabKeyImpl.cs" />
+    <Compile Include="intermediate\symtabimpl\SymTabStackImpl.cs" />
     <Compile Include="message\Message.cs" />
     <Compile Include="message\IMessageListener.cs" />
     <Compile Include="frontend\Parser.cs" />
@@ -67,7 +75,7 @@
     <Compile Include="frontend\Token.cs" />
     <Compile Include="frontend\TokenType.cs" />
     <Compile Include="intermediate\ICode.cs" />
-    <Compile Include="intermediate\ISymbolTable.cs" />
+    <Compile Include="intermediate\ISymTab.cs" />
     <Compile Include="message\IMessageProducer.cs" />
     <Compile Include="message\MessageType.cs" />
     <Compile Include="Pascal.cs" />

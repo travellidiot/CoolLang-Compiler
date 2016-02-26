@@ -1,9 +1,11 @@
-﻿namespace Compiler.message
+﻿using System;
+
+namespace Compiler.message
 {
     public delegate void MessageEventHandler(object sender, Message e);
     public interface IMessageProducer
     {
-        event MessageEventHandler MessageHandler;
+        event EventHandler<Message> MessageHandler;
         void SendMessage(Message message);
     }
 }

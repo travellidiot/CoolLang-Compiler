@@ -7,7 +7,7 @@ namespace Compiler.backend.interpreter
 {
     internal class Executor : Backend
     {
-        public override void Process(ICode code, ISymbolTable symbol)
+        public override void Process(ICode code, ISymTab symbol)
         {
             var s = new Stopwatch();
             s.Start();
