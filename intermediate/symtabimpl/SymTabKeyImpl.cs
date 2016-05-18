@@ -8,7 +8,7 @@ namespace Compiler.intermediate.symtabimpl
 {
     public class SymTabKeyImpl : ISymTabKey
     {
-        public enum Keys
+        public enum SymKey
         {
             ConstantValue,
 
@@ -20,11 +20,11 @@ namespace Compiler.intermediate.symtabimpl
 
             DataValue
         }
-        public Keys Key { get; private set; }
+        public SymKey Key { get; private set; }
 
-        public SymTabKeyImpl(SymTabKeyImpl.Keys key)
+        public SymTabKeyImpl(SymTabKeyImpl.SymKey symKey)
         {
-            this.Key = key;
+            this.Key = symKey;
         }
     }
 }

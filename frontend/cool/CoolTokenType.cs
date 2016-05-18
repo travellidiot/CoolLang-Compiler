@@ -64,8 +64,8 @@ namespace Compiler.frontend.cool
 
     internal class CoolTokenType : ITokenType
     {
-        private readonly TokenType _type;
-        public string Text => _type.ToString().ToLower();
+        public TokenType CoolType { get; }
+        public string Text => CoolType.ToString().ToLower();
 
         public static Dictionary<string, TokenType> SpecialWords = new Dictionary<string, TokenType>()
         #region
@@ -97,10 +97,15 @@ namespace Compiler.frontend.cool
         #endregion
 
 
-        internal CoolTokenType(TokenType type)
+        internal CoolTokenType(TokenType coolType)
         {
-            this._type = type;
+            this.CoolType = coolType;
         }
 
+        public bool Equals(ITokenType other)
+        {
+            CoolTokenType otherToken = other as CoolTokenType;
+            return this.CoolType == otherToken?.CoolType;
+        }
     }
 }

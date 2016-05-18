@@ -9,7 +9,7 @@ namespace Compiler.frontend.cool.tokens
         {
         }
 
-        protected new void Extract()
+        protected override void Extract()
         {
             char currentChar = CurrentChar();
             char firstChar = currentChar;

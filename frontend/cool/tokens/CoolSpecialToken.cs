@@ -8,7 +8,7 @@ namespace Compiler.frontend.cool.tokens
         {
         }
 
-        protected new void Extract()
+        protected override void Extract()
         {
             char currentChar = CurrentChar();
             char nextChar;
@@ -20,7 +20,15 @@ namespace Compiler.frontend.cool.tokens
                 case '+':
                     Type = new CoolTokenType(TokenType.Add); goto default;
                 case '-':
-                    Type = new CoolTokenType(TokenType.Minus); goto default;
+                    nextChar = NextChar();
+                    if (nextChar != '-')
+                    {
+                        Type = new CoolTokenType(TokenType.Minus);
+                        break;
+                    }
+                    while (nextChar != Source.Eol) { nextChar = NextChar(); }
+                    Type = new CoolTokenType(TokenType.Comment);
+                    goto default;
                 case ')':
                     Type = new CoolTokenType(TokenType.RP); goto default;
                 case '.':

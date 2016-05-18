@@ -32,7 +32,7 @@ namespace Compiler
                 //_source.AddMessageListener(new SourceMessageListener());
                 var sourceMessageListener = new SourceMessageListener(_source);
 
-                _parser = FrontendFactory.CreateParser("pascal", "top-down", _source);
+                _parser = FrontendFactory.CreateParser("cool", "top-down", _source);
                 //_parser.AddMessageListener(new ParserMessageListener());
                 var parserMessageListener = new ParserMessageListener(_parser);
 

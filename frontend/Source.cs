@@ -35,26 +35,23 @@ namespace Compiler.frontend
                 return NextChar();
             }
             // At the end of file
-            else if (_line == null)
+            if (_line == null)
             {
                 return Eof;
             }
             // At the end of line
-            else if ((CurrentPos == -1) || (CurrentPos == _line.Length))
+            if ((CurrentPos == -1) || (CurrentPos == _line.Length))
             {
                 return Eol;
             }
             // Need to read the next line
-            else if (CurrentPos > _line.Length)
+            if (CurrentPos > _line.Length)
             {
                 ReadLine();
                 return NextChar();
             }
             // Return the character at the current position.
-            else
-            {
-                return _line[CurrentPos];
-            }
+            return _line[CurrentPos];
         }
 
         public char NextChar()

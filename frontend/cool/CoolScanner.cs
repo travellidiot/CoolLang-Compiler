@@ -45,7 +45,7 @@ namespace Compiler.frontend.cool
             }
             else
             {
-                token = new CoolErrorToken(Source);
+                token = new CoolErrorToken(Source, CoolErrorCode.InvalidCharacter, currentChar.ToString());
                 NextChar();
             }
 

@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,6 +49,9 @@
     <Compile Include="backend\BackendFactory.cs" />
     <Compile Include="backend\compiler\CodeGenerator.cs" />
     <Compile Include="backend\interpreter\Executor.cs" />
+    <Compile Include="frontend\cool\CoolErrorCode.cs" />
+    <Compile Include="frontend\cool\CoolErrorHandler.cs" />
+    <Compile Include="frontend\cool\CoolParserTopDown.cs" />
     <Compile Include="frontend\cool\tokens\CoolErrorToken.cs" />
     <Compile Include="frontend\cool\tokens\CoolStringToken.cs" />
     <Compile Include="frontend\cool\tokens\CoolSpecialToken.cs" />
@@ -83,7 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="src\hello.pas" />
+    <None Include="src\hello.cl" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

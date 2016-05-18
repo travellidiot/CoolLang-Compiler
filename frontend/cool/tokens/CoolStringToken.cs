@@ -10,7 +10,7 @@ namespace Compiler.frontend.cool.tokens
         {
         }
 
-        protected new void Extract()
+        protected override void Extract()
         {
             StringBuilder textBuffer = new StringBuilder();
             StringBuilder valueBuffer = new StringBuilder();
@@ -31,29 +31,37 @@ namespace Compiler.frontend.cool.tokens
                 if (currentChar == '\\')
                 {
                     textBuffer.Append('\\');
+                    char prevChar = currentChar;
                     currentChar = NextChar();
                     switch (currentChar)
                     {
                         case 't':
-                            currentChar = '\t'; break;
+                            valueBuffer.Append('\t');
+                            break;
                         case 'b':
-                            currentChar = '\b'; break;
+                            valueBuffer.Append('\b');
+                            break;
                         case 'n':
-                            currentChar = '\n'; break;
+                            valueBuffer.Append('\n');
+                            break;
                         case 'f':
-                            currentChar = '\f'; break;
+                            valueBuffer.Append('\f');
+                            break;
                         case '\n':
-                            currentChar = NextChar();
-                            textBuffer.Append('\n');
                             break;
                     }
-                }
 
-                textBuffer.Append(currentChar);
-                valueBuffer.Append(currentChar);
+                    textBuffer.Append(currentChar);
+                }
 
                 currentChar = NextChar();
             }
+
+            textBuffer.Append('\"');
+            NextChar();
+            Type = new CoolTokenType(TokenType.StringConst);
+            Text = textBuffer.ToString();
+            Value = valueBuffer.ToString();
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Compiler.frontend
 {
-    public interface ITokenType
+    public interface ITokenType : IEquatable<ITokenType>
     {
     }
 }

@@ -17,11 +17,11 @@ namespace Compiler.intermediate.symtabimpl
 
         public List<int> LineNumbers { get; }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public ISymTab SymTab { get; private set; }
+        public ISymTab SymTab { get; }
 
-        public void appendLineNumber(int lineNumber)
+        public void AppendLineNumber(int lineNumber)
         {
             LineNumbers.Add(lineNumber);
         }

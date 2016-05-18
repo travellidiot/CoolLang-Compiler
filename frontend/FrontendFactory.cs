@@ -1,4 +1,5 @@
 ﻿using System;
+using Compiler.frontend.cool;
 using Compiler.frontend.pascal;
 
 namespace Compiler.frontend
@@ -13,10 +14,10 @@ namespace Compiler.frontend
                 Scanner scanner = new PascalScanner(source);
                 return new PascalParserTopDown(scanner);
             }
-            else if (!language.Equals("Pascal"))
+            else if (language.Equals("cool") && type.Equals("top-down"))
             {
-                throw new Exception("Parser factory: Invalid language '" +
-                                    language + "'");
+                Scanner scanner = new CoolScanner(source);
+                return new CoolParserTopDown(scanner);
             }
             else {
                 throw new Exception("Parser factory: Invalid type '" +

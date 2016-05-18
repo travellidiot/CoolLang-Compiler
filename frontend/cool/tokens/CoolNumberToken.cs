@@ -8,7 +8,7 @@ namespace Compiler.frontend.cool.tokens
         {
         }
 
-        protected new void Extract()
+        protected override void Extract()
         {
             StringBuilder stringBuffer = new StringBuilder();
             char currentChar = CurrentChar();

@@ -21,7 +21,7 @@ namespace Compiler.frontend
             Extract();
         }
 
-        protected void Extract()
+        protected virtual void Extract()
         {
             Text = CurrentChar().ToString();
             Value = null;
