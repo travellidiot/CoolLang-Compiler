@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Compiler.frontend;
 using Compiler.message;
+using Compiler.utils;
 
 namespace Compiler.frontend.cool
 {
@@ -39,10 +40,8 @@ namespace Compiler.frontend.cool
                                 token.Text,
                                 token.Value
                             }));
-                        Console.Write(token.Text);
-                        Console.Write("\t");
-                        Console.Write(tokenType?.CoolType.ToString());
-                        Console.WriteLine("\t\tline: {0}", token.LineNumber);
+
+                        LoggerUtil.LogToken(token);
                     }
                     else
                     {

@@ -20,6 +20,7 @@ namespace Compiler.frontend.cool.tokens
 
             Text = stringBuffer.ToString();
             Value = int.Parse(Text);
+            Type = new CoolTokenType(TokenType.IntConst);
         }
     }
 }

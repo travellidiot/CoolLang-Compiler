@@ -96,6 +96,30 @@ namespace Compiler.frontend.cool
         };
         #endregion
 
+        public static Dictionary<string, TokenType> KeyWords = new Dictionary<string, TokenType>()
+        #region
+        {
+            {"class", TokenType.Class},
+            {"else", TokenType.Else},
+            {"if", TokenType.If},
+            {"fi", TokenType.Fi},
+            {"in", TokenType.In},
+            {"inherits", TokenType.Inherits},
+            {"let", TokenType.Let},
+            {"loop", TokenType.Loop},
+            {"pool", TokenType.Pool},
+            {"then", TokenType.Then},
+            {"while", TokenType.While},
+            {"case", TokenType.Case},
+            {"esac", TokenType.Esac},
+            {"of", TokenType.Of},
+            {"new", TokenType.New},
+            {"isvoid", TokenType.Isvoid},
+            {"not", TokenType.Not},
+            {"false", TokenType.BoolConst},
+            {"true", TokenType.BoolConst}
+        };
+        #endregion
 
         internal CoolTokenType(TokenType coolType)
         {

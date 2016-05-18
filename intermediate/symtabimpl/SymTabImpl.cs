@@ -31,10 +31,7 @@ namespace Compiler.intermediate.symtabimpl
         public List<ISymTabEntry> SortedEntries()
         {
             var list = new List<ISymTabEntry>(this.Count);
-            foreach (var entry in this.Values)
-            {
-                list.Add(entry);
-            }
+            list.AddRange(this.Values);
             return list;
         }
     }

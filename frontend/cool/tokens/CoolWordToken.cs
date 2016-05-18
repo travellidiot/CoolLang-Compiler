@@ -30,9 +30,9 @@ namespace Compiler.frontend.cool.tokens
             else
             {
                 TokenType type;
-                Type = Enum.TryParse(Text, out type)
-                     ? new CoolTokenType(type)
-                     : new CoolTokenType(TokenType.ObjectId);
+                Type = CoolTokenType.KeyWords.ContainsKey(Text)
+                    ? new CoolTokenType(CoolTokenType.KeyWords[Text])
+                    : new CoolTokenType(TokenType.ObjectId);
             }
         }
     }

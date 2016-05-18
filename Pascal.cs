@@ -106,7 +106,7 @@ namespace Compiler
         private static string ParserSummaryFormat =>
             "\n{0} source lines." +
             "\n{1} syntax errors." +
-            "\n{2} seconds total parsing time.\n";
+            "\n{2} milliseconds total parsing time.\n";
 
         private class ParserMessageListener : IMessageListener
         {
