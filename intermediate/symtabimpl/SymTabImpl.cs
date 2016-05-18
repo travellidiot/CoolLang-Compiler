@@ -25,7 +25,8 @@ namespace Compiler.intermediate.symtabimpl
 
         public ISymTabEntry Lookup(string name)
         {
-            return this[name];
+            ISymTabEntry entry;
+            return this.TryGetValue(name, out entry) ? entry : null;
         }
 
         public List<ISymTabEntry> SortedEntries()

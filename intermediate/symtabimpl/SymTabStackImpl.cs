@@ -8,7 +8,7 @@ namespace Compiler.intermediate.symtabimpl
 {
     public class SymTabStackImpl : List<ISymTab>, ISymTabStack
     {
-        public int CurrentNestingLevel { get; private set; }
+        public int CurrentNestingLevel { get; }
 
         public SymTabStackImpl()
         {
@@ -16,10 +16,7 @@ namespace Compiler.intermediate.symtabimpl
             Add(SymTabFactory.CreateSymTab(CurrentNestingLevel));
         }
 
-        public ISymTab LocalSymTab
-        {
-            get { return this[CurrentNestingLevel]; }
-        }
+        public ISymTab LocalSymTab => this[CurrentNestingLevel];
 
         public ISymTabEntry EnterLocal(string name)
         {

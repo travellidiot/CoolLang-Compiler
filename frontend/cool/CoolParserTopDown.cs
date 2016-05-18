@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Compiler.frontend;
+using Compiler.intermediate;
 using Compiler.message;
 using Compiler.utils;
 
@@ -31,17 +32,18 @@ namespace Compiler.frontend.cool
                     CoolTokenType tokenType = token.Type as CoolTokenType;
                     if (tokenType?.CoolType != TokenType.Error)
                     {
-                        SendMessage(new Message(MessageType.Token,
-                            new[]
+                        if (tokenType?.CoolType == TokenType.ObjectId)
+                        {
+                            string name = token.Text;
+                            ISymTabEntry entry = SymTabStack.Lookup(name);
+                            if (entry == null)
                             {
-                                token.LineNumber,
-                                token.Position,
-                                tokenType,
-                                token.Text,
-                                token.Value
-                            }));
-
+                                entry = SymTabStack.EnterLocal(name);
+                            }
+                            entry.AppendLineNumber(token.LineNumber);
+                        }
                         LoggerUtil.LogToken(token);
+
                     }
                     else
                     {

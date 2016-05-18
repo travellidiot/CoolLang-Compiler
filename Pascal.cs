@@ -9,6 +9,7 @@ using Compiler.frontend;
 using Compiler.frontend.pascal;
 using Compiler.intermediate;
 using Compiler.message;
+using Compiler.utils;
 using static Compiler.message.MessageType;
 
 namespace Compiler
@@ -48,7 +49,9 @@ namespace Compiler
 
                 if (xref)
                 {
-
+                    LoggerUtil.LogEmptyLines(5);
+                    LoggerUtil.LogSymTabStack(_symTabStack);
+                    LoggerUtil.LogEmptyLines(5);
                 }
 
                 _backend.Process(_iCode, _symTabStack);
