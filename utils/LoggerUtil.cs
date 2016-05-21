@@ -12,54 +12,59 @@ namespace Compiler.utils
 {
     class LoggerUtil
     {
-        private static readonly StreamWriter Logger = new StreamWriter(Console.OpenStandardOutput());
+        private readonly StreamWriter _logger = new StreamWriter(Console.OpenStandardOutput());
 
+        public LoggerUtil(StreamWriter swriter)
+        {
+            _logger = swriter;
+        }
 
-        public static void LogEmptyLines(int num)
+        public void LogEmptyLines(int num)
         {
             for (int i = 0; i < num; ++i)
             {
-                Logger.WriteLine();
+                _logger.WriteLine();
             }
         }
 
-        public static void LogToken(Token token)
+        public void Log(string message)
         {
-            Logger.AutoFlush = true;
-
-            CoolTokenType tokenType = token.Type as CoolTokenType;
-
-            Logger.Write(token.Text);
-            Logger.Write(token.Text.Length < 8 ? "\t\t" : "\t");
-
-            string t = tokenType?.Text;
-            Logger.Write(t);
-            Logger.Write(t != null && t.Length < 8 ? "\t\t" : "\t");
-            Logger.WriteLine("line: {0}", token.LineNumber);
+            _logger.Write(message);
         }
 
-        public static void LogSymTabStack(ISymTabStack symTabStack)
+        public void LogLine(string message)
         {
-            Logger.AutoFlush = true;
+            _logger.WriteLine(message);
+        }
 
+        public void LogToken(Token token)
+        {
+            CoolTokenType tokenType = token.Type as CoolTokenType;
+            string t = tokenType?.Text;
+
+            _logger.WriteLine("{0, -20}\t{1, -20}\tline: {2}", token.Text, t, token.LineNumber);
+        }
+
+        public void LogSymTabStack(ISymTabStack symTabStack)
+        {
             var table = symTabStack.LocalSymTab;
             var entries = table.SortedEntries();
 
-            Logger.WriteLine("=====  Cross-Reference Table ========");
-            Logger.WriteLine("{0, -20}\t{1, -20}", "Object ID", "Line Numbers");
-            Logger.WriteLine("{0, -20}\t{1, -20}", "---------", "------------");
+            _logger.WriteLine("=====  Cross-Reference Table ========");
+            _logger.WriteLine("{0, -20}\t{1, -20}", "Object ID", "Line Numbers");
+            _logger.WriteLine("{0, -20}\t{1, -20}", "---------", "------------");
 
             foreach (var entry in entries)
             {
                 var lineNumbers = entry.LineNumbers;
                 if (lineNumbers != null)
                 {
-                    Logger.Write("{0, -20}\t", entry.Name);
+                    _logger.Write("{0, -20}\t", entry.Name);
                     foreach (var num in lineNumbers)
                     {
-                        Logger.Write(" {0}", num);
+                        _logger.Write(" {0}", num);
                     }
-                    Logger.WriteLine();
+                    _logger.WriteLine();
                 }
             }
         }

@@ -21,6 +21,8 @@ namespace Compiler.frontend.cool
 
         public override void Parse()
         {
+            LoggerUtil logger = new LoggerUtil(new System.IO.StreamWriter(Console.OpenStandardOutput()));
+
             try
             {
                 var sw = new Stopwatch();
@@ -42,7 +44,7 @@ namespace Compiler.frontend.cool
                             }
                             entry.AppendLineNumber(token.LineNumber);
                         }
-                        LoggerUtil.LogToken(token);
+                        logger.LogToken(token);
 
                     }
                     else

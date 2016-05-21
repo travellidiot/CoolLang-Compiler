@@ -77,8 +77,6 @@
     <Compile Include="frontend\cool\tokens\CoolWordToken.cs" />
     <Compile Include="frontend\EofToken.cs" />
     <Compile Include="frontend\FrontendFactory.cs" />
-    <Compile Include="frontend\pascal\PascalParserTopDown.cs" />
-    <Compile Include="frontend\pascal\PascalScanner.cs" />
     <Compile Include="intermediate\ISymTabEntry.cs" />
     <Compile Include="intermediate\SymTabFactory.cs" />
     <Compile Include="intermediate\ISymTabKey.cs" />
@@ -98,7 +96,7 @@
     <Compile Include="intermediate\ISymTab.cs" />
     <Compile Include="message\IMessageProducer.cs" />
     <Compile Include="message\MessageType.cs" />
-    <Compile Include="Pascal.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="utils\LoggerUtil.cs" />
   </ItemGroup>

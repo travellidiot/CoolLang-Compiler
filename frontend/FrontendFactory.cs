@@ -1,6 +1,5 @@
 ﻿using System;
 using Compiler.frontend.cool;
-using Compiler.frontend.pascal;
 
 namespace Compiler.frontend
 {
@@ -8,13 +7,7 @@ namespace Compiler.frontend
     {
         public static Parser CreateParser(string language, string type, Source source)
         {
-            if (language.Equals("pascal") &&
-            type.Equals("top-down"))
-            {
-                Scanner scanner = new PascalScanner(source);
-                return new PascalParserTopDown(scanner);
-            }
-            else if (language.Equals("cool") && type.Equals("top-down"))
+            if (language.Equals("cool") && type.Equals("top-down"))
             {
                 Scanner scanner = new CoolScanner(source);
                 return new CoolParserTopDown(scanner);
