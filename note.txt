@@ -1,0 +1,47 @@
+program ::= class+
+
+class   ::= class TYPE [inherits TYPE] { feature;* }}
+
+feature ::= ID(formal [, formal]*) : TYPE { expr }
+	  | ID : TYPE [<- expr]
+
+formal  ::= ID : TYPE
+
+expr    ::= ID <- expr
+          | ID([expr[,expr]*])
+          | expr[@TYPE].ID([expr[,expr]*])
+          | if expr then expr else expr fi
+          | while expr loop expr pool
+          | let ID : TYPE [ <- expr ] [,ID : TYPE [<- expr]]* in expr
+          | case expr of [ID : TYPE => expr;]+ esac
+          | new TYPE
+          | { [expr;]+ }
+          | TERM
+	  | sim_exp RAL_OP sim_exp
+
+sim_exp ::= factor FAC_OP factor
+	  | factor 
+
+factor	::= term TERM_OP term
+	  | term
+
+TERM_OP	::= *
+	  | /
+          
+FAC_OP  ::= +
+          | -                                                                     
+
+RAL_OP	::= <
+          | <=
+          | >
+          | >=
+          | =
+          
+term	::= ID
+          | integer_const
+          | string_const
+          | bool_const
+	  | not expr
+	  | ~expr
+          | isvoid expr
+	  | (expr)

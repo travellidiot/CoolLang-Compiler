@@ -13,10 +13,15 @@ namespace Compiler.utils
     class LoggerUtil
     {
         private readonly StreamWriter _logger = new StreamWriter(Console.OpenStandardOutput());
-
+        
+        public LoggerUtil()
+        {
+            _logger.AutoFlush = true;
+        }
         public LoggerUtil(StreamWriter swriter)
         {
             _logger = swriter;
+            _logger.AutoFlush = true;
         }
 
         public void LogEmptyLines(int num)
