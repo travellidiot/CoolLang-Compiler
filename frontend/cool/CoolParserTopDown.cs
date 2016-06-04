@@ -37,11 +37,7 @@ namespace Compiler.frontend.cool
                         if (tokenType?.CoolType == TokenType.ObjectId)
                         {
                             string name = token.Text;
-                            ISymTabEntry entry = SymTabStack.Lookup(name);
-                            if (entry == null)
-                            {
-                                entry = SymTabStack.EnterLocal(name);
-                            }
+                            ISymTabEntry entry = SymTabStack.Lookup(name) ?? SymTabStack.EnterLocal(name);
                             entry.AppendLineNumber(token.LineNumber);
                         }
                         logger.LogToken(token);

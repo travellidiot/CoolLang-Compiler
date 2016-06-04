@@ -12,7 +12,7 @@ namespace Compiler.frontend
     {
         public static ISymTabStack SymTabStack { get; protected set; } = SymTabFactory.CreateSymTabStack();
         public Scanner Scanner { get; protected set; }
-        public ICode ICode { get; protected set; }
+        public IAst AstRoot { get; protected set; }
         public event EventHandler<Message> MessageHandler;
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace Compiler.frontend
         protected Parser(Scanner scanner)
         {
             this.Scanner = scanner;
-            this.ICode = null;
+            this.AstRoot = null;
         }
 
         /// <summary>

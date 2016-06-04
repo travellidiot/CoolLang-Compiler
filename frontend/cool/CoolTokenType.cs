@@ -9,29 +9,29 @@ namespace Compiler.frontend.cool
     internal enum TokenType
     {
         // Operators
-        DArraw,     // "=>"
-        Equal,      // "="
-        LT,         // "<"
-        Assign,     // "<-"
-        LE,         // "<="
-        GT,         // ">"
-        GE,         // ">="
-        Slash,      // "/"
-        Add,        // "+"
-        Minus,      // "-"
-        Star,       // "*"
-        RC,         // "*)"
-        LP,         // "("
-        LC,         // "(*"
-        RP,         // ")"
-        Dot,        // "."
-        Anti,       // "~"
-        Comma,      // ","
-        Semic,      // ";"
-        Colon,      // ":"
-        Dispatch,   // "@"
-        LB,         // "{"
-        RB,         // "}"
+        DArraw,         // "=>"
+        Equal,          // "="
+        LessThan,       // "<"
+        Assign,         // "<-"
+        LessEqual,      // "<="
+        GreatThan,      // ">"
+        GreatEqual,     // ">="
+        Slash,          // "/"
+        Add,            // "+"
+        Minus,          // "-"
+        Star,           // "*"
+        RightComment,   // "*)"
+        LetfParen,      // "("
+        LeftComment,    // "(*"
+        RightParen,     // ")"
+        Dot,            // "."
+        Anti,           // "~"
+        Comma,          // ","
+        Semic,          // ";"
+        Colon,          // ":"
+        Dispatch,       // "@"
+        LeftBracket,    // "{"
+        RightBracket,   // "}"
 
         // Keywords
         Class,
@@ -72,27 +72,27 @@ namespace Compiler.frontend.cool
         {
             {"=>", TokenType.DArraw},
             {"=", TokenType.Equal},
-            {"<", TokenType.LT},
+            {"<", TokenType.LessThan},
             {"<-", TokenType.Assign},
-            {"<=", TokenType.LE},
-            {">", TokenType.GT},
-            {">=", TokenType.GE},
+            {"<=", TokenType.LessEqual},
+            {">", TokenType.GreatThan},
+            {">=", TokenType.GreatEqual},
             {"/", TokenType.Slash},
             {"+", TokenType.Add},
             {"-", TokenType.Minus},
             {"*", TokenType.Star},
-            {"*)", TokenType.RC},
-            {"(", TokenType.LP},
-            {"(*", TokenType.LC},
-            {")", TokenType.RP},
+            {"*)", TokenType.RightComment},
+            {"(", TokenType.LetfParen},
+            {"(*", TokenType.LeftComment},
+            {")", TokenType.RightParen},
             {".", TokenType.Dot},
             {"~", TokenType.Anti},
             {",", TokenType.Comma},
             {";", TokenType.Semic},
             {":", TokenType.Colon},
             {"@", TokenType.Dispatch},
-            {"{", TokenType.LB},
-            {"}", TokenType.RB}
+            {"{", TokenType.LeftBracket},
+            {"}", TokenType.RightBracket}
         };
         #endregion
 

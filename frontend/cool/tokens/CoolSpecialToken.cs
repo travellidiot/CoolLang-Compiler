@@ -30,7 +30,7 @@ namespace Compiler.frontend.cool.tokens
                     Type = new CoolTokenType(TokenType.Comment);
                     goto default;
                 case ')':
-                    Type = new CoolTokenType(TokenType.RP); goto default;
+                    Type = new CoolTokenType(TokenType.RightParen); goto default;
                 case '.':
                     Type = new CoolTokenType(TokenType.Dot); goto default;
                 case '~':
@@ -44,9 +44,9 @@ namespace Compiler.frontend.cool.tokens
                 case '@':
                     Type = new CoolTokenType(TokenType.Dispatch); goto default;
                 case '{':
-                    Type = new CoolTokenType(TokenType.LB); goto default;
+                    Type = new CoolTokenType(TokenType.LeftBracket); goto default;
                 case '}':
-                    Type = new CoolTokenType(TokenType.RB); goto default;
+                    Type = new CoolTokenType(TokenType.RightBracket); goto default;
                 case '=':
                     nextChar = NextChar();
                     if (nextChar == '>') {
@@ -62,18 +62,18 @@ namespace Compiler.frontend.cool.tokens
                         goto default;
                     }
                     if (nextChar == '=') {
-                        Type = new CoolTokenType(TokenType.LE);
+                        Type = new CoolTokenType(TokenType.LessEqual);
                         goto default;
                     }
-                    Type = new CoolTokenType(TokenType.LT);
+                    Type = new CoolTokenType(TokenType.LessThan);
                     break;
                 case '>':
                     nextChar = NextChar();
                     if (nextChar == '=') {
-                        Type = new CoolTokenType(TokenType.GE);
+                        Type = new CoolTokenType(TokenType.GreatEqual);
                         goto default;
                     }
-                    Type = new CoolTokenType(TokenType.GT);
+                    Type = new CoolTokenType(TokenType.GreatThan);
                     break;
                 case '*':
                     Type = new CoolTokenType(TokenType.Star);
@@ -81,7 +81,7 @@ namespace Compiler.frontend.cool.tokens
                 case '(':
                     nextChar = NextChar();
                     if (nextChar != '*') {
-                        Type = new CoolTokenType(TokenType.LP);
+                        Type = new CoolTokenType(TokenType.LetfParen);
                         break;
                     }
                     nextChar = '\0';

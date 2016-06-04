@@ -67,6 +67,15 @@
     <Compile Include="frontend\cool\CoolErrorCode.cs" />
     <Compile Include="frontend\cool\CoolErrorHandler.cs" />
     <Compile Include="frontend\cool\CoolParserTopDown.cs" />
+    <Compile Include="frontend\cool\parsers\CoolClassParser.cs" />
+    <Compile Include="frontend\cool\parsers\CoolExprParser.cs" />
+    <Compile Include="frontend\cool\parsers\CoolFactorParser.cs" />
+    <Compile Include="frontend\cool\parsers\CoolFeatureParser.cs" />
+    <Compile Include="frontend\cool\parsers\CoolFormalParser.cs" />
+    <Compile Include="frontend\cool\parsers\CoolProgramParser.cs" />
+    <Compile Include="frontend\cool\parsers\CoolSimpleExprParser.cs" />
+    <Compile Include="frontend\cool\parsers\CoolTermParser.cs" />
+    <Compile Include="frontend\cool\parsers\CoolValueParser.cs" />
     <Compile Include="frontend\cool\tokens\CoolErrorToken.cs" />
     <Compile Include="frontend\cool\tokens\CoolStringToken.cs" />
     <Compile Include="frontend\cool\tokens\CoolSpecialToken.cs" />
@@ -77,6 +86,20 @@
     <Compile Include="frontend\cool\tokens\CoolWordToken.cs" />
     <Compile Include="frontend\EofToken.cs" />
     <Compile Include="frontend\FrontendFactory.cs" />
+    <Compile Include="intermediate\AstFactory.cs" />
+    <Compile Include="intermediate\IAstNode.cs" />
+    <Compile Include="intermediate\coolast\CoolAst.cs" />
+    <Compile Include="intermediate\coolast\CoolAstNode.cs" />
+    <Compile Include="intermediate\coolast\CoolClassNode.cs" />
+    <Compile Include="intermediate\coolast\CoolExprNode.cs" />
+    <Compile Include="intermediate\coolast\CoolFactorNode.cs" />
+    <Compile Include="intermediate\coolast\CoolFeatureNode.cs" />
+    <Compile Include="intermediate\coolast\CoolFormalNode.cs" />
+    <Compile Include="intermediate\coolast\CoolOpNode.cs" />
+    <Compile Include="intermediate\coolast\CoolProgramNode.cs" />
+    <Compile Include="intermediate\coolast\CoolSimpleExprNode.cs" />
+    <Compile Include="intermediate\coolast\CoolTermNode.cs" />
+    <Compile Include="intermediate\coolast\CoolValueNode.cs" />
     <Compile Include="intermediate\ISymTabEntry.cs" />
     <Compile Include="intermediate\SymTabFactory.cs" />
     <Compile Include="intermediate\ISymTabKey.cs" />
@@ -92,7 +115,7 @@
     <Compile Include="frontend\Source.cs" />
     <Compile Include="frontend\Token.cs" />
     <Compile Include="frontend\TokenType.cs" />
-    <Compile Include="intermediate\ICode.cs" />
+    <Compile Include="intermediate\IAst.cs" />
     <Compile Include="intermediate\ISymTab.cs" />
     <Compile Include="message\IMessageProducer.cs" />
     <Compile Include="message\MessageType.cs" />
@@ -116,9 +139,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="frontend\cool\parsers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

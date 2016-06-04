@@ -17,7 +17,7 @@ namespace Compiler
     {
         private Parser _parser;
         private Source _source;
-        private ICode _iCode;
+        private IAst _ast;
         private ISymTabStack _symTabStack;
         private Backend _backend;
         private LoggerUtil _logger;
@@ -47,7 +47,7 @@ namespace Compiler
                 _parser.Parse();
                 _source.Close();
 
-                _iCode = _parser.ICode;
+                _ast = _parser.AstRoot;
                 _symTabStack = Parser.SymTabStack;
 
                 if (xref)
@@ -57,7 +57,7 @@ namespace Compiler
                     _logger.LogEmptyLines(5);
                 }
 
-                _backend.Process(_iCode, _symTabStack);
+                _backend.Process(_ast, _symTabStack);
             }
             catch (Exception ex)
             {

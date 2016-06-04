@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Compiler.intermediate
 {
-    public interface ICode
+    public interface IAst
     {
+        IAstNode Root { get; set; }
     }
 }
