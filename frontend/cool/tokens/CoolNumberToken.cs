@@ -2,7 +2,7 @@
 
 namespace Compiler.frontend.cool.tokens
 {
-    internal class CoolNumberToken : CoolToken
+    public class CoolNumberToken : CoolToken
     {
         public CoolNumberToken(Source source) : base(source)
         {

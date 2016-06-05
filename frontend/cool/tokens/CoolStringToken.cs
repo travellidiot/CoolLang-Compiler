@@ -4,7 +4,7 @@ using static Compiler.frontend.Source;
 
 namespace Compiler.frontend.cool.tokens
 {
-    internal class CoolStringToken : CoolToken
+    public class CoolStringToken : CoolToken
     {
         public CoolStringToken(Source source) : base(source)
         {

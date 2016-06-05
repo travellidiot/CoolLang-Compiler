@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Compiler.frontend.cool.tokens
 {
-    internal class CoolWordToken : CoolToken
+    public class CoolWordToken : CoolToken
     {
         public CoolWordToken(Source source) : base(source)
         {
