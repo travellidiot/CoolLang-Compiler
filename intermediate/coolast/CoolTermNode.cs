@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
+using Compiler.frontend.cool.tokens;
 
 namespace Compiler.intermediate.coolast
 {
     public class CoolTermNode : CoolAstNode
     {
         public CoolTermNode Term { get; }
-        public string Type { get; }
-        public string MethodName { get; }
+        public CoolWordToken Type { get; }
+        public CoolWordToken MethodName { get; }
         public List<CoolExprNode> Args { get; }
 
-        public CoolTermNode(CoolTermNode term, string mName, List<CoolExprNode> args = null, string type = null)
+        public CoolTermNode(CoolTermNode term, CoolWordToken mName, List<CoolExprNode> args = null, CoolWordToken type = null)
         {
             Term = term;
             Type = type;

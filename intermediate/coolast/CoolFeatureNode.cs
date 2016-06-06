@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Compiler.frontend.cool.tokens;
 
 namespace Compiler.intermediate.coolast
 {
@@ -9,13 +10,13 @@ namespace Compiler.intermediate.coolast
 
     public class CoolMethodNode : CoolFeatureNode
     {
-        public string MethodName { get; }
+        public CoolWordToken MethodName { get; }
         public List<CoolFormalNode> Formals { get; }
-        public string RetType { get; }
+        public CoolWordToken RetType { get; }
         public CoolExprNode Expr { get; }
 
 
-        public CoolMethodNode(string methodName, List<CoolFormalNode> formals, string retType, CoolExprNode expr)
+        public CoolMethodNode(CoolWordToken methodName, List<CoolFormalNode> formals, CoolWordToken retType, CoolExprNode expr)
         {
             MethodName = methodName;
             Formals = formals;
@@ -38,11 +39,11 @@ namespace Compiler.intermediate.coolast
 
     public class CoolAttrNode : CoolFeatureNode
     {
-        public string AttrName { get; }
-        public string TypeName { get; }
+        public CoolWordToken AttrName { get; }
+        public CoolWordToken TypeName { get; }
         public CoolExprNode Expr { get; }
 
-        public CoolAttrNode(string attr, string atype, CoolExprNode expr)
+        public CoolAttrNode(CoolWordToken attr, CoolWordToken atype, CoolExprNode expr)
         {
             AttrName = attr;
             TypeName = atype;

@@ -1,11 +1,13 @@
-﻿namespace Compiler.intermediate.coolast
+﻿using Compiler.frontend.cool.tokens;
+
+namespace Compiler.intermediate.coolast
 {
     public class CoolFormalNode : CoolAstNode
     {
-        public string IdName { get; }
-        public string TypeName { get; }
+        public CoolWordToken IdName { get; }
+        public CoolWordToken TypeName { get; }
 
-        public CoolFormalNode(string id, string type)
+        public CoolFormalNode(CoolWordToken id, CoolWordToken type)
         {
             IdName = id;
             TypeName = type;

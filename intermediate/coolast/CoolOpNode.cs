@@ -1,10 +1,16 @@
-﻿namespace Compiler.intermediate.coolast
+﻿using Compiler.frontend.cool.tokens;
+
+namespace Compiler.intermediate.coolast
 {
     public class CoolOpNode : CoolAstNode
     {
+        public CoolSpecialToken OpToken { get; }
+
+        public CoolOpNode(CoolSpecialToken token) { OpToken = token; }
+
         public override CoolAstNode Copy()
         {
-            throw new System.NotImplementedException();
+            return new CoolOpNode(OpToken);
         }
     }
 }

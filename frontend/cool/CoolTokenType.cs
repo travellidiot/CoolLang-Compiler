@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Compiler.frontend.cool
 {
-    internal enum TokenType
+    public enum TokenType
     {
         // Operators
         DArraw,         // "=>"
@@ -62,7 +62,7 @@ namespace Compiler.frontend.cool
         Comment,
     }
 
-    internal class CoolTokenType : ITokenType
+    public class CoolTokenType : ITokenType
     {
         public TokenType CoolType { get; }
         public string Text => CoolType.ToString().ToLower();
@@ -130,6 +130,11 @@ namespace Compiler.frontend.cool
         {
             CoolTokenType otherToken = other as CoolTokenType;
             return this.CoolType == otherToken?.CoolType;
+        }
+
+        public bool Is(TokenType type)
+        {
+            return this.CoolType == type;
         }
     }
 }

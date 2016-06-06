@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using Compiler.frontend;
 using Compiler.intermediate;
 using Compiler.message;
@@ -11,17 +12,17 @@ using Compiler.utils;
 
 namespace Compiler.frontend.cool
 {
-    class CoolParserTopDown : Parser
+    public class CoolTDParser : Parser
     {
         protected static CoolErrorHandler ErrorHandler = new CoolErrorHandler();
 
-        public CoolParserTopDown(Scanner scanner) : base(scanner)
+        public CoolTDParser(Scanner scanner) : base(scanner)
         {
         }
 
         public override void Parse()
         {
-            LoggerUtil logger = new LoggerUtil(new System.IO.StreamWriter(Console.OpenStandardOutput()));
+            LoggerUtil logger = new LoggerUtil(new StreamWriter(Console.OpenStandardOutput()));
 
             try
             {
@@ -34,14 +35,7 @@ namespace Compiler.frontend.cool
                     CoolTokenType tokenType = token.Type as CoolTokenType;
                     if (tokenType?.CoolType != TokenType.Error)
                     {
-                        if (tokenType?.CoolType == TokenType.ObjectId)
-                        {
-                            string name = token.Text;
-                            ISymTabEntry entry = SymTabStack.Lookup(name) ?? SymTabStack.EnterLocal(name);
-                            entry.AppendLineNumber(token.LineNumber);
-                        }
-                        logger.LogToken(token);
-
+                        
                     }
                     else
                     {
@@ -49,7 +43,7 @@ namespace Compiler.frontend.cool
                     }
                 }
 
-                sw.Start();
+                sw.Stop();
                 var elapsedTime = sw.ElapsedMilliseconds;
                 SendMessage(new Message(MessageType.ParserSummary,
                     new object[] {token.LineNumber, GetErrorCount(), elapsedTime}));
@@ -63,6 +57,22 @@ namespace Compiler.frontend.cool
         public override int GetErrorCount()
         {
             return CoolErrorHandler.ErrorCount;
+        }
+
+        public Token Synchronize(ISet<TokenType> syncSet)
+        {
+            Token token = CurrentToken();
+            CoolTokenType t = token.Type as CoolTokenType;
+            if (syncSet.Contains(t.CoolType)) return token;
+
+            ErrorHandler.Flag(token, CoolErrorCode.UnExpectedToken, this);
+            do
+            {
+                token = NextToken();
+                t = token.Type as CoolTokenType;
+            } while (!(token.GetType() == typeof (EofToken)) && !syncSet.Contains(t.CoolType));
+
+            return token;
         }
     }
 }

@@ -2,8 +2,11 @@
 using Compiler.frontend.cool;
 using Compiler.frontend.cool.tokens;
 
+
 namespace Compiler.intermediate.coolast
 {
+    using Case = System.Tuple<CoolWordToken, CoolWordToken, CoolExprNode>;
+
     public abstract class CoolValueNode : CoolAstNode
     {
     }
@@ -116,15 +119,88 @@ namespace Compiler.intermediate.coolast
         }
     }
 
-    public class CoolIfNode : CoolValueNode { }
+    public class CoolIfNode : CoolValueNode
+    {
+        public CoolExprNode Pred, Expr, Alter;
 
-    public class CoolWhileNode : CoolValueNode { }
+        public CoolIfNode(CoolExprNode pred, CoolExprNode expr, CoolExprNode alter)
+        {
+            Pred = pred;
+            Expr = expr;
+            Alter = alter;
+        }
+        public override CoolAstNode Copy()
+        {
+            return new CoolIfNode(Pred, Expr, Alter);
+        }
+    }
 
-    public class CoolLetNode : CoolValueNode { }
+    public class CoolWhileNode : CoolValueNode
+    {
+        public CoolExprNode Pred, LoopExpr;
 
-    public class CoolCaseNode : CoolValueNode { }
+        public CoolWhileNode(CoolExprNode pred, CoolExprNode loop)
+        {
+            Pred = pred;
+            LoopExpr = loop;
+        }
+        public override CoolAstNode Copy()
+        {
+            return new CoolWhileNode(Pred, LoopExpr);
+        }
+    }
 
-    public class CoolNewObjNode : CoolValueNode { }
+    public class CoolLetNode : CoolValueNode
+    {
+        public List<CoolAttrNode> Attrs;
+        public CoolExprNode Expr;
 
-    public class CoolBlockNode : CoolValueNode { }
+        public CoolLetNode(List<CoolAttrNode> attrs, CoolExprNode expr)
+        {
+            Attrs = attrs;
+            Expr = expr;
+        }
+        public override CoolAstNode Copy()
+        {
+            return new CoolLetNode(Attrs, Expr);
+        }
+    }
+
+    public class CoolCaseNode : CoolValueNode
+    {
+        public CoolExprNode CaseExpr;
+        public List<Case> Cases;
+
+        public CoolCaseNode(CoolExprNode expr, List<Case> cases)
+        {
+            CaseExpr = expr;
+            Cases = cases;
+        }
+        public override CoolAstNode Copy()
+        {
+            return new CoolCaseNode(CaseExpr, Cases);
+        }
+    }
+
+    public class CoolNewObjNode : CoolValueNode
+    {
+        public CoolWordToken TypeToken;
+
+        public CoolNewObjNode(CoolWordToken token) { TypeToken = token; }
+        public override CoolAstNode Copy()
+        {
+            return new CoolNewObjNode(TypeToken);
+        }
+    }
+
+    public class CoolBlockNode : CoolValueNode
+    {
+        public List<CoolExprNode> Exprs;
+
+        public CoolBlockNode(List<CoolExprNode> exprs) { Exprs = exprs; }
+        public override CoolAstNode Copy()
+        {
+            return new CoolBlockNode(Exprs);
+        }
+    }
 }
