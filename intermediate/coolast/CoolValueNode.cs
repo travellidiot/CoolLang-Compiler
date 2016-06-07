@@ -5,7 +5,7 @@ using Compiler.frontend.cool.tokens;
 
 namespace Compiler.intermediate.coolast
 {
-    using Case = System.Tuple<CoolWordToken, CoolWordToken, CoolExprNode>;
+    using Case = System.Tuple<CoolFormalNode, CoolExprNode>;
 
     public abstract class CoolValueNode : CoolAstNode
     {
@@ -84,6 +84,17 @@ namespace Compiler.intermediate.coolast
         public override CoolAstNode Copy()
         {
             return new CoolIsVoidNode(Expr);
+        }
+    }
+
+    public class CoolParenExprNode : CoolValueNode
+    {
+        public CoolExprNode Expr { get; }
+
+        public CoolParenExprNode(CoolExprNode expr) { Expr = expr; }
+        public override CoolAstNode Copy()
+        {
+            return new CoolParenExprNode(Expr);
         }
     }
 

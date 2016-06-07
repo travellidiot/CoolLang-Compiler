@@ -21,7 +21,7 @@ namespace Compiler.frontend.cool
         Minus,          // "-"
         Star,           // "*"
         RightComment,   // "*)"
-        LetfParen,      // "("
+        LeftParen,      // "("
         LeftComment,    // "(*"
         RightParen,     // ")"
         Dot,            // "."
@@ -82,7 +82,7 @@ namespace Compiler.frontend.cool
             {"-", TokenType.Minus},
             {"*", TokenType.Star},
             {"*)", TokenType.RightComment},
-            {"(", TokenType.LetfParen},
+            {"(", TokenType.LeftParen},
             {"(*", TokenType.LeftComment},
             {")", TokenType.RightParen},
             {".", TokenType.Dot},

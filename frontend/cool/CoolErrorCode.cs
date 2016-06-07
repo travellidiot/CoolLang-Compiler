@@ -9,6 +9,7 @@ namespace Compiler.frontend.cool
         InvalidConstant,
         TooManyErrors,
         IOError,
-        UnExpectedToken
+        UnExpectedToken,
+        UnExpectedEof
     }
 }

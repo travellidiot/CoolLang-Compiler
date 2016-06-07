@@ -20,6 +20,10 @@ namespace Compiler.frontend.cool
         {
         }
 
+        public CoolTDParser(CoolTDParser parent) : base(parent.Scanner)
+        {
+        }
+
         public override void Parse()
         {
             LoggerUtil logger = new LoggerUtil(new StreamWriter(Console.OpenStandardOutput()));
@@ -30,7 +34,8 @@ namespace Compiler.frontend.cool
                 Token token;
 
                 sw.Start();
-                while (!((token = NextToken()).GetType() == typeof (EofToken)))
+                
+                while ((token = NextToken()).GetType() != typeof (EofToken))
                 {
                     CoolTokenType tokenType = token.Type as CoolTokenType;
                     if (tokenType?.CoolType != TokenType.Error)
@@ -54,23 +59,36 @@ namespace Compiler.frontend.cool
             }
         }
 
+
+        public new CoolToken CurrentToken()
+        {
+            return (CoolToken) base.CurrentToken();
+        }
+        public new CoolToken NextToken()
+        {
+            return (CoolToken)base.NextToken();
+        }
+
         public override int GetErrorCount()
         {
             return CoolErrorHandler.ErrorCount;
         }
 
-        public Token Synchronize(ISet<TokenType> syncSet)
+        public CoolToken Synchronize(ISet<TokenType> syncSet)
         {
-            Token token = CurrentToken();
-            CoolTokenType t = token.Type as CoolTokenType;
-            if (syncSet.Contains(t.CoolType)) return token;
+            CoolToken token = CurrentToken();
+            if (syncSet.Contains(token.Type.CoolType)) return token;
 
             ErrorHandler.Flag(token, CoolErrorCode.UnExpectedToken, this);
             do
             {
                 token = NextToken();
-                t = token.Type as CoolTokenType;
-            } while (!(token.GetType() == typeof (EofToken)) && !syncSet.Contains(t.CoolType));
+            } while (token.GetType() != typeof (EofToken) && !syncSet.Contains(token.Type.CoolType));
+
+            if (token.GetType() != typeof(EofToken))
+            {
+                ErrorHandler.AbortTranslation(CoolErrorCode.UnExpectedEof, this);
+            }
 
             return token;
         }

@@ -81,7 +81,7 @@ namespace Compiler.frontend.cool.tokens
                 case '(':
                     nextChar = NextChar();
                     if (nextChar != '*') {
-                        Type = new CoolTokenType(TokenType.LetfParen);
+                        Type = new CoolTokenType(TokenType.LeftParen);
                         break;
                     }
                     nextChar = '\0';
