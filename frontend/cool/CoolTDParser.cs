@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Compiler.frontend;
 using Compiler.intermediate;
+using Compiler.intermediate.coolast;
 using Compiler.message;
 using Compiler.utils;
 
@@ -24,7 +25,7 @@ namespace Compiler.frontend.cool
         {
         }
 
-        public override void Parse()
+        public override CoolAstNode Parse()
         {
             LoggerUtil logger = new LoggerUtil(new StreamWriter(Console.OpenStandardOutput()));
 

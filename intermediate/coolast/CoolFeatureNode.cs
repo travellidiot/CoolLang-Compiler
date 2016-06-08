@@ -11,12 +11,14 @@ namespace Compiler.intermediate.coolast
     public class CoolMethodNode : CoolFeatureNode
     {
         public CoolWordToken MethodName { get; }
-        public List<CoolFormalNode> Formals { get; }
+        // List<CoolFormalNode>
+        public List<CoolAstNode> Formals { get; }
         public CoolWordToken RetType { get; }
-        public CoolExprNode Expr { get; }
+        // CoolExprNode
+        public CoolAstNode Expr { get; }
 
 
-        public CoolMethodNode(CoolWordToken methodName, List<CoolFormalNode> formals, CoolWordToken retType, CoolExprNode expr)
+        public CoolMethodNode(CoolWordToken methodName, List<CoolAstNode> formals, CoolWordToken retType, CoolAstNode expr)
         {
             MethodName = methodName;
             Formals = formals;
@@ -30,7 +32,7 @@ namespace Compiler.intermediate.coolast
         }
         public override CoolAstNode Copy()
         {
-            var formals = Formals.Select((fm) => fm) as List<CoolFormalNode>;
+            var formals = Formals.Select((fm) => fm) as List<CoolAstNode>;
             var methodNode = new CoolMethodNode(MethodName, formals, RetType, Expr);
 
             return methodNode;
@@ -41,9 +43,11 @@ namespace Compiler.intermediate.coolast
     {
         public CoolWordToken AttrName { get; }
         public CoolWordToken TypeName { get; }
-        public CoolExprNode Expr { get; }
 
-        public CoolAttrNode(CoolWordToken attr, CoolWordToken atype, CoolExprNode expr)
+        // CoolExprNode
+        public CoolAstNode Expr { get; }
+
+        public CoolAttrNode(CoolWordToken attr, CoolWordToken atype, CoolAstNode expr)
         {
             AttrName = attr;
             TypeName = atype;

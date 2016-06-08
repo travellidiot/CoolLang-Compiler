@@ -12,7 +12,7 @@ namespace Compiler.frontend.cool.parsers
         {
         }
 
-        public CoolExprNode Parse(CoolToken token)
+        public override CoolAstNode Parse()
         {
             throw new System.NotImplementedException();
         }

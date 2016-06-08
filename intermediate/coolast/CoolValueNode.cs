@@ -5,7 +5,8 @@ using Compiler.frontend.cool.tokens;
 
 namespace Compiler.intermediate.coolast
 {
-    using Case = System.Tuple<CoolFormalNode, CoolExprNode>;
+    // Tuple<CoolFormalNode, CoolExprNode>
+    using Case = System.Tuple<CoolAstNode, CoolAstNode>;
 
     public abstract class CoolValueNode : CoolAstNode
     {
@@ -56,9 +57,10 @@ namespace Compiler.intermediate.coolast
 
     public class CoolNotNode : CoolValueNode
     {
-        public CoolExprNode Expr { get; }
+        // CoolExprNode
+        public CoolAstNode Expr { get; }
 
-        public CoolNotNode(CoolExprNode expr) { Expr = expr; }
+        public CoolNotNode(CoolAstNode expr) { Expr = expr; }
         public override CoolAstNode Copy()
         {
             return new CoolNotNode(Expr);
@@ -67,9 +69,10 @@ namespace Compiler.intermediate.coolast
 
     public class CoolIntCmpltNode : CoolValueNode
     {
-        public CoolExprNode Expr { get; }
+        // CoolExprNode
+        public CoolAstNode Expr { get; }
 
-        public CoolIntCmpltNode(CoolExprNode expr) { Expr = expr; } 
+        public CoolIntCmpltNode(CoolAstNode expr) { Expr = expr; } 
         public override CoolAstNode Copy()
         {
             return new CoolIntCmpltNode(Expr);
@@ -78,9 +81,10 @@ namespace Compiler.intermediate.coolast
 
     public class CoolIsVoidNode : CoolValueNode
     {
-        public CoolExprNode Expr { get; }
+        // CoolExprNode
+        public CoolAstNode Expr { get; }
 
-        public CoolIsVoidNode(CoolExprNode expr) { Expr = expr; }
+        public CoolIsVoidNode(CoolAstNode expr) { Expr = expr; }
         public override CoolAstNode Copy()
         {
             return new CoolIsVoidNode(Expr);
@@ -89,9 +93,10 @@ namespace Compiler.intermediate.coolast
 
     public class CoolParenExprNode : CoolValueNode
     {
-        public CoolExprNode Expr { get; }
+        // CoolExprNode
+        public CoolAstNode Expr { get; }
 
-        public CoolParenExprNode(CoolExprNode expr) { Expr = expr; }
+        public CoolParenExprNode(CoolAstNode expr) { Expr = expr; }
         public override CoolAstNode Copy()
         {
             return new CoolParenExprNode(Expr);
@@ -100,10 +105,12 @@ namespace Compiler.intermediate.coolast
 
     public class CoolAssignNode : CoolValueNode
     {
-        public CoolIdNode Id { get; }
-        public CoolExprNode Expr { get; }
+        // CoolIdNode
+        public CoolAstNode Id { get; }
+        // CoolExprNode
+        public CoolAstNode Expr { get; }
 
-        public CoolAssignNode(CoolIdNode id, CoolExprNode expr)
+        public CoolAssignNode(CoolAstNode id, CoolAstNode expr)
         {
             Id = id;
             Expr = expr;
@@ -116,10 +123,12 @@ namespace Compiler.intermediate.coolast
 
     public class CoolCallNode : CoolValueNode
     {
-        public CoolIdNode Id { get; }
-        public List<CoolExprNode> Args { get; }
+        // CoolIdNode
+        public CoolAstNode Id { get; }
+        // List<CoolExprNode>
+        public List<CoolAstNode> Args { get; }
 
-        public CoolCallNode(CoolIdNode id, List<CoolExprNode> args)
+        public CoolCallNode(CoolAstNode id, List<CoolAstNode> args)
         {
             Id = id;
             Args = args;
@@ -132,9 +141,10 @@ namespace Compiler.intermediate.coolast
 
     public class CoolIfNode : CoolValueNode
     {
-        public CoolExprNode Pred, Expr, Alter;
+        // CoolExprNode
+        public CoolAstNode Pred, Expr, Alter;
 
-        public CoolIfNode(CoolExprNode pred, CoolExprNode expr, CoolExprNode alter)
+        public CoolIfNode(CoolAstNode pred, CoolAstNode expr, CoolAstNode alter)
         {
             Pred = pred;
             Expr = expr;
@@ -148,9 +158,10 @@ namespace Compiler.intermediate.coolast
 
     public class CoolWhileNode : CoolValueNode
     {
-        public CoolExprNode Pred, LoopExpr;
+        // CoolExprNode
+        public CoolAstNode Pred, LoopExpr;
 
-        public CoolWhileNode(CoolExprNode pred, CoolExprNode loop)
+        public CoolWhileNode(CoolAstNode pred, CoolAstNode loop)
         {
             Pred = pred;
             LoopExpr = loop;
@@ -163,10 +174,12 @@ namespace Compiler.intermediate.coolast
 
     public class CoolLetNode : CoolValueNode
     {
+        // List<CoolAttrNode>
         public List<CoolAttrNode> Attrs;
-        public CoolExprNode Expr;
+        // CoolExprNode
+        public CoolAstNode Expr;
 
-        public CoolLetNode(List<CoolAttrNode> attrs, CoolExprNode expr)
+        public CoolLetNode(List<CoolAttrNode> attrs, CoolAstNode expr)
         {
             Attrs = attrs;
             Expr = expr;
@@ -179,10 +192,11 @@ namespace Compiler.intermediate.coolast
 
     public class CoolCaseNode : CoolValueNode
     {
-        public CoolExprNode CaseExpr;
+        // CoolExprNode
+        public CoolAstNode CaseExpr;
         public List<Case> Cases;
 
-        public CoolCaseNode(CoolExprNode expr, List<Case> cases)
+        public CoolCaseNode(CoolAstNode expr, List<Case> cases)
         {
             CaseExpr = expr;
             Cases = cases;
@@ -206,9 +220,10 @@ namespace Compiler.intermediate.coolast
 
     public class CoolBlockNode : CoolValueNode
     {
-        public List<CoolExprNode> Exprs;
+        // CoolExprNode
+        public List<CoolAstNode> Exprs;
 
-        public CoolBlockNode(List<CoolExprNode> exprs) { Exprs = exprs; }
+        public CoolBlockNode(List<CoolAstNode> exprs) { Exprs = exprs; }
         public override CoolAstNode Copy()
         {
             return new CoolBlockNode(Exprs);
