@@ -1,20 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Compiler.frontend.cool.tokens;
 
 namespace Compiler.intermediate.coolast
 {
     public class CoolClassNode : CoolAstNode
     {
-        public string ClassName { get; set; }
-        public string ParentName { get; set; }
-        public List<CoolFeatureNode> Features;
+        public CoolWordToken ClassName { get; }
+        public CoolWordToken ParentName { get; }
 
-        public CoolClassNode()
-        {
-            
-        }
+        // List<CoolFeatureNode>
+        public List<IAstNode> Features;
 
-        public CoolClassNode(string clsName, string prtName, List<CoolFeatureNode> features)
+        public CoolClassNode(CoolWordToken clsName, CoolWordToken prtName, List<IAstNode> features)
         {
             ClassName = clsName;
             ParentName = prtName;
@@ -26,15 +24,15 @@ namespace Compiler.intermediate.coolast
             }
         }
 
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
-            var features = Features.Select((f) => f) as List<CoolFeatureNode>;
+            var features = Features.Select((f) => f.Copy()) as List<IAstNode>;
             var classNode = new CoolClassNode(ClassName, ParentName, features);
 
             return classNode;
         }
 
-        public CoolFeatureNode AddFeature(CoolFeatureNode feature)
+        public CoolAstNode AddFeature(CoolAstNode feature)
         {
             Features.Add(feature);
             feature.ParentNode = this;

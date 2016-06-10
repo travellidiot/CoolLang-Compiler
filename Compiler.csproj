@@ -84,7 +84,7 @@
     <Compile Include="frontend\cool\CoolToken.cs" />
     <Compile Include="frontend\cool\CoolTokenType.cs" />
     <Compile Include="frontend\cool\tokens\CoolWordToken.cs" />
-    <Compile Include="frontend\EofToken.cs" />
+    <Compile Include="frontend\cool\EofToken.cs" />
     <Compile Include="frontend\FrontendFactory.cs" />
     <Compile Include="intermediate\AstFactory.cs" />
     <Compile Include="intermediate\IAstNode.cs" />
@@ -95,12 +95,12 @@
     <Compile Include="intermediate\coolast\CoolFactorNode.cs" />
     <Compile Include="intermediate\coolast\CoolFeatureNode.cs" />
     <Compile Include="intermediate\coolast\CoolFormalNode.cs" />
-    <Compile Include="intermediate\coolast\CoolOpNode.cs" />
     <Compile Include="intermediate\coolast\CoolProgramNode.cs" />
     <Compile Include="intermediate\coolast\CoolSimpleExprNode.cs" />
     <Compile Include="intermediate\coolast\CoolTermNode.cs" />
     <Compile Include="intermediate\coolast\CoolValueNode.cs" />
     <Compile Include="intermediate\ISymTabEntry.cs" />
+    <Compile Include="intermediate\IVisitor.cs" />
     <Compile Include="intermediate\SymTabFactory.cs" />
     <Compile Include="intermediate\ISymTabKey.cs" />
     <Compile Include="intermediate\ISymTabStack.cs" />

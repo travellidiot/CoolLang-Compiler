@@ -1,19 +1,23 @@
-﻿namespace Compiler.intermediate.coolast
+﻿using Compiler.frontend.cool.tokens;
+
+namespace Compiler.intermediate.coolast
 {
     public class CoolExprNode : CoolAstNode
     {
-        public CoolSimpleExprNode LeftSimpleExpr { get; }
-        public CoolOpNode Op { get; }
-        public CoolSimpleExprNode RightSimpleExpr { get; }
+        // CoolSimpleExprNode
+        public IAstNode LeftSimpleExpr { get; }
+        public CoolSpecialToken Op { get; }
+        // CoolSimpleExprNode
+        public IAstNode RightSimpleExpr { get; }
         
-        public CoolExprNode(CoolSimpleExprNode left, CoolOpNode op, CoolSimpleExprNode right)
+        public CoolExprNode(IAstNode left, CoolSpecialToken op, IAstNode right)
         {
             LeftSimpleExpr = left;
             Op = op;
             RightSimpleExpr = right;
         }
 
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolExprNode(left: LeftSimpleExpr, op: Op, right: RightSimpleExpr);
         }

@@ -1,19 +1,23 @@
-﻿namespace Compiler.intermediate.coolast
+﻿using Compiler.frontend.cool.tokens;
+
+namespace Compiler.intermediate.coolast
 {
     public class CoolFactorNode : CoolAstNode
     {
-        public CoolFactorNode Factor { get; }
-        public CoolOpNode Op { get; }
-        public CoolTermNode Term { get; }
+        // CoolFactorNode
+        public IAstNode Factor { get; }
+        public CoolSpecialToken Op { get; }
+        // CoolTermNode
+        public IAstNode Term { get; }
 
-        public CoolFactorNode(CoolFactorNode factor, CoolOpNode op, CoolTermNode term)
+        public CoolFactorNode(IAstNode factor, CoolSpecialToken op = null, IAstNode term = null)
         {
             Factor = factor;
             Op = op;
             Term = term;
         }
 
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolFactorNode(Factor, Op, Term);
         }

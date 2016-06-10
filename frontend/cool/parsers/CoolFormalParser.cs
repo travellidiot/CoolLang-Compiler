@@ -1,4 +1,7 @@
-﻿using Compiler.intermediate.coolast;
+﻿using System.Collections.Generic;
+using Compiler.frontend.cool.tokens;
+using Compiler.intermediate;
+using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
@@ -12,9 +15,16 @@ namespace Compiler.frontend.cool.parsers
         {
         }
 
-        public override CoolAstNode Parse()
+        public override IAstNode Parse()
         {
-            return base.Parse();
+            var token = Synchronize(new SortedSet<TokenType>() {TokenType.ObjectId});
+            NextToken();
+            Synchronize(new SortedSet<TokenType>() {TokenType.Colon});
+            NextToken();
+            var typeToken = Synchronize(new SortedSet<TokenType>() {TokenType.TypeId});
+
+            NextToken();
+            return new CoolFormalNode(token as CoolWordToken, typeToken as CoolWordToken);
         }
     }
 }

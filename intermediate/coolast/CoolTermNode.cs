@@ -5,12 +5,13 @@ namespace Compiler.intermediate.coolast
 {
     public class CoolTermNode : CoolAstNode
     {
-        public CoolTermNode Term { get; }
+        // CoolTermNode
+        public IAstNode Term { get; }
         public CoolWordToken Type { get; }
         public CoolWordToken MethodName { get; }
-        public List<CoolExprNode> Args { get; }
+        public List<IAstNode> Args { get; }
 
-        public CoolTermNode(CoolTermNode term, CoolWordToken mName, List<CoolExprNode> args = null, CoolWordToken type = null)
+        public CoolTermNode(IAstNode term, CoolWordToken mName, List<IAstNode> args = null, CoolWordToken type = null)
         {
             Term = term;
             Type = type;
@@ -18,7 +19,7 @@ namespace Compiler.intermediate.coolast
             Args = args;
         }
          
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolTermNode(Term, MethodName, Args, Type);
         }

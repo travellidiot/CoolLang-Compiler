@@ -6,10 +6,11 @@ using Compiler.frontend.cool.tokens;
 namespace Compiler.intermediate.coolast
 {
     // Tuple<CoolFormalNode, CoolExprNode>
-    using Case = System.Tuple<CoolAstNode, CoolAstNode>;
+    using Case = System.Tuple<IAstNode, IAstNode>;
 
     public abstract class CoolValueNode : CoolAstNode
     {
+
     }
 
     public class CoolIdNode : CoolValueNode
@@ -17,7 +18,7 @@ namespace Compiler.intermediate.coolast
         public CoolWordToken IdToken { get; }
 
         public CoolIdNode(CoolWordToken token) { IdToken = token; }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolIdNode(IdToken);
         }
@@ -28,7 +29,7 @@ namespace Compiler.intermediate.coolast
         public CoolNumberToken IntToken { get; }
 
         public CoolIntNode(CoolNumberToken token) { IntToken = token; }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolIntNode(IntToken);
         }
@@ -39,7 +40,7 @@ namespace Compiler.intermediate.coolast
         public CoolStringToken StringToken { get; }
 
         public CoolStringNode(CoolStringToken token) { StringToken = token; }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolStringNode(StringToken);
         }
@@ -49,7 +50,7 @@ namespace Compiler.intermediate.coolast
         public CoolWordToken BoolToken { get; }
 
         public CoolBoolNode(CoolWordToken token) { BoolToken = token; }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolBoolNode(BoolToken);
         }
@@ -58,10 +59,10 @@ namespace Compiler.intermediate.coolast
     public class CoolNotNode : CoolValueNode
     {
         // CoolExprNode
-        public CoolAstNode Expr { get; }
+        public IAstNode Expr { get; }
 
-        public CoolNotNode(CoolAstNode expr) { Expr = expr; }
-        public override CoolAstNode Copy()
+        public CoolNotNode(IAstNode expr) { Expr = expr; Expr.ParentNode = this; }
+        public override IAstNode Copy()
         {
             return new CoolNotNode(Expr);
         }
@@ -70,10 +71,10 @@ namespace Compiler.intermediate.coolast
     public class CoolIntCmpltNode : CoolValueNode
     {
         // CoolExprNode
-        public CoolAstNode Expr { get; }
+        public IAstNode Expr { get; }
 
-        public CoolIntCmpltNode(CoolAstNode expr) { Expr = expr; } 
-        public override CoolAstNode Copy()
+        public CoolIntCmpltNode(IAstNode expr) { Expr = expr; Expr.ParentNode = this; } 
+        public override IAstNode Copy()
         {
             return new CoolIntCmpltNode(Expr);
         }
@@ -82,10 +83,10 @@ namespace Compiler.intermediate.coolast
     public class CoolIsVoidNode : CoolValueNode
     {
         // CoolExprNode
-        public CoolAstNode Expr { get; }
+        public IAstNode Expr { get; }
 
-        public CoolIsVoidNode(CoolAstNode expr) { Expr = expr; }
-        public override CoolAstNode Copy()
+        public CoolIsVoidNode(IAstNode expr) { Expr = expr; Expr.ParentNode = this; }
+        public override IAstNode Copy()
         {
             return new CoolIsVoidNode(Expr);
         }
@@ -94,10 +95,10 @@ namespace Compiler.intermediate.coolast
     public class CoolParenExprNode : CoolValueNode
     {
         // CoolExprNode
-        public CoolAstNode Expr { get; }
+        public IAstNode Expr { get; }
 
-        public CoolParenExprNode(CoolAstNode expr) { Expr = expr; }
-        public override CoolAstNode Copy()
+        public CoolParenExprNode(IAstNode expr) { Expr = expr; Expr.ParentNode = this; }
+        public override IAstNode Copy()
         {
             return new CoolParenExprNode(Expr);
         }
@@ -106,16 +107,18 @@ namespace Compiler.intermediate.coolast
     public class CoolAssignNode : CoolValueNode
     {
         // CoolIdNode
-        public CoolAstNode Id { get; }
+        public IAstNode Id { get; }
         // CoolExprNode
-        public CoolAstNode Expr { get; }
+        public IAstNode Expr { get; }
 
-        public CoolAssignNode(CoolAstNode id, CoolAstNode expr)
+        public CoolAssignNode(IAstNode id, IAstNode expr)
         {
             Id = id;
             Expr = expr;
+            Id.ParentNode = this;
+            Expr.ParentNode = this;
         }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolAssignNode(Id, Expr);
         }
@@ -124,16 +127,22 @@ namespace Compiler.intermediate.coolast
     public class CoolCallNode : CoolValueNode
     {
         // CoolIdNode
-        public CoolAstNode Id { get; }
+        public IAstNode Id { get; }
         // List<CoolExprNode>
-        public List<CoolAstNode> Args { get; }
+        public List<IAstNode> Args { get; }
 
-        public CoolCallNode(CoolAstNode id, List<CoolAstNode> args)
+        public CoolCallNode(IAstNode id, List<IAstNode> args)
         {
             Id = id;
+            Id.ParentNode = this;
+
             Args = args;
+            foreach (var arg in Args)
+            {
+                arg.ParentNode = this;
+            }
         } 
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolCallNode(Id, Args);
         }
@@ -142,15 +151,18 @@ namespace Compiler.intermediate.coolast
     public class CoolIfNode : CoolValueNode
     {
         // CoolExprNode
-        public CoolAstNode Pred, Expr, Alter;
+        public IAstNode Pred, Expr, Alter;
 
-        public CoolIfNode(CoolAstNode pred, CoolAstNode expr, CoolAstNode alter)
+        public CoolIfNode(IAstNode pred, IAstNode expr, IAstNode alter)
         {
             Pred = pred;
+            Pred.ParentNode = this;
             Expr = expr;
+            Expr.ParentNode = this;
             Alter = alter;
+            Alter.ParentNode = this;
         }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolIfNode(Pred, Expr, Alter);
         }
@@ -159,14 +171,16 @@ namespace Compiler.intermediate.coolast
     public class CoolWhileNode : CoolValueNode
     {
         // CoolExprNode
-        public CoolAstNode Pred, LoopExpr;
+        public IAstNode Pred, LoopExpr;
 
-        public CoolWhileNode(CoolAstNode pred, CoolAstNode loop)
+        public CoolWhileNode(IAstNode pred, IAstNode loop)
         {
             Pred = pred;
+            Pred.ParentNode = this;
             LoopExpr = loop;
+            LoopExpr.ParentNode = this;
         }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolWhileNode(Pred, LoopExpr);
         }
@@ -177,14 +191,20 @@ namespace Compiler.intermediate.coolast
         // List<CoolAttrNode>
         public List<CoolAttrNode> Attrs;
         // CoolExprNode
-        public CoolAstNode Expr;
+        public IAstNode Expr;
 
-        public CoolLetNode(List<CoolAttrNode> attrs, CoolAstNode expr)
+        public CoolLetNode(List<CoolAttrNode> attrs, IAstNode expr)
         {
             Attrs = attrs;
             Expr = expr;
+            Expr.ParentNode = this;
+
+            foreach (var attr in Attrs)
+            {
+                attr.ParentNode = this;
+            }
         }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolLetNode(Attrs, Expr);
         }
@@ -193,15 +213,21 @@ namespace Compiler.intermediate.coolast
     public class CoolCaseNode : CoolValueNode
     {
         // CoolExprNode
-        public CoolAstNode CaseExpr;
+        public IAstNode CaseExpr;
         public List<Case> Cases;
 
-        public CoolCaseNode(CoolAstNode expr, List<Case> cases)
+        public CoolCaseNode(IAstNode expr, List<Case> cases)
         {
             CaseExpr = expr;
+            CaseExpr.ParentNode = this;
             Cases = cases;
+            foreach (var cs in Cases)
+            {
+                cs.Item1.ParentNode = this;
+                cs.Item2.ParentNode = this;
+            }
         }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolCaseNode(CaseExpr, Cases);
         }
@@ -212,7 +238,7 @@ namespace Compiler.intermediate.coolast
         public CoolWordToken TypeToken;
 
         public CoolNewObjNode(CoolWordToken token) { TypeToken = token; }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolNewObjNode(TypeToken);
         }
@@ -221,10 +247,17 @@ namespace Compiler.intermediate.coolast
     public class CoolBlockNode : CoolValueNode
     {
         // CoolExprNode
-        public List<CoolAstNode> Exprs;
+        public List<IAstNode> Exprs;
 
-        public CoolBlockNode(List<CoolAstNode> exprs) { Exprs = exprs; }
-        public override CoolAstNode Copy()
+        public CoolBlockNode(List<IAstNode> exprs)
+        {
+            Exprs = exprs;
+            foreach (var expr in Exprs)
+            {
+                expr.ParentNode = this;
+            }
+        }
+        public override IAstNode Copy()
         {
             return new CoolBlockNode(Exprs);
         }

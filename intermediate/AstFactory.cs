@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Compiler.intermediate.coolast;
 using System.Text;
 
@@ -16,7 +17,7 @@ namespace Compiler.intermediate
             switch (type)
             {
                 case "Program":
-                    return new CoolProgramNode();
+                    return new CoolProgramNode(new List<IAstNode>());
                 default:
                     throw new Exception($"No such a type: {type}");
             }

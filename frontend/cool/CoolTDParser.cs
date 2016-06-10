@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Compiler.frontend;
+using Compiler.frontend.cool.parsers;
 using Compiler.intermediate;
 using Compiler.intermediate.coolast;
 using Compiler.message;
@@ -25,39 +26,30 @@ namespace Compiler.frontend.cool
         {
         }
 
-        public override CoolAstNode Parse()
+        public override IAstNode Parse()
         {
             LoggerUtil logger = new LoggerUtil(new StreamWriter(Console.OpenStandardOutput()));
 
             try
             {
                 var sw = new Stopwatch();
-                Token token;
-
                 sw.Start();
-                
-                while ((token = NextToken()).GetType() != typeof (EofToken))
-                {
-                    CoolTokenType tokenType = token.Type as CoolTokenType;
-                    if (tokenType?.CoolType != TokenType.Error)
-                    {
-                        
-                    }
-                    else
-                    {
-                        ErrorHandler.Flag(token, (CoolErrorCode) token.Value, this);
-                    }
-                }
+
+                NextToken();
+                var parser = new CoolProgramParser(this);
+                AstRoot = new CoolAst {Root = parser.Parse()};
 
                 sw.Stop();
                 var elapsedTime = sw.ElapsedMilliseconds;
                 SendMessage(new Message(MessageType.ParserSummary,
-                    new object[] {token.LineNumber, GetErrorCount(), elapsedTime}));
+                    new object[] {CurrentToken().LineNumber, GetErrorCount(), elapsedTime}));
             }
             catch (System.IO.IOException ex)
             {
                 ErrorHandler.AbortTranslation(CoolErrorCode.IOError, this);
             }
+
+            return AstRoot.Root;
         }
 
 
@@ -78,6 +70,9 @@ namespace Compiler.frontend.cool
         public CoolToken Synchronize(ISet<TokenType> syncSet)
         {
             CoolToken token = CurrentToken();
+            while (token.Type.Is(TokenType.Comment))
+                token = NextToken();
+
             if (syncSet.Contains(token.Type.CoolType)) return token;
 
             ErrorHandler.Flag(token, CoolErrorCode.UnExpectedToken, this);

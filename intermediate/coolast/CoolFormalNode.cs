@@ -12,7 +12,7 @@ namespace Compiler.intermediate.coolast
             IdName = id;
             TypeName = type;
         }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolFormalNode(IdName, TypeName);
         }

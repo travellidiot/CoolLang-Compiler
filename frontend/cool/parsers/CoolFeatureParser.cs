@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Compiler.frontend.cool.tokens;
+using Compiler.intermediate;
 using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
@@ -14,7 +15,7 @@ namespace Compiler.frontend.cool.parsers
         {
         }
 
-        public override CoolAstNode Parse()
+        public override IAstNode Parse()
         {
             var token = Synchronize(new SortedSet<TokenType>() { TokenType.ObjectId });
             NextToken();
@@ -27,7 +28,7 @@ namespace Compiler.frontend.cool.parsers
                 var typeToken = Synchronize(new SortedSet<TokenType>() { TokenType.TypeId });
                 NextToken();
                 var ctnToken = Synchronize(new SortedSet<TokenType>() { TokenType.Assign, TokenType.Semic });
-                CoolAstNode exprNode = null;
+                IAstNode exprNode = null;
                 if (ctnToken.Type.Is(TokenType.Assign))
                 {
                     var exprParser = new CoolExprParser(this);
@@ -41,7 +42,7 @@ namespace Compiler.frontend.cool.parsers
             }
 
             // Method
-            var args = new List<CoolAstNode>();
+            var args = new List<IAstNode>();
             var nextToken = NextToken();
             while (!nextToken.Type.Is(TokenType.RightParen))
             {

@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Compiler.frontend.cool.tokens;
+using Compiler.intermediate;
 using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
     // Tuple<CoolFormalNode, CoolExprNode>
-    using Case = System.Tuple<CoolAstNode, CoolAstNode>;
+    using Case = System.Tuple<IAstNode, IAstNode>;
 
     public class CoolValueParser : CoolTDParser
     {
@@ -37,7 +38,7 @@ namespace Compiler.frontend.cool.parsers
         {
         }
 
-        public override CoolAstNode Parse()
+        public override IAstNode Parse()
         {
             CoolToken token = Synchronize(ValueFirstSet);
             switch (token.Type.CoolType)
@@ -55,18 +56,24 @@ namespace Compiler.frontend.cool.parsers
                     }
                     if (flwToken.Type.Is(TokenType.LeftParen))
                     {
-                        var args = new List<CoolAstNode>();
+                        var args = new List<IAstNode>();
 
-                        var nextToken = NextToken();
-                        while (!nextToken.Type.Is(TokenType.RightParen))
+                        //var nextToken = NextToken();
+                        if (!NextToken().Type.Is(TokenType.RightParen))
                         {
                             var parser = new CoolExprParser(this);
-                            NextToken();
                             var exprNode = parser.Parse() as CoolExprNode;
                             args.Add(exprNode);
+                        }
 
-                            var syncSet = new SortedSet<TokenType> {TokenType.Comma, TokenType.RightParen};
-                            nextToken = Synchronize(syncSet);
+                        while (!CurrentToken().Type.Is(TokenType.RightParen))
+                        {
+                            Synchronize(new SortedSet<TokenType>() { TokenType.Comma });
+                            NextToken();
+
+                            var parser = new CoolExprParser(this);
+                            var exprNode = parser.Parse() as CoolExprNode;
+                            args.Add(exprNode);
                         }
 
                         NextToken();
@@ -113,7 +120,7 @@ namespace Compiler.frontend.cool.parsers
                     return new CoolParenExprNode(parSubNode);
 
                 case TokenType.If:
-                    CoolAstNode elseNode = null;
+                    IAstNode elseNode = null;
                     var predParser = new CoolExprParser(this);
                     NextToken();
                     var preNode = predParser.Parse();
@@ -209,7 +216,7 @@ namespace Compiler.frontend.cool.parsers
                     return new CoolNewObjNode(typeToken as CoolWordToken);
 
                 case TokenType.LeftBracket:
-                    var blockExprs = new List<CoolAstNode>();
+                    var blockExprs = new List<IAstNode>();
                     NextToken();
                     do
                     {

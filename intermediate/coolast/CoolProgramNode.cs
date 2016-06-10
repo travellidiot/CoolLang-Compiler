@@ -5,18 +5,22 @@ namespace Compiler.intermediate.coolast
 {
     public class CoolProgramNode : CoolAstNode
     {
-        public List<CoolClassNode> Classes { get; set; }
-        public override CoolAstNode Copy()
+        // List<CoolClassNode>
+        public List<IAstNode> Classes { get; }
+
+        public CoolProgramNode(List<IAstNode> classes)
         {
-            var programNode = new CoolProgramNode();
-            var classes = Classes.Select((node) =>
+            Classes = classes;
+            foreach (var cls in Classes)
             {
-                node.ParentNode = programNode;
-                return node;
-            }) as List<CoolClassNode>;
-
-            programNode.Classes = classes;
-
+                cls.ParentNode = this;
+            }
+        }
+        public override IAstNode Copy()
+        {
+            var classes = Classes.Select((node) => node.Copy()) as List<IAstNode>;
+            var programNode = new CoolProgramNode(classes);
+            
             return programNode;
         }
 

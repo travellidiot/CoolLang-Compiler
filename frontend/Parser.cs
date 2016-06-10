@@ -29,7 +29,7 @@ namespace Compiler.frontend
         /// Parse a Source program and generate the intermediate code and the symbol table.
         /// To be implemented by a language-specific parser subclass.
         /// </summary>
-        public abstract void Parse();
+        public abstract IAstNode Parse();
 
         public abstract int GetErrorCount();
 

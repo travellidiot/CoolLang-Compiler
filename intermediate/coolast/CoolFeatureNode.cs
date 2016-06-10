@@ -12,13 +12,13 @@ namespace Compiler.intermediate.coolast
     {
         public CoolWordToken MethodName { get; }
         // List<CoolFormalNode>
-        public List<CoolAstNode> Formals { get; }
+        public List<IAstNode> Formals { get; }
         public CoolWordToken RetType { get; }
         // CoolExprNode
-        public CoolAstNode Expr { get; }
+        public IAstNode Expr { get; }
 
 
-        public CoolMethodNode(CoolWordToken methodName, List<CoolAstNode> formals, CoolWordToken retType, CoolAstNode expr)
+        public CoolMethodNode(CoolWordToken methodName, List<IAstNode> formals, CoolWordToken retType, IAstNode expr)
         {
             MethodName = methodName;
             Formals = formals;
@@ -30,9 +30,9 @@ namespace Compiler.intermediate.coolast
                 formal.ParentNode = this;
             }
         }
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
-            var formals = Formals.Select((fm) => fm) as List<CoolAstNode>;
+            var formals = Formals.Select((fm) => fm) as List<IAstNode>;
             var methodNode = new CoolMethodNode(MethodName, formals, RetType, Expr);
 
             return methodNode;
@@ -45,16 +45,17 @@ namespace Compiler.intermediate.coolast
         public CoolWordToken TypeName { get; }
 
         // CoolExprNode
-        public CoolAstNode Expr { get; }
+        public IAstNode Expr { get; }
 
-        public CoolAttrNode(CoolWordToken attr, CoolWordToken atype, CoolAstNode expr)
+        public CoolAttrNode(CoolWordToken attr, CoolWordToken atype, IAstNode expr)
         {
             AttrName = attr;
             TypeName = atype;
             Expr = expr;
+            Expr.ParentNode = this;
         }
 
-        public override CoolAstNode Copy()
+        public override IAstNode Copy()
         {
             return new CoolAttrNode(AttrName, TypeName, Expr);
         }
