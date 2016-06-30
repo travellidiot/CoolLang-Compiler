@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Compiler.backend;
 using Compiler.frontend;
-using Compiler.intermediate;
+using Compiler.frontend.cool;
 using Compiler.message;
 using Compiler.utils;
 using static Compiler.message.MessageType;
@@ -15,13 +15,6 @@ namespace Compiler
 {
     public class Program
     {
-        private Parser _parser;
-        private Source _source;
-        private IAst _ast;
-        private ISymTabStack _symTabStack;
-        private Backend _backend;
-        private LoggerUtil _logger;
-
         public Program(string operation, string filePath, string flags)
         {
             try
@@ -29,35 +22,40 @@ namespace Compiler
                 bool intermediate = flags.IndexOf('i') > -1;
                 bool xref = flags.IndexOf('x') > -1;
 
-                _source = new Source(new StreamReader(filePath));
+                var source = new Source(new StreamReader(filePath));
                 //_source.AddMessageListener(new SourceMessageListener());
-                var sourceMessageListener = new SourceMessageListener(_source);
+                var sourceMessageListener = new SourceMessageListener(source);
 
-                _parser = FrontendFactory.CreateParser("cool", "top-down", _source);
+                var parser = FrontendFactory.CreateParser("cool", "top-down", source);
                 //_parser.AddMessageListener(new ParserMessageListener());
-                var parserMessageListener = new ParserMessageListener(_parser);
+                var parserMessageListener = new ParserMessageListener(parser);
 
-                _backend = BackendFactory.CreateBackend(operation);
+                var backend = BackendFactory.CreateBackend(operation);
                 //_backend.AddMessageListener(new BackendMessageListener());
-                var backendMessageListener = new BackendMessageListener(_backend);
+                var backendMessageListener = new BackendMessageListener(backend);
 
                 StreamWriter swriter = new StreamWriter(Console.OpenStandardOutput());
-                _logger = new LoggerUtil(swriter);
+                var logger = new LoggerUtil(swriter);
 
-                _parser.Parse();
-                _source.Close();
+                parser.Parse();
+                source.Close();
 
-                _ast = _parser.AstRoot;
-                _symTabStack = Parser.SymTabStack;
+                var ast = parser.AstRoot;
+                var symTabStack = Parser.SymTabStack;
 
                 if (xref)
                 {
-                    _logger.LogEmptyLines(5);
-                    _logger.LogSymTabStack(_symTabStack);
-                    _logger.LogEmptyLines(5);
+                    logger.LogEmptyLines(5);
+                    logger.LogSymTabStack(symTabStack);
+                    logger.LogEmptyLines(5);
                 }
 
-                _backend.Process(_ast, _symTabStack);
+                backend.Process(ast, symTabStack);
+            }
+            catch (CoolErrorHandler.FatalErrorException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex.StackTrace);
             }
             catch (Exception ex)
             {
@@ -114,21 +112,23 @@ namespace Compiler
             "\n{1} syntax errors." +
             "\n{2} milliseconds total parsing time.\n";
 
+        private static string SyntaxErrorFormat =>
+            "\nline {0}, col {1}: \"{2}\":{3}, {4}.\n";
+
         private class ParserMessageListener : IMessageListener
         {
             public ParserMessageListener(IMessageProducer messageProducer)
             {
-                messageProducer.MessageHandler += MessageReceived;
+                messageProducer.AddListener(this);
             }
 
-            public void MessageReceived(object sender, Message message)
+            public void MessageReceived(Message message)
             {
                 MessageType type = message.Type;
 
                 switch (type)
                 {
                     case MessageType.ParserSummary:
-                        {
                             var bodies = (object[])message.Body;
                             int statementCount = (int)bodies[0];
                             int syntaxErrors = (int)bodies[1];
@@ -138,56 +138,58 @@ namespace Compiler
                                               statementCount, syntaxErrors,
                                               elapsedTime);
                             break;
-                        }
+
+                    case MessageType.SyntaxError:
+                        var body = (object[])message.Body;
+                        var lineNumber = (int) body[0];
+                        var position = (int) body[1];
+                        var text = (string) body[2];
+                        var tokenType = (CoolTokenType) body[3];
+                        var errorCode = (string) body[4];
+                        Console.WriteLine(SyntaxErrorFormat, lineNumber, position, text, tokenType.CoolType, errorCode);
+                        break;
                 }
             }
         }
 
-        private static string InterpreterSummaryFormat =>
-            "\n{0} statements executed." +
-            "\n{1} runtime errors." +
-            "\n{2} seconds total execution time.\n";
+        private static string InterpreterSummaryFormat => "\n{0} statements executed." + "\n{1} runtime errors." + "\n{2} seconds total execution time.\n";
 
-        private static string CompilerSummaryFormat =>
-            "\n{0} instructions generated." +
-            "\n{1} seconds total code generation time.\n";
+        private static string CompilerSummaryFormat => "\n{0} instructions generated." + "\n{1} seconds total code generation time.\n";
 
 
         private class BackendMessageListener : IMessageListener
         {
             public BackendMessageListener(IMessageProducer producer)
             {
-                producer.MessageHandler += MessageReceived;
+                producer.AddListener(this);
             }
-            public void MessageReceived(object sender, Message message)
+
+            public void MessageReceived(Message message)
             {
                 MessageType type = message.Type;
 
                 switch (type)
                 {
                     case InterpreterSummary:
-                        {
-                            var body = (object[])message.Body;
-                            int executionCount = (int)body[0];
-                            int runtimeErrors = (int)body[1];
-                            long elapsedTime = (long)body[2];
+                    {
+                        var body = (object[]) message.Body;
+                        int executionCount = (int) body[0];
+                        int runtimeErrors = (int) body[1];
+                        long elapsedTime = (long) body[2];
 
-                            Console.WriteLine(InterpreterSummaryFormat,
-                                              executionCount, runtimeErrors,
-                                              elapsedTime);
-                            break;
-                        }
+                        Console.WriteLine(InterpreterSummaryFormat, executionCount, runtimeErrors, elapsedTime);
+                        break;
+                    }
 
                     case CompilerSummary:
-                        {
-                            var body = (object[])message.Body;
-                            int instructionCount = (int)body[0];
-                            long elapsedTime = (long)body[1];
+                    {
+                        var body = (object[]) message.Body;
+                        int instructionCount = (int) body[0];
+                        long elapsedTime = (long) body[1];
 
-                            Console.WriteLine(CompilerSummaryFormat,
-                                              instructionCount, elapsedTime);
-                            break;
-                        }
+                        Console.WriteLine(CompilerSummaryFormat, instructionCount, elapsedTime);
+                        break;
+                    }
                 }
             }
         }
@@ -199,20 +201,21 @@ namespace Compiler
         {
             public SourceMessageListener(IMessageProducer producer)
             {
-                producer.MessageHandler += MessageReceived;
+                producer.AddListener(this);
             }
-            public void MessageReceived(object sender, Message message)
+
+            public void MessageReceived(Message message)
             {
                 var type = message.Type;
                 var bodies = (object[]) message.Body;
 
                 switch (type)
                 {
-                    case SourceLine: {
+                    case SourceLine:
+                    {
                         int lineNumber = (int) bodies[0];
                         string lineText = (string) bodies[1];
-                        Console.WriteLine(String.Format(SourceLineFormat,
-                            lineNumber, lineText));
+                        Console.WriteLine(String.Format(SourceLineFormat, lineNumber, lineText));
                         break;
                     }
                 }

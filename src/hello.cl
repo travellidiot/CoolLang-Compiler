@@ -165,7 +165,7 @@ class Variable inherits Expr {
   };
 
   beta() : Expr { self };
-
+  
   substitute(x : Variable, e : Expr) : Expr {
     if x = self then e else self fi
   };

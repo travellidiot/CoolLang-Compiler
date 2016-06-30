@@ -13,8 +13,11 @@ namespace Compiler.intermediate.coolast
         public CoolSimpleExprNode(IAstNode simpleExpr, CoolSpecialToken op, IAstNode factor)
         {
             SimpleExpr = simpleExpr;
+            SimpleExpr.ParentNode = this;
             Op = op;
             Factor = factor;
+            if (Factor != null)
+                Factor.ParentNode = this;
         }
 
         public override IAstNode Copy()

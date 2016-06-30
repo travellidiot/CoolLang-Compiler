@@ -24,12 +24,12 @@ namespace Compiler.frontend.cool
         LeftParen,      // "("
         LeftComment,    // "(*"
         RightParen,     // ")"
-        Dot,            // "."
+        Dispatch,       // "."
         Anti,           // "~"
         Comma,          // ","
         Semic,          // ";"
         Colon,          // ":"
-        Dispatch,       // "@"
+        At,             // "@"
         LeftBracket,    // "{"
         RightBracket,   // "}"
 
@@ -58,6 +58,7 @@ namespace Compiler.frontend.cool
         StringConst,
         TypeId,
         ObjectId,
+        FuncId,
         Error,
         Comment,
     }
@@ -85,12 +86,12 @@ namespace Compiler.frontend.cool
             {"(", TokenType.LeftParen},
             {"(*", TokenType.LeftComment},
             {")", TokenType.RightParen},
-            {".", TokenType.Dot},
+            {".", TokenType.Dispatch},
             {"~", TokenType.Anti},
             {",", TokenType.Comma},
             {";", TokenType.Semic},
             {":", TokenType.Colon},
-            {"@", TokenType.Dispatch},
+            {"@", TokenType.At},
             {"{", TokenType.LeftBracket},
             {"}", TokenType.RightBracket}
         };

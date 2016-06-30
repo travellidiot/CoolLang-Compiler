@@ -25,6 +25,7 @@ namespace Compiler.frontend.cool.parsers
                 NextToken();
                 var node = factorParser.Parse();
                 factorNode = new CoolSimpleExprNode(factorNode, current as CoolSpecialToken, node);
+                current = CurrentToken();
             }
 
             return factorNode;

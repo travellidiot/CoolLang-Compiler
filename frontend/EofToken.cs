@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Compiler.frontend.cool
+namespace Compiler.frontend
 {
-    public class EofToken : CoolToken
+    public class EofToken : Token
     {
         public EofToken(Source source) : base(source)
         {

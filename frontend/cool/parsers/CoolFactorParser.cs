@@ -1,4 +1,6 @@
-﻿using Compiler.frontend.cool.tokens;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
 using Compiler.intermediate.coolast;
 
@@ -16,15 +18,21 @@ namespace Compiler.frontend.cool.parsers
 
         public override IAstNode Parse()
         {
-            //Synchronize(CoolValueParser.ValueFirstSet);
-            var termParser = new CoolTermParser(this);
+            var syncSet = CoolValueParser.ValueFirstSet.Union(new SortedSet<TokenType>()
+            {
+                TokenType.Isvoid,
+                TokenType.Anti
+            });
+            var firstSet = new SortedSet<TokenType>(syncSet);
+
+            Synchronize(firstSet);
+            var termParser = new CoolIsVoidParser(this);
             IAstNode termNode = termParser.Parse();
 
             var current = CurrentToken();
             while (current.Type.Is(TokenType.Star) || current.Type.Is(TokenType.Slash))
             {
                 NextToken();
-                termParser = new CoolTermParser(this);
                 var node = termParser.Parse();
                 termNode = new CoolFactorNode(termNode, current as CoolSpecialToken, node);
             }

@@ -2,7 +2,7 @@
 
 namespace Compiler.intermediate.coolast
 {
-    public class CoolExprNode : CoolAstNode
+    public class CoolRalExprNode : CoolAstNode
     {
         // CoolSimpleExprNode
         public IAstNode LeftSimpleExpr { get; }
@@ -10,16 +10,19 @@ namespace Compiler.intermediate.coolast
         // CoolSimpleExprNode
         public IAstNode RightSimpleExpr { get; }
         
-        public CoolExprNode(IAstNode left, CoolSpecialToken op, IAstNode right)
+        public CoolRalExprNode(IAstNode left, CoolSpecialToken op, IAstNode right)
         {
             LeftSimpleExpr = left;
+            LeftSimpleExpr.ParentNode = this;
             Op = op;
             RightSimpleExpr = right;
+            if (RightSimpleExpr != null)
+                RightSimpleExpr.ParentNode = this;
         }
 
         public override IAstNode Copy()
         {
-            return new CoolExprNode(left: LeftSimpleExpr, op: Op, right: RightSimpleExpr);
+            return new CoolRalExprNode(left: LeftSimpleExpr, op: Op, right: RightSimpleExpr);
         }
     }
 }

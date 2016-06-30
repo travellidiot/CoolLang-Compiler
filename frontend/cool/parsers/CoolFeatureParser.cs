@@ -5,6 +5,10 @@ using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
+    /*
+     * feature ::= ID([formal 【, formal】*]) : TYPE { expr }
+	 *           | ID : TYPE [<- expr]
+     */
     public class CoolFeatureParser : CoolTDParser
     {
         public CoolFeatureParser(Scanner scanner) : base(scanner)
@@ -17,13 +21,14 @@ namespace Compiler.frontend.cool.parsers
 
         public override IAstNode Parse()
         {
-            var token = Synchronize(new SortedSet<TokenType>() { TokenType.ObjectId });
+            var token = Synchronize(new SortedSet<TokenType>() { TokenType.ObjectId, TokenType.FuncId });
             NextToken();
-            var flwToken = Synchronize(new SortedSet<TokenType>() { TokenType.LeftParen, TokenType.Colon });
+            //var flwToken = Synchronize(new SortedSet<TokenType>() { TokenType.LeftParen, TokenType.Colon });
 
             // Attribute
-            if (flwToken.Type.Is(TokenType.Colon))
+            if (token.Type.Is(TokenType.ObjectId))
             {
+                Synchronize(new SortedSet<TokenType>() { TokenType.Colon });
                 NextToken();
                 var typeToken = Synchronize(new SortedSet<TokenType>() { TokenType.TypeId });
                 NextToken();
@@ -31,28 +36,31 @@ namespace Compiler.frontend.cool.parsers
                 IAstNode exprNode = null;
                 if (ctnToken.Type.Is(TokenType.Assign))
                 {
+                    NextToken();
                     var exprParser = new CoolExprParser(this);
                     exprNode = exprParser.Parse();
                 }
-                else
-                {
-                    NextToken();
-                }
+                
                 return new CoolAttrNode(token as CoolWordToken, typeToken as CoolWordToken, exprNode);
             }
 
             // Method
+            var formalParser = new CoolFormalParser(this);
             var args = new List<IAstNode>();
-            var nextToken = NextToken();
-            while (!nextToken.Type.Is(TokenType.RightParen))
+            if (!NextToken().Type.Is(TokenType.RightParen))
             {
-                var formalParser = new CoolFormalParser(this);
+                var formalNode = formalParser.Parse();
+                if (formalNode != null)
+                    args.Add(formalNode);
+            }
+
+            while (!CurrentToken().Type.Is(TokenType.RightParen))
+            {
+                Synchronize(new SortedSet<TokenType>() { TokenType.Comma });
                 NextToken();
                 var formalNode = formalParser.Parse();
                 if (formalNode != null)
                     args.Add(formalNode);
-
-                nextToken = Synchronize(new SortedSet<TokenType>() { TokenType.Comma, TokenType.RightParen });
             }
 
             NextToken();

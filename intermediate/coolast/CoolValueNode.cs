@@ -56,42 +56,6 @@ namespace Compiler.intermediate.coolast
         }
     }
 
-    public class CoolNotNode : CoolValueNode
-    {
-        // CoolExprNode
-        public IAstNode Expr { get; }
-
-        public CoolNotNode(IAstNode expr) { Expr = expr; Expr.ParentNode = this; }
-        public override IAstNode Copy()
-        {
-            return new CoolNotNode(Expr);
-        }
-    }
-
-    public class CoolIntCmpltNode : CoolValueNode
-    {
-        // CoolExprNode
-        public IAstNode Expr { get; }
-
-        public CoolIntCmpltNode(IAstNode expr) { Expr = expr; Expr.ParentNode = this; } 
-        public override IAstNode Copy()
-        {
-            return new CoolIntCmpltNode(Expr);
-        }
-    }
-
-    public class CoolIsVoidNode : CoolValueNode
-    {
-        // CoolExprNode
-        public IAstNode Expr { get; }
-
-        public CoolIsVoidNode(IAstNode expr) { Expr = expr; Expr.ParentNode = this; }
-        public override IAstNode Copy()
-        {
-            return new CoolIsVoidNode(Expr);
-        }
-    }
-
     public class CoolParenExprNode : CoolValueNode
     {
         // CoolExprNode
@@ -104,25 +68,7 @@ namespace Compiler.intermediate.coolast
         }
     }
 
-    public class CoolAssignNode : CoolValueNode
-    {
-        // CoolIdNode
-        public IAstNode Id { get; }
-        // CoolExprNode
-        public IAstNode Expr { get; }
-
-        public CoolAssignNode(IAstNode id, IAstNode expr)
-        {
-            Id = id;
-            Expr = expr;
-            Id.ParentNode = this;
-            Expr.ParentNode = this;
-        }
-        public override IAstNode Copy()
-        {
-            return new CoolAssignNode(Id, Expr);
-        }
-    }
+    
 
     public class CoolCallNode : CoolValueNode
     {
@@ -137,6 +83,8 @@ namespace Compiler.intermediate.coolast
             Id.ParentNode = this;
 
             Args = args;
+            if (Args == null)
+                return;
             foreach (var arg in Args)
             {
                 arg.ParentNode = this;
@@ -160,7 +108,8 @@ namespace Compiler.intermediate.coolast
             Expr = expr;
             Expr.ParentNode = this;
             Alter = alter;
-            Alter.ParentNode = this;
+            if (Alter != null)
+                Alter.ParentNode = this;
         }
         public override IAstNode Copy()
         {

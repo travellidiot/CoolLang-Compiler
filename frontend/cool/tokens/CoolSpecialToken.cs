@@ -32,7 +32,7 @@ namespace Compiler.frontend.cool.tokens
                 case ')':
                     Type = new CoolTokenType(TokenType.RightParen); goto default;
                 case '.':
-                    Type = new CoolTokenType(TokenType.Dot); goto default;
+                    Type = new CoolTokenType(TokenType.Dispatch); goto default;
                 case '~':
                     Type = new CoolTokenType(TokenType.Anti); goto default;
                 case ',':
@@ -42,7 +42,7 @@ namespace Compiler.frontend.cool.tokens
                 case ':':
                     Type = new CoolTokenType(TokenType.Colon); goto default;
                 case '@':
-                    Type = new CoolTokenType(TokenType.Dispatch); goto default;
+                    Type = new CoolTokenType(TokenType.At); goto default;
                 case '{':
                     Type = new CoolTokenType(TokenType.LeftBracket); goto default;
                 case '}':

@@ -8,6 +8,7 @@ namespace Compiler.intermediate.coolast
     {
     }
 
+    // feature ::= ID([formal 【, formal】*]) : TYPE { expr }
     public class CoolMethodNode : CoolFeatureNode
     {
         public CoolWordToken MethodName { get; }
@@ -24,6 +25,7 @@ namespace Compiler.intermediate.coolast
             Formals = formals;
             RetType = retType;
             Expr = expr;
+            Expr.ParentNode = this;
 
             foreach (var formal in Formals)
             {
@@ -39,6 +41,7 @@ namespace Compiler.intermediate.coolast
         }
     }
 
+    // feature ::= ID : TYPE[< -expr]
     public class CoolAttrNode : CoolFeatureNode
     {
         public CoolWordToken AttrName { get; }
@@ -52,7 +55,8 @@ namespace Compiler.intermediate.coolast
             AttrName = attr;
             TypeName = atype;
             Expr = expr;
-            Expr.ParentNode = this;
+            if (Expr != null)
+                Expr.ParentNode = this;
         }
 
         public override IAstNode Copy()

@@ -14,9 +14,19 @@ namespace Compiler.intermediate.coolast
         public CoolTermNode(IAstNode term, CoolWordToken mName, List<IAstNode> args = null, CoolWordToken type = null)
         {
             Term = term;
+            Term.ParentNode = this;
+
             Type = type;
             MethodName = mName;
+
             Args = args;
+            if (Args == null)
+                return;
+
+            foreach (var arg in Args)
+            {
+                arg.ParentNode = this;
+            }
         }
          
         public override IAstNode Copy()

@@ -17,7 +17,6 @@ namespace Compiler.frontend.cool.parsers
 
         public override IAstNode Parse()
         {
-            Synchronize(CoolValueParser.ValueFirstSet);
             var valueParser = new CoolValueParser(this);
             var valueNode = valueParser.Parse();
             var args = new List<IAstNode>();
@@ -25,23 +24,23 @@ namespace Compiler.frontend.cool.parsers
 
             //var flwSet = new SortedSet<TokenType>() {TokenType.Dispatch, TokenType.Dot};
             var token = CurrentToken();
-            while (token.Type.Is(TokenType.Dispatch) || token.Type.Is(TokenType.Dot))
+            while (token.Type.Is(TokenType.At) || token.Type.Is(TokenType.Dispatch))
             {
-                if (token.Type.Is(TokenType.Dispatch))
+                if (token.Type.Is(TokenType.At))
                 {
                     NextToken();
                     type = Synchronize(new SortedSet<TokenType>() {TokenType.TypeId}) as CoolWordToken;
+                    NextToken();
                 }
+                Synchronize(new SortedSet<TokenType>() { TokenType.Dispatch });
                 NextToken();
-                Synchronize(new SortedSet<TokenType>() { TokenType.Dot });
-                NextToken();
-                var mName = Synchronize(new SortedSet<TokenType>() { TokenType.ObjectId }) as CoolWordToken;
+                var mName = Synchronize(new SortedSet<TokenType>() { TokenType.FuncId }) as CoolWordToken;
                 NextToken();
                 Synchronize(new SortedSet<TokenType>() {TokenType.LeftParen});
 
+                var exprParser = new CoolExprParser(this);
                 if (!NextToken().Type.Is(TokenType.RightParen))
                 {
-                    var exprParser = new CoolExprParser(this);
                     var exprNode = exprParser.Parse();
                     args.Add(exprNode);
                 }
@@ -51,7 +50,6 @@ namespace Compiler.frontend.cool.parsers
                     Synchronize(new SortedSet<TokenType>() {TokenType.Comma});
                     NextToken();
 
-                    var exprParser = new CoolExprParser(this);
                     var exprNode = exprParser.Parse();
                     args.Add(exprNode);
                 }

@@ -13,8 +13,11 @@ namespace Compiler.intermediate.coolast
         public CoolFactorNode(IAstNode factor, CoolSpecialToken op = null, IAstNode term = null)
         {
             Factor = factor;
+            Factor.ParentNode = this;
             Op = op;
             Term = term;
+            if (Term != null)
+                Term.ParentNode = this;
         }
 
         public override IAstNode Copy()

@@ -13,8 +13,8 @@ namespace Compiler.frontend
         public static ISymTabStack SymTabStack { get; protected set; } = SymTabFactory.CreateSymTabStack();
         public Scanner Scanner { get; protected set; }
         public IAst AstRoot { get; protected set; }
-        public event EventHandler<Message> MessageHandler;
-
+        protected List<IMessageListener> Listeners = new List<IMessageListener>();
+        
         /// <summary>
         /// Constructor
         /// </summary>
@@ -43,9 +43,22 @@ namespace Compiler.frontend
             return Scanner.NextToken();
         }
 
+        public void AddListener(IMessageListener listener)
+        {
+            Listeners.Add(listener);
+        }
+
+        public void RemoveListener(IMessageListener listener)
+        {
+            Listeners.Remove(listener);
+        }
+
         public void SendMessage(Message message)
         {
-            MessageHandler?.Invoke(this, message);
+            foreach (var listener in Listeners)
+            {
+                listener.MessageReceived(message);
+            }
         }
     }
 }

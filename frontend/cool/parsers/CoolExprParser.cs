@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
 using Compiler.intermediate.coolast;
@@ -17,29 +18,32 @@ namespace Compiler.frontend.cool.parsers
 
         public override IAstNode Parse()
         {
-            var simExprParser = new CoolSimpleExprParser(this);
-            IAstNode exprNode = simExprParser.Parse();
-
-            var current = CurrentToken();
-            var opType = current.Type.CoolType;
-            var opSet = new SortedSet<TokenType>()
+            var syncSet = CoolValueParser.ValueFirstSet.Union(new SortedSet<TokenType>()
             {
-                TokenType.LessEqual,
-                TokenType.LessEqual,
-                TokenType.GreatThan,
-                TokenType.GreatEqual,
-                TokenType.Equal
-            };
+                TokenType.Anti,
+                TokenType.Not,
+                TokenType.Isvoid
+            });
+            var firstSet = new SortedSet<TokenType>(syncSet);
+            var first = Synchronize(firstSet);
+            var parser = new CoolNotExprParser(this);
 
-            if (!opSet.Contains(opType))
-                return exprNode;
+            if (first.Type.Is(TokenType.ObjectId))
+            {
+                var idNode = new CoolIdNode(first as CoolWordToken);
+                var flwToken = NextToken();
+                if (flwToken.Type.Is(TokenType.Assign))
+                {
+                    NextToken();
+                    var exprParser = new CoolExprParser(this);
+                    var expr = exprParser.Parse();
+                    return new CoolAssignNode(idNode, expr);
+                }
 
-            NextToken();
-            //simExprParser = new CoolSimpleExprParser(this);
-            var node = simExprParser.Parse();
-            exprNode = new CoolExprNode(exprNode, current as CoolSpecialToken, node);
-
-            return exprNode;
+                return idNode;
+            }
+            
+            return parser.Parse();
         }
     }
 }

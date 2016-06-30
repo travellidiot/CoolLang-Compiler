@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Compiler.frontend.cool.tokens;
+using Compiler.frontend;
 using static Compiler.frontend.Source;
 
 namespace Compiler.frontend.cool
 {
     public class CoolScanner : Scanner
     {
-        public CoolScanner(Source source) : base(source)
+        public CoolScanner(Source source, int k) : base(source, k)
         {
         }
 

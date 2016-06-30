@@ -2,6 +2,6 @@
 {
     public interface IMessageListener
     {
-        void MessageReceived(object sender, Message message);
+        void MessageReceived(Message message);
     }
 }

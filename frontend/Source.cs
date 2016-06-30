@@ -15,7 +15,7 @@ namespace Compiler.frontend
         public int LineNum { get; private set; }
         public int CurrentPos { get; private set; }
 
-        public event EventHandler<Message> MessageHandler;
+        private readonly List<IMessageListener> _listeners = new List<IMessageListener>();
         private readonly StreamReader _reader;
         private string _line;
 
@@ -96,9 +96,22 @@ namespace Compiler.frontend
             }
         }
 
+        public void AddListener(IMessageListener listener)
+        {
+            _listeners.Add(listener);
+        }
+
+        public void RemoveListener(IMessageListener listener)
+        {
+            _listeners.Remove(listener);
+        }
+
         public void SendMessage(Message message)
         {
-            MessageHandler?.Invoke(this, message);
+            foreach (var listener in _listeners)
+            {
+                listener.MessageReceived(message);
+            }
         }
     }
 }

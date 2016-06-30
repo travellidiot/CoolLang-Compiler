@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -17,13 +18,14 @@ namespace Compiler.frontend.cool
     public class CoolTDParser : Parser
     {
         protected static CoolErrorHandler ErrorHandler = new CoolErrorHandler();
-
+        
         public CoolTDParser(Scanner scanner) : base(scanner)
         {
         }
 
         public CoolTDParser(CoolTDParser parent) : base(parent.Scanner)
         {
+            Listeners = parent.Listeners;
         }
 
         public override IAstNode Parse()
@@ -37,7 +39,7 @@ namespace Compiler.frontend.cool
 
                 NextToken();
                 var parser = new CoolProgramParser(this);
-                AstRoot = new CoolAst {Root = parser.Parse()};
+                AstRoot = new CoolAst { Root = parser.Parse() };
 
                 sw.Stop();
                 var elapsedTime = sw.ElapsedMilliseconds;
@@ -51,7 +53,6 @@ namespace Compiler.frontend.cool
 
             return AstRoot.Root;
         }
-
 
         public new CoolToken CurrentToken()
         {
@@ -81,7 +82,7 @@ namespace Compiler.frontend.cool
                 token = NextToken();
             } while (token.GetType() != typeof (EofToken) && !syncSet.Contains(token.Type.CoolType));
 
-            if (token.GetType() != typeof(EofToken))
+            if (token.GetType() == typeof(EofToken))
             {
                 ErrorHandler.AbortTranslation(CoolErrorCode.UnExpectedEof, this);
             }

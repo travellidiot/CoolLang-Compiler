@@ -20,6 +20,7 @@ namespace Compiler.frontend.cool
                                                 token.LineNumber,
                                                 token.Position,
                                                 token.Text,
+                                                token.Type,
                                                 errorCode.ToString()
                                             }));
             if (++ErrorCount > MaxErrors)
@@ -31,10 +32,22 @@ namespace Compiler.frontend.cool
         public void AbortTranslation(CoolErrorCode errorCode, Parser parser)
         {
             string fatalText = "Fatal Error: " + errorCode.ToString();
-            parser.SendMessage(new Message(MessageType.SyntaxError,
-                new object[] {0, 0, "", fatalText}));
+            throw new FatalErrorException(fatalText);
+        }
 
-            throw new Exception(fatalText);
+        public class FatalErrorException : Exception
+        {
+            private readonly string _errMsg;
+
+            public FatalErrorException(string errMsg)
+            {
+                _errMsg = errMsg;
+            }
+
+            public override string ToString()
+            {
+                return _errMsg;
+            }
         }
     }
 }

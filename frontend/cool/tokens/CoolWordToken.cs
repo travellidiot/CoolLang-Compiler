@@ -29,10 +29,12 @@ namespace Compiler.frontend.cool.tokens
             }
             else
             {
-                TokenType type;
-                Type = CoolTokenType.KeyWords.ContainsKey(Text)
-                    ? new CoolTokenType(CoolTokenType.KeyWords[Text])
-                    : new CoolTokenType(TokenType.ObjectId);
+                if (CoolTokenType.KeyWords.ContainsKey(Text))
+                    Type = new CoolTokenType(CoolTokenType.KeyWords[Text]);
+                else if (currentChar == '(')
+                    Type = new CoolTokenType(TokenType.FuncId);
+                else
+                    Type = new CoolTokenType(TokenType.ObjectId);
             }
         }
     }
