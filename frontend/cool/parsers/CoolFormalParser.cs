@@ -5,25 +5,25 @@ using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
-    public class CoolFormalParser : CoolTDParser
+    public class CoolFormalParser : CoolTdParser
     {
         public CoolFormalParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolFormalParser(CoolTDParser parent) : base(parent)
+        public CoolFormalParser(CoolTdParser parent) : base(parent)
         {
         }
 
         public override IAstNode Parse()
         {
-            var token = Synchronize(new SortedSet<TokenType>() {TokenType.ObjectId});
-            NextToken();
-            Synchronize(new SortedSet<TokenType>() {TokenType.Colon});
-            NextToken();
-            var typeToken = Synchronize(new SortedSet<TokenType>() {TokenType.TypeId});
+            var token = Synchronize(new SortedSet<ITokenType>() {CoolTokenType.ObjectId});
+            NextToken(); // eat ID
+            Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Colon});
+            NextToken(); // eat ":"
+            var typeToken = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.TypeId});
 
-            NextToken();
+            NextToken(); // eat "TYPE"
             return new CoolFormalNode(token as CoolWordToken, typeToken as CoolWordToken);
         }
     }

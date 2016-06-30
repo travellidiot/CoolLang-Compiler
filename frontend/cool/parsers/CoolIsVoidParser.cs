@@ -5,30 +5,29 @@ using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
-    public class CoolIsVoidParser : CoolTDParser
+    public class CoolIsVoidParser : CoolTdParser
     {
         public CoolIsVoidParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolIsVoidParser(CoolTDParser parent) : base(parent)
+        public CoolIsVoidParser(CoolTdParser parent) : base(parent)
         {
         }
 
         public override IAstNode Parse()
         {
-            var syncSet = CoolValueParser.ValueFirstSet.Union(new SortedSet<TokenType>() { TokenType.Isvoid });
-            var firstSet = new SortedSet<TokenType>(syncSet); var first = Synchronize(firstSet);
+            var syncSet = CoolValueParser.ValueFirstSet.Union(new SortedSet<ITokenType>() { CoolTokenType.Isvoid });
+            var firstSet = new SortedSet<ITokenType>(syncSet);
+            var first = Synchronize(firstSet);
 
             var parser = new CoolAntiTermParser(this);
-            if (first.Type.Is(TokenType.Isvoid))
-            {
-                NextToken();
-                var expr = parser.Parse();
-                return new CoolIsVoidNode(expr);
-            }
+            if (!Equals(first.Type, CoolTokenType.Isvoid))
+                return parser.Parse();
 
-            return parser.Parse();
+            NextToken(); // eat "isvoid"
+            var expr = parser.Parse();
+            return new CoolIsVoidNode(expr);
         }
     }
 }

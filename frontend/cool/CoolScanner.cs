@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Compiler.frontend.cool.tokens;
-using Compiler.frontend;
 using static Compiler.frontend.Source;
 
 namespace Compiler.frontend.cool
@@ -17,7 +12,7 @@ namespace Compiler.frontend.cool
 
         protected override Token ExtractToken()
         {
-            skipWhiteSpaces();
+            SkipWhiteSpaces();
 
             char currentChar = CurrentChar();
 
@@ -53,12 +48,29 @@ namespace Compiler.frontend.cool
             return token;
         }
 
-        private void skipWhiteSpaces()
+        private void SkipWhiteSpaces()
         {
             char currentChar = CurrentChar();
             while (char.IsWhiteSpace(currentChar))
             {
                 currentChar = NextChar();
+            }
+        }
+
+        public class NotCoolTokenException : Exception
+        {
+            private readonly Token _token;
+            public NotCoolTokenException(Token token)
+            {
+                _token = token;
+            }
+
+            public override string ToString()
+            {
+                var text = _token.Text;
+                var line = _token.LineNumber;
+                var col = _token.Position;
+                return $"Token is not an CoolToken \"{text}\": line {line}, col {col}";
             }
         }
     }

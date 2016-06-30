@@ -16,17 +16,19 @@ namespace Compiler.frontend
             _lookahead = new List<Token>(k);
             _begin = 0;
             CurrentToken = ExtractToken();
-            _lookahead[_begin] = CurrentToken;
+            _lookahead.Add(CurrentToken);
             for (var i = _begin + 1; i < k; ++i)
             {
-                _lookahead[i] = ExtractToken();
+                _lookahead.Add(ExtractToken());
             }
         }
 
         public Token NextToken()
         {
+            // No special processing for eof, becuase if already reached the end, the following
+            // extracted token will keep being "EofToken"
             _lookahead[_begin] = ExtractToken();
-            _begin = (_begin + 1) % _lookahead.Count;
+            _begin = (_begin + 1)%_lookahead.Count;
             CurrentToken = _lookahead[_begin];
 
             return CurrentToken;

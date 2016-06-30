@@ -4,25 +4,25 @@ using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
-    public class CoolSimpleExprParser : CoolTDParser
+    public class CoolSimpleExprParser : CoolTdParser
     {
         public CoolSimpleExprParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolSimpleExprParser(CoolTDParser parent) : base(parent)
+        public CoolSimpleExprParser(CoolTdParser parent) : base(parent)
         {
         }
 
         public override IAstNode Parse()
         {
             var factorParser = new CoolFactorParser(this);
-            IAstNode factorNode = factorParser.Parse();
+            var factorNode = factorParser.Parse();
 
             var current = CurrentToken();
-            while (current.Type.Is(TokenType.Add) || current.Type.Is(TokenType.Minus))
+            while (Equals(current.Type, CoolTokenType.Add) || Equals(current.Type, CoolTokenType.Minus))
             {
-                NextToken();
+                NextToken(); // eat op
                 var node = factorParser.Parse();
                 factorNode = new CoolSimpleExprNode(factorNode, current as CoolSpecialToken, node);
                 current = CurrentToken();

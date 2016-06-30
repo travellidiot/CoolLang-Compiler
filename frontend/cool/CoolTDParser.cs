@@ -1,43 +1,36 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using Compiler.frontend;
 using Compiler.frontend.cool.parsers;
 using Compiler.intermediate;
 using Compiler.intermediate.coolast;
 using Compiler.message;
-using Compiler.utils;
 
 namespace Compiler.frontend.cool
 {
-    public class CoolTDParser : Parser
+    public class CoolTdParser : Parser
     {
         protected static CoolErrorHandler ErrorHandler = new CoolErrorHandler();
         
-        public CoolTDParser(Scanner scanner) : base(scanner)
+        public CoolTdParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolTDParser(CoolTDParser parent) : base(parent.Scanner)
+        public CoolTdParser(CoolTdParser parent) : base(parent.Scanner)
         {
             Listeners = parent.Listeners;
         }
 
         public override IAstNode Parse()
         {
-            LoggerUtil logger = new LoggerUtil(new StreamWriter(Console.OpenStandardOutput()));
+            //var logger = new LoggerUtil(new StreamWriter(Console.OpenStandardOutput()));
 
             try
             {
                 var sw = new Stopwatch();
                 sw.Start();
 
-                NextToken();
+                //NextToken();
                 var parser = new CoolProgramParser(this);
                 AstRoot = new CoolAst { Root = parser.Parse() };
 
@@ -46,7 +39,7 @@ namespace Compiler.frontend.cool
                 SendMessage(new Message(MessageType.ParserSummary,
                     new object[] {CurrentToken().LineNumber, GetErrorCount(), elapsedTime}));
             }
-            catch (System.IO.IOException ex)
+            catch (IOException)
             {
                 ErrorHandler.AbortTranslation(CoolErrorCode.IOError, this);
             }
@@ -54,13 +47,13 @@ namespace Compiler.frontend.cool
             return AstRoot.Root;
         }
 
-        public new CoolToken CurrentToken()
+        public new Token CurrentToken()
         {
-            return (CoolToken) base.CurrentToken();
+            return base.CurrentToken();
         }
-        public new CoolToken NextToken()
+        public new Token NextToken()
         {
-            return (CoolToken)base.NextToken();
+            return base.NextToken();
         }
 
         public override int GetErrorCount()
@@ -68,19 +61,19 @@ namespace Compiler.frontend.cool
             return CoolErrorHandler.ErrorCount;
         }
 
-        public CoolToken Synchronize(ISet<TokenType> syncSet)
+        public Token Synchronize(ISet<ITokenType> syncSet)
         {
-            CoolToken token = CurrentToken();
-            while (token.Type.Is(TokenType.Comment))
+            var token = CurrentToken();
+            while (Equals(token.Type, CoolTokenType.Comment))
                 token = NextToken();
 
-            if (syncSet.Contains(token.Type.CoolType)) return token;
+            if (syncSet.Contains(token.Type)) return token;
 
             ErrorHandler.Flag(token, CoolErrorCode.UnExpectedToken, this);
             do
             {
                 token = NextToken();
-            } while (token.GetType() != typeof (EofToken) && !syncSet.Contains(token.Type.CoolType));
+            } while (token.GetType() != typeof (EofToken) && !syncSet.Contains(token.Type));
 
             if (token.GetType() == typeof(EofToken))
             {

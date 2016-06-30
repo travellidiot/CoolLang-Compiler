@@ -5,30 +5,31 @@ using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
-    public class CoolAntiTermParser : CoolTDParser
+    public class CoolAntiTermParser : CoolTdParser
     {
         public CoolAntiTermParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolAntiTermParser(CoolTDParser parent) : base(parent)
+        public CoolAntiTermParser(CoolTdParser parent) : base(parent)
         {
         }
 
         public override IAstNode Parse()
         {
-            var syncSet = CoolValueParser.ValueFirstSet.Union(new SortedSet<TokenType>() { TokenType.Not });
-            var firstSet = new SortedSet<TokenType>(syncSet);
+            var syncSet = CoolValueParser.ValueFirstSet.Union(new SortedSet<ITokenType>() { CoolTokenType.Not });
+            var firstSet = new SortedSet<ITokenType>(syncSet);
             var first = Synchronize(firstSet);
 
-            var termParser = new CoolTermParser(this);
-            if (first.Type.Is(TokenType.Anti))
+            if (Equals(first.Type, CoolTokenType.Anti))
             {
-                NextToken();
-                var termNode = termParser.Parse();
+                NextToken(); // eat "~"
+                var antiParser = new CoolAntiTermParser(this);
+                var termNode = antiParser.Parse();
                 return new CoolAntiNode(termNode);
             }
 
+            var termParser = new CoolTermParser(this);
             return termParser.Parse();
         }
     }

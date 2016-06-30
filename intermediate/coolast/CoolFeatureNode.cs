@@ -50,7 +50,7 @@ namespace Compiler.intermediate.coolast
         // CoolExprNode
         public IAstNode Expr { get; }
 
-        public CoolAttrNode(CoolWordToken attr, CoolWordToken atype, IAstNode expr)
+        public CoolAttrNode(CoolWordToken attr, CoolWordToken atype, IAstNode expr = null)
         {
             AttrName = attr;
             TypeName = atype;

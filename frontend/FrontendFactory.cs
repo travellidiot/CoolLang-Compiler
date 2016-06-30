@@ -9,8 +9,8 @@ namespace Compiler.frontend
         {
             if (language.Equals("cool") && type.Equals("top-down"))
             {
-                Scanner scanner = new CoolScanner(source);
-                return new CoolTDParser(scanner);
+                Scanner scanner = new CoolScanner(source, 2);
+                return new CoolTdParser(scanner);
             }
             else {
                 throw new Exception("Parser factory: Invalid type '" +

@@ -6,35 +6,36 @@ using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
-    public class CoolFactorParser : CoolTDParser
+    public class CoolFactorParser : CoolTdParser
     {
         public CoolFactorParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolFactorParser(CoolTDParser parent) : base(parent)
+        public CoolFactorParser(CoolTdParser parent) : base(parent)
         {
         }
 
         public override IAstNode Parse()
         {
-            var syncSet = CoolValueParser.ValueFirstSet.Union(new SortedSet<TokenType>()
+            var syncSet = CoolValueParser.ValueFirstSet.Union(new SortedSet<ITokenType>()
             {
-                TokenType.Isvoid,
-                TokenType.Anti
+                CoolTokenType.Isvoid,
+                CoolTokenType.Anti
             });
-            var firstSet = new SortedSet<TokenType>(syncSet);
+            var firstSet = new SortedSet<ITokenType>(syncSet);
 
             Synchronize(firstSet);
             var termParser = new CoolIsVoidParser(this);
-            IAstNode termNode = termParser.Parse();
+            var termNode = termParser.Parse();
 
             var current = CurrentToken();
-            while (current.Type.Is(TokenType.Star) || current.Type.Is(TokenType.Slash))
+            while (Equals(current.Type, CoolTokenType.Star) || Equals(current.Type, CoolTokenType.Slash))
             {
-                NextToken();
+                NextToken(); // eat op
                 var node = termParser.Parse();
                 termNode = new CoolFactorNode(termNode, current as CoolSpecialToken, node);
+                current = CurrentToken();
             }
 
             return termNode;

@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
-using Compiler.intermediate.coolast;
+using Compiler.intermediate.coolast; 
 
 namespace Compiler.frontend.cool.parsers
 {
-    public class CoolTermParser : CoolTDParser
+    public class CoolTermParser : CoolTdParser
     {
         public CoolTermParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolTermParser(CoolTDParser parent) : base(parent)
+        public CoolTermParser(CoolTdParser parent) : base(parent)
         {
         }
 
@@ -24,31 +24,34 @@ namespace Compiler.frontend.cool.parsers
 
             //var flwSet = new SortedSet<TokenType>() {TokenType.Dispatch, TokenType.Dot};
             var token = CurrentToken();
-            while (token.Type.Is(TokenType.At) || token.Type.Is(TokenType.Dispatch))
+            while (Equals(token.Type, CoolTokenType.At) || Equals(token.Type, CoolTokenType.Dispatch))
             {
-                if (token.Type.Is(TokenType.At))
+                if (Equals(token.Type, CoolTokenType.At))
                 {
-                    NextToken();
-                    type = Synchronize(new SortedSet<TokenType>() {TokenType.TypeId}) as CoolWordToken;
-                    NextToken();
+                    NextToken(); // eat "@"
+                    type = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.TypeId}) as CoolWordToken;
+                    NextToken(); // eat "TYPE", usually base type name
                 }
-                Synchronize(new SortedSet<TokenType>() { TokenType.Dispatch });
-                NextToken();
-                var mName = Synchronize(new SortedSet<TokenType>() { TokenType.FuncId }) as CoolWordToken;
-                NextToken();
-                Synchronize(new SortedSet<TokenType>() {TokenType.LeftParen});
+
+                Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Dispatch });
+                NextToken(); // eat "."
+                var mName = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.ObjectId }) as CoolWordToken;
+                NextToken(); // eat method name
+                Synchronize(new SortedSet<ITokenType>() { CoolTokenType.LeftParen});
 
                 var exprParser = new CoolExprParser(this);
-                if (!NextToken().Type.Is(TokenType.RightParen))
+                if (!Equals(NextToken().Type, CoolTokenType.RightParen))
                 {
+                    // eat "("
                     var exprNode = exprParser.Parse();
                     args.Add(exprNode);
                 }
 
-                while (!CurrentToken().Type.Is(TokenType.RightParen))
+                // current token is "," or ")"
+                while (!Equals(CurrentToken().Type, CoolTokenType.RightParen))
                 {
-                    Synchronize(new SortedSet<TokenType>() {TokenType.Comma});
-                    NextToken();
+                    Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Comma});
+                    NextToken(); // eat ","
 
                     var exprNode = exprParser.Parse();
                     args.Add(exprNode);
@@ -56,7 +59,7 @@ namespace Compiler.frontend.cool.parsers
 
                 valueNode = new CoolTermNode(valueNode, mName, args, type);
 
-                token = NextToken();
+                token = NextToken(); // eat ")"
             }
 
             return valueNode;

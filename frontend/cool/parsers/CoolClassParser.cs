@@ -5,49 +5,49 @@ using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
-    public class CoolClassParser : CoolTDParser
+    public class CoolClassParser : CoolTdParser
     {
         public CoolClassParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolClassParser(CoolTDParser parent) : base(parent)
+        public CoolClassParser(CoolTdParser parent) : base(parent)
         {
         }
 
         // class TYPE [inherits TYPE] { 【feature;】* }
         public override IAstNode Parse()
         {
-            Synchronize(new SortedSet<TokenType>() {TokenType.Class});
-            var typeSet = new SortedSet<TokenType>() {TokenType.TypeId};
+            Synchronize(new SortedSet<ITokenType>() {CoolTokenType.Class});
+            var typeSet = new SortedSet<ITokenType>() { CoolTokenType.TypeId};
 
-            NextToken();
+            NextToken(); // eat "class"
             var clsName = Synchronize(typeSet);
             CoolToken prtName = null;
 
-            NextToken();
-            var token = Synchronize(new SortedSet<TokenType>() {TokenType.Inherits, TokenType.LeftBracket});
-            if (token.Type.Is(TokenType.Inherits))
+            NextToken(); // eat "TYPE", the class name
+            var token = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Inherits, CoolTokenType.LeftBracket});
+            if (Equals(token.Type, CoolTokenType.Inherits))
             {
-                NextToken();
-                prtName = Synchronize(typeSet);
-                NextToken();
-                token = Synchronize(new SortedSet<TokenType>() {TokenType.LeftBracket});
+                NextToken(); // eat "inherites"
+                prtName = Synchronize(typeSet) as CoolToken;
+                NextToken(); // eat "TYPE", the parent class name
+                Synchronize(new SortedSet<ITokenType>() { CoolTokenType.LeftBracket});
             }
 
             var features = new List<IAstNode>();
-            NextToken();
-            while (!CurrentToken().Type.Is(TokenType.RightBracket))
+            NextToken(); // eat "{"
+            while (!Equals(CurrentToken().Type, CoolTokenType.RightBracket))
             {
                 var parser = new CoolFeatureParser(this);
                 var feature = parser.Parse();
                 features.Add(feature);
 
-                Synchronize(new SortedSet<TokenType>() {TokenType.Semic});
-                NextToken();
+                Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic});
+                NextToken(); // eat ";"
             }
 
-            NextToken();
+            NextToken(); // eat "}"
             return new CoolClassNode(clsName as CoolWordToken, prtName as CoolWordToken, features);
         }
     }

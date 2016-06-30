@@ -1,138 +1,146 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
 using Compiler.intermediate.coolast;
+
+using static Compiler.frontend.cool.CoolScanner;
 
 namespace Compiler.frontend.cool.parsers
 {
     // Tuple<CoolFormalNode, CoolExprNode>
     using Case = System.Tuple<IAstNode, IAstNode>;
 
-    public class CoolValueParser : CoolTDParser
+    public class CoolValueParser : CoolTdParser
     {
-        public static SortedSet<TokenType> ValueFirstSet = new SortedSet<TokenType>
+        public static SortedSet<ITokenType> ValueFirstSet = new SortedSet<ITokenType>()
         {
-            TokenType.ObjectId,
-            TokenType.FuncId,
-            TokenType.IntConst,
-            TokenType.StringConst,
-            TokenType.BoolConst,
-            TokenType.Not,
-            TokenType.Anti,
-            TokenType.Isvoid,
-            TokenType.LeftParen,
-            TokenType.If,
-            TokenType.While,
-            TokenType.Let,
-            TokenType.Case,
-            TokenType.New,
-            TokenType.LeftBracket
+            CoolTokenType.ObjectId,
+            CoolTokenType.IntConst,
+            CoolTokenType.StringConst,
+            CoolTokenType.BoolConst,
+            CoolTokenType.Not,
+            CoolTokenType.Anti,
+            CoolTokenType.Isvoid,
+            CoolTokenType.LeftParen,
+            CoolTokenType.If,
+            CoolTokenType.While,
+            CoolTokenType.Let,
+            CoolTokenType.Case,
+            CoolTokenType.New,
+            CoolTokenType.LeftBracket
         };
 
         public CoolValueParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolValueParser(CoolTDParser parent) : base(parent)
+        public CoolValueParser(CoolTdParser parent) : base(parent)
         {
         }
 
         public override IAstNode Parse()
         {
-            CoolToken token = Synchronize(ValueFirstSet);
+            var token = Synchronize(ValueFirstSet);
+            if (!(token is CoolToken))
+                throw new NotCoolTokenException(token);
 
-            switch (token.Type.CoolType)
+            var coolToken = token as CoolToken;
+            switch (coolToken.Type.CoolType)
             {
                 case TokenType.ObjectId:
-                    CoolIdNode idNode = new CoolIdNode(token as CoolWordToken);
+                    var idNode = new CoolIdNode(coolToken as CoolWordToken);
+                    var afterId = Scanner.Lookahead(1) as CoolToken;
+                    if (afterId == null)
+                        throw new NotCoolTokenException(Scanner.Lookahead(1));
+
+                    if (afterId.Type.Is(TokenType.LeftParen))
+                    {
+                        /* method call*/
+                        NextToken(); // eat ID
+                        var args = new List<IAstNode>();
+
+                        //var nextToken = NextToken();
+                        if (!Equals(NextToken().Type, CoolTokenType.RightParen))
+                        {
+                            // eat "("
+                            var parser = new CoolExprParser(this);
+                            var exprNode = parser.Parse();
+                            args.Add(exprNode);
+                        }
+
+                        while (!Equals(CurrentToken().Type, CoolTokenType.RightParen))
+                        {
+                            Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Comma });
+                            NextToken(); // eat ","
+
+                            var parser = new CoolExprParser(this);
+                            var exprNode = parser.Parse();
+                            args.Add(exprNode);
+                        }
+
+                        NextToken(); // eat ")"
+                        return new CoolCallNode(idNode, args);
+                    }
+
                     NextToken();
                     return idNode;
 
-                case TokenType.FuncId:
-                    CoolIdNode funcNode = new CoolIdNode(token as CoolWordToken);
-
-                    NextToken();
-                    var args = new List<IAstNode>();
-
-                    //var nextToken = NextToken();
-                    if (!NextToken().Type.Is(TokenType.RightParen))
-                    {
-                        var parser = new CoolExprParser(this);
-                        var exprNode = parser.Parse();
-                        args.Add(exprNode);
-                    }
-
-                    while (!CurrentToken().Type.Is(TokenType.RightParen))
-                    {
-                        Synchronize(new SortedSet<TokenType>() { TokenType.Comma });
-                        NextToken();
-
-                        var parser = new CoolExprParser(this);
-                        var exprNode = parser.Parse();
-                        args.Add(exprNode);
-                    }
-
-                    NextToken();
-                    return new CoolCallNode(funcNode, args);
-
                 case TokenType.IntConst:
                     NextToken();
-                    return new CoolIntNode(token as CoolNumberToken);
+                    return new CoolIntNode(coolToken as CoolNumberToken);
 
                 case TokenType.StringConst:
                     NextToken();
-                    return new CoolStringNode(token as CoolStringToken);
+                    return new CoolStringNode(coolToken as CoolStringToken);
 
                 case TokenType.BoolConst:
                     NextToken();
-                    return new CoolBoolNode(token as CoolWordToken);
+                    return new CoolBoolNode(coolToken as CoolWordToken);
 
                 case TokenType.LeftParen:
                     var parSubParser = new CoolExprParser(this);
-                    NextToken();
+                    NextToken(); // eat "("
                     var parSubNode = parSubParser.Parse();
-                    Synchronize(new SortedSet<TokenType>() {TokenType.RightParen});
-                    NextToken();
+                    Synchronize(new SortedSet<ITokenType>() { CoolTokenType.RightParen});
+                    NextToken(); // eat ")" 
                     return new CoolParenExprNode(parSubNode);
 
                 case TokenType.If:
                     IAstNode elseNode = null;
                     var exprParser = new CoolExprParser(this);
-                    NextToken();
+                    NextToken(); // eat "if"
                     var preNode = exprParser.Parse();
-                    Synchronize(new SortedSet<TokenType>() {TokenType.Then});
+                    Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Then});
 
-                    NextToken();
+                    NextToken(); // eat "then"
                     var thenNode = exprParser.Parse();
-                    var thenSyncTok = Synchronize(new SortedSet<TokenType>() {TokenType.Else, TokenType.Fi});
+                    var thenSyncTok = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Else, CoolTokenType.Fi});
 
-                    if (thenSyncTok.Type.Is(TokenType.Else))
+                    if (Equals(thenSyncTok.Type, CoolTokenType.Else))
                     {
-                        NextToken();
+                        NextToken(); // eat "else"
                         elseNode = exprParser.Parse();
-                        Synchronize(new SortedSet<TokenType>() {TokenType.Fi});
+                        Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Fi});
                     }
 
-                    NextToken();
+                    NextToken(); // eat "fi"
                     return new CoolIfNode(preNode, thenNode, elseNode);
 
                 case TokenType.While:
                     var whileParser = new CoolExprParser(this);
-                    NextToken();
+                    NextToken(); // eat "while"
                     var condNode = whileParser.Parse();
-                    Synchronize(new SortedSet<TokenType>() {TokenType.Loop});
+                    Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Loop});
 
-                    NextToken();
+                    NextToken(); // eat "loop"
                     var loopNode = whileParser.Parse();
-                    Synchronize(new SortedSet<TokenType>() {TokenType.Pool});
+                    Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Pool});
 
-                    NextToken();
+                    NextToken(); // eat "pool"
                     return new CoolWhileNode(condNode, loopNode);
 
                 case TokenType.Let:
-                    var attrToken = NextToken();
+                    var attrToken = NextToken(); // eat "let"
                     var attrParser = new CoolFeatureParser(this);
                     var attrList = new List<CoolAttrNode>();
                     var attrNode = attrParser.Parse() as CoolAttrNode;
@@ -141,10 +149,10 @@ namespace Compiler.frontend.cool.parsers
                     else
                         ErrorHandler.Flag(attrToken, CoolErrorCode.InvalidSyntax, attrParser);
 
-                    while (!CurrentToken().Type.Is(TokenType.In))
+                    while (!Equals(CurrentToken().Type, CoolTokenType.In))
                     {
-                        Synchronize(new SortedSet<TokenType>() {TokenType.Comma});
-                        NextToken();
+                        Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Comma});
+                        NextToken(); // eat ","
                         attrNode = attrParser.Parse() as CoolAttrNode;
                         if (attrNode != null)
                             attrList.Add(attrNode);
@@ -152,57 +160,55 @@ namespace Compiler.frontend.cool.parsers
                             ErrorHandler.Flag(attrToken, CoolErrorCode.InvalidSyntax, attrParser);
                     }
 
-                    NextToken();
+                    NextToken(); // eat "in"
                     var letBodyParser = new CoolExprParser(this);
                     var bodyExpr = letBodyParser.Parse();
 
-                    NextToken();
                     return new CoolLetNode(attrList, bodyExpr);
 
                 case TokenType.Case:
-                    NextToken();
+                    NextToken(); // eat "case"
                     var caseParser = new CoolExprParser(this);
                     var caseNode = caseParser.Parse();
-                    Synchronize(new SortedSet<TokenType>() {TokenType.Of});
-
+                    Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Of});
+                    NextToken(); // eat "of"
                     var casesNode = new List<Case>();
                     do
                     {
-                        NextToken();
                         var caseFormalParser = new CoolFormalParser(this);
                         var caseFormalNode = caseFormalParser.Parse();
-                        Synchronize(new SortedSet<TokenType>() {TokenType.DArraw});
+                        Synchronize(new SortedSet<ITokenType>() { CoolTokenType.DArraw});
 
-                        NextToken();
+                        NextToken(); // eat "=>"
                         var caseExprParser = new CoolExprParser(this);
                         var caseExprNode = caseExprParser.Parse();
-                        Synchronize(new SortedSet<TokenType>() {TokenType.Semic});
+                        Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic});
 
                         casesNode.Add(new Case(caseFormalNode, caseExprNode));
-                    } while (!NextToken().Type.Is(TokenType.Esac));
+                    } while (!Equals(NextToken().Type, CoolTokenType.Esac)); // eat ";"
 
-                    NextToken();
+                    NextToken(); // eat "esac"
                     return new CoolCaseNode(caseNode, casesNode);
 
                 case TokenType.New:
-                    NextToken();
-                    var typeToken = Synchronize(new SortedSet<TokenType>() {TokenType.TypeId});
-                    NextToken();
+                    NextToken(); // eat "new"
+                    var typeToken = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.TypeId});
+                    NextToken(); // eat "Type;
                     return new CoolNewObjNode(typeToken as CoolWordToken);
 
                 case TokenType.LeftBracket:
                     var blockExprs = new List<IAstNode>();
-                    NextToken();
+                    NextToken(); // eat "{"
                     var blockExprParser = new CoolExprParser(this);
                     do
                     {
                         var blockExprNode = blockExprParser.Parse();
                         blockExprs.Add(blockExprNode);
 
-                        Synchronize(new SortedSet<TokenType>() { TokenType.Semic });
-                    } while (!NextToken().Type.Is(TokenType.RightBracket));
+                        Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic });
+                    } while (!Equals(NextToken().Type, CoolTokenType.RightBracket)); // eat ";"
 
-                    NextToken();
+                    NextToken(); // eat "}"
                     return new CoolBlockNode(blockExprs);
 
                 default:

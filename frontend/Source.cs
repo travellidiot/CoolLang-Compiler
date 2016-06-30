@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using Compiler.message;
 
@@ -21,7 +18,7 @@ namespace Compiler.frontend
 
         public Source(StreamReader reader)
         {
-            this._reader = reader;
+            _reader = reader;
             LineNum = 0;
             CurrentPos = -2;
         }
@@ -92,7 +89,7 @@ namespace Compiler.frontend
             catch (IOException ex)
             {
                 Console.Write(ex.StackTrace);
-                throw ex;
+                throw;
             }
         }
 

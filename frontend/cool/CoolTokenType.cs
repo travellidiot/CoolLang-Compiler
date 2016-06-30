@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace Compiler.frontend.cool
 {
@@ -58,13 +57,65 @@ namespace Compiler.frontend.cool
         StringConst,
         TypeId,
         ObjectId,
-        FuncId,
         Error,
         Comment,
     }
 
     public class CoolTokenType : ITokenType
     {
+        // operators
+        public static readonly CoolTokenType DArraw         = new CoolTokenType(TokenType.DArraw);
+        public static readonly CoolTokenType Equal          = new CoolTokenType(TokenType.Equal);
+        public static readonly CoolTokenType LessThan       = new CoolTokenType(TokenType.LessThan);
+        public static readonly CoolTokenType Assign         = new CoolTokenType(TokenType.Assign);
+        public static readonly CoolTokenType LessEqual      = new CoolTokenType(TokenType.LessEqual);
+        public static readonly CoolTokenType GreatThan      = new CoolTokenType(TokenType.GreatThan);
+        public static readonly CoolTokenType GreatEqual     = new CoolTokenType(TokenType.GreatEqual);
+        public static readonly CoolTokenType Slash          = new CoolTokenType(TokenType.Slash);
+        public static readonly CoolTokenType Add            = new CoolTokenType(TokenType.Add);
+        public static readonly CoolTokenType Minus          = new CoolTokenType(TokenType.Minus);
+        public static readonly CoolTokenType Star           = new CoolTokenType(TokenType.Star);
+        public static readonly CoolTokenType RightComment   = new CoolTokenType(TokenType.RightComment);
+        public static readonly CoolTokenType LeftParen      = new CoolTokenType(TokenType.LeftParen);
+        public static readonly CoolTokenType LeftComment    = new CoolTokenType(TokenType.LeftComment);
+        public static readonly CoolTokenType RightParen     = new CoolTokenType(TokenType.RightParen);
+        public static readonly CoolTokenType Dispatch       = new CoolTokenType(TokenType.Dispatch);
+        public static readonly CoolTokenType Anti           = new CoolTokenType(TokenType.Anti);
+        public static readonly CoolTokenType Comma          = new CoolTokenType(TokenType.Comma);
+        public static readonly CoolTokenType Semic          = new CoolTokenType(TokenType.Semic);
+        public static readonly CoolTokenType Colon          = new CoolTokenType(TokenType.Colon);
+        public static readonly CoolTokenType At             = new CoolTokenType(TokenType.At);
+        public static readonly CoolTokenType LeftBracket    = new CoolTokenType(TokenType.LeftBracket);
+        public static readonly CoolTokenType RightBracket   = new CoolTokenType(TokenType.RightBracket);
+        // keywords
+        public static readonly CoolTokenType Class          = new CoolTokenType(TokenType.Class);
+        public static readonly CoolTokenType Else           = new CoolTokenType(TokenType.Else);
+        public static readonly CoolTokenType If             = new CoolTokenType(TokenType.If);
+        public static readonly CoolTokenType Fi             = new CoolTokenType(TokenType.Fi);
+        public static readonly CoolTokenType In             = new CoolTokenType(TokenType.In);
+        public static readonly CoolTokenType Inherits       = new CoolTokenType(TokenType.Inherits);
+        public static readonly CoolTokenType Let            = new CoolTokenType(TokenType.Let);
+        public static readonly CoolTokenType Loop           = new CoolTokenType(TokenType.Loop);
+        public static readonly CoolTokenType Pool           = new CoolTokenType(TokenType.Pool);
+        public static readonly CoolTokenType Then           = new CoolTokenType(TokenType.Then);
+        public static readonly CoolTokenType While          = new CoolTokenType(TokenType.While);
+        public static readonly CoolTokenType Case           = new CoolTokenType(TokenType.Case);
+        public static readonly CoolTokenType Esac           = new CoolTokenType(TokenType.Esac);
+        public static readonly CoolTokenType Of             = new CoolTokenType(TokenType.Of);
+        public static readonly CoolTokenType New            = new CoolTokenType(TokenType.New);
+        public static readonly CoolTokenType Isvoid         = new CoolTokenType(TokenType.Isvoid);
+        public static readonly CoolTokenType Not            = new CoolTokenType(TokenType.Not);
+        //
+        public static readonly CoolTokenType BoolConst      = new CoolTokenType(TokenType.BoolConst);
+        public static readonly CoolTokenType IntConst       = new CoolTokenType(TokenType.IntConst);
+        public static readonly CoolTokenType StringConst    = new CoolTokenType(TokenType.StringConst);
+        public static readonly CoolTokenType TypeId         = new CoolTokenType(TokenType.TypeId);
+        public static readonly CoolTokenType ObjectId       = new CoolTokenType(TokenType.ObjectId);
+        public static readonly CoolTokenType Error          = new CoolTokenType(TokenType.Error);
+        public static readonly CoolTokenType Comment        = new CoolTokenType(TokenType.Comment);
+
+
+
         public TokenType CoolType { get; }
         public string Text => CoolType.ToString().ToLower();
 
@@ -124,18 +175,34 @@ namespace Compiler.frontend.cool
 
         internal CoolTokenType(TokenType coolType)
         {
-            this.CoolType = coolType;
-        }
-
-        public bool Equals(ITokenType other)
-        {
-            CoolTokenType otherToken = other as CoolTokenType;
-            return this.CoolType == otherToken?.CoolType;
+            CoolType = coolType;
         }
 
         public bool Is(TokenType type)
         {
-            return this.CoolType == type;
+            return CoolType == type;
+        }
+
+        public int CompareTo(ITokenType other)
+        {
+            var otherToken = other as CoolTokenType;
+            return CoolType.CompareTo(otherToken?.CoolType);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var otherToken = obj as CoolTokenType;
+            return CoolType == otherToken?.CoolType;
+        }
+
+        protected bool Equals(CoolTokenType other)
+        {
+            return CoolType == other.CoolType;
+        }
+
+        public override int GetHashCode()
+        {
+            return (int) CoolType;
         }
     }
 }

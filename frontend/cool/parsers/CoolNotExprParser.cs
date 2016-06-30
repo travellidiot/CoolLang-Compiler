@@ -5,31 +5,32 @@ using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
-    public class CoolNotExprParser : CoolTDParser
+    public class CoolNotExprParser : CoolTdParser
     {
         public CoolNotExprParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolNotExprParser(CoolTDParser parent) : base(parent)
+        public CoolNotExprParser(CoolTdParser parent) : base(parent)
         {
         }
 
         public override IAstNode Parse()
         {
-            var syncSet = CoolValueParser.ValueFirstSet.Union(new SortedSet<TokenType>() { TokenType.Not });
-            var firstSet = new SortedSet<TokenType>(syncSet);
+            var syncSet = CoolValueParser.ValueFirstSet.Union(new SortedSet<ITokenType>() { CoolTokenType.Not });
+            var firstSet = new SortedSet<ITokenType>(syncSet);
             var first = Synchronize(firstSet);
 
-            var parser = new CoolRalExprParser(this);
-            if (first.Type.Is(TokenType.Not))
+            if (Equals(first.Type, CoolTokenType.Not))
             {
-                NextToken();
+                NextToken(); // eat "not"
+                var parser = new CoolNotExprParser(this);
                 var expr = parser.Parse();
                 return new CoolNotNode(expr);
             }
 
-            return parser.Parse();
+            var ralParser = new CoolRalExprParser(this);
+            return ralParser.Parse();
         }
     }
 }

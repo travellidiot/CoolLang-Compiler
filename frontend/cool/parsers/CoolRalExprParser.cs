@@ -5,13 +5,13 @@ using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
-    public class CoolRalExprParser : CoolTDParser
+    public class CoolRalExprParser : CoolTdParser
     {
         public CoolRalExprParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolRalExprParser(CoolTDParser parent) : base(parent)
+        public CoolRalExprParser(CoolTdParser parent) : base(parent)
         {
         }
 
@@ -21,20 +21,20 @@ namespace Compiler.frontend.cool.parsers
             var exprNode = simExprParser.Parse();
 
             var current = CurrentToken();
-            var opType = current.Type.CoolType;
-            var opSet = new SortedSet<TokenType>()
+            var opType = current.Type;
+            var opSet = new SortedSet<ITokenType>()
             {
-                TokenType.LessEqual,
-                TokenType.LessEqual,
-                TokenType.GreatThan,
-                TokenType.GreatEqual,
-                TokenType.Equal
+                CoolTokenType.LessThan,
+                CoolTokenType.LessEqual,
+                CoolTokenType.GreatThan,
+                CoolTokenType.GreatEqual,
+                CoolTokenType.Equal
             };
 
             if (!opSet.Contains(opType))
                 return exprNode;
 
-            NextToken();
+            NextToken(); // eat op
             //simExprParser = new CoolSimpleExprParser(this);
             var node = simExprParser.Parse();
             exprNode = new CoolRalExprNode(exprNode, current as CoolSpecialToken, node);

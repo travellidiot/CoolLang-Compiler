@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 namespace Compiler.frontend.cool.tokens
 {
@@ -11,9 +10,9 @@ namespace Compiler.frontend.cool.tokens
 
         protected override void Extract()
         {
-            char currentChar = CurrentChar();
-            char firstChar = currentChar;
-            StringBuilder stringBuffer = new StringBuilder();
+            var currentChar = CurrentChar();
+            var firstChar = currentChar;
+            var stringBuffer = new StringBuilder();
 
             while (char.IsLetterOrDigit(currentChar) || currentChar == '_')
             {
@@ -29,12 +28,9 @@ namespace Compiler.frontend.cool.tokens
             }
             else
             {
-                if (CoolTokenType.KeyWords.ContainsKey(Text))
-                    Type = new CoolTokenType(CoolTokenType.KeyWords[Text]);
-                else if (currentChar == '(')
-                    Type = new CoolTokenType(TokenType.FuncId);
-                else
-                    Type = new CoolTokenType(TokenType.ObjectId);
+                Type = CoolTokenType.KeyWords.ContainsKey(Text) ?
+                    new CoolTokenType(CoolTokenType.KeyWords[Text])
+                    : new CoolTokenType(TokenType.ObjectId);
             }
         }
     }

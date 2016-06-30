@@ -4,13 +4,13 @@ using Compiler.intermediate.coolast;
 
 namespace Compiler.frontend.cool.parsers
 {
-    public class CoolProgramParser : CoolTDParser
+    public class CoolProgramParser : CoolTdParser
     {
         public CoolProgramParser(Scanner scanner) : base(scanner)
         {
         }
 
-        public CoolProgramParser(CoolTDParser parent) : base(parent)
+        public CoolProgramParser(CoolTdParser parent) : base(parent)
         {
         }
 
@@ -19,21 +19,27 @@ namespace Compiler.frontend.cool.parsers
         {
             var classes = new List<IAstNode>();
 
-            Synchronize(new SortedSet<TokenType>() {TokenType.Class});
+            Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Class});
             var parser = new CoolClassParser(this);
             var clsNode = parser.Parse();
             classes.Add(clsNode);
 
-            Synchronize(new SortedSet<TokenType>() {TokenType.Semic});
-            NextToken();
+            Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic});
+            NextToken(); // eat ";"
 
             while (CurrentToken().GetType() != typeof (EofToken))
             {
-                clsNode = parser.Parse();
-                classes.Add(clsNode);
+                if (Equals(CurrentToken().Type, CoolTokenType.Comment))
+                {
+                    NextToken();
+                    continue;
+                }
 
-                Synchronize(new SortedSet<TokenType>() { TokenType.Semic });
-                NextToken();
+                var node = parser.Parse();
+                classes.Add(node);
+
+                Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic });
+                NextToken(); // eat ";"
             }
 
             return new CoolProgramNode(classes);
