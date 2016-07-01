@@ -4,9 +4,9 @@
     {
         public CoolErrorToken(Source source, CoolErrorCode errorCode, string tokenText) : base(source)
         {
-            this.Text = tokenText;
-            this.Type = new CoolTokenType(TokenType.Error);
-            this.Value = errorCode;
+            Text = tokenText;
+            Type = new CoolTokenType(TokenType.Error);
+            Value = errorCode;
         }
 
         protected override void Extract()

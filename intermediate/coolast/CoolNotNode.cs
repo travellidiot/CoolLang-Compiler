@@ -10,5 +10,10 @@
         {
             return new CoolNotNode(Expr);
         }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }

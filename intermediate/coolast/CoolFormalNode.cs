@@ -16,5 +16,10 @@ namespace Compiler.intermediate.coolast
         {
             return new CoolFormalNode(IdName, TypeName);
         }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }

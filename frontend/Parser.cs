@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Compiler.intermediate;
 using Compiler.message;
 
@@ -10,7 +6,7 @@ namespace Compiler.frontend
 {
     public abstract class Parser : IMessageProducer
     {
-        public static ISymTabStack SymTabStack { get; protected set; } = SymTabFactory.CreateSymTabStack();
+        public static IScopeStack ScopeStack { get; protected set; } = SymTabFactory.CreateSymTabStack();
         public Scanner Scanner { get; protected set; }
         public IAst AstRoot { get; protected set; }
         protected List<IMessageListener> Listeners = new List<IMessageListener>();
@@ -21,8 +17,8 @@ namespace Compiler.frontend
         /// <param name="scanner">The scanner to be used with this parser</param>
         protected Parser(Scanner scanner)
         {
-            this.Scanner = scanner;
-            this.AstRoot = null;
+            Scanner = scanner;
+            AstRoot = null;
         }
 
         /// <summary>

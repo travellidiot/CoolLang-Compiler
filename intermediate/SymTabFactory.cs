@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Compiler.intermediate.symtabimpl;
+﻿using Compiler.intermediate.symtabimpl;
 
 namespace Compiler.intermediate
 {
     public class SymTabFactory
     {
-        public static ISymTabStack CreateSymTabStack()
+        public static IScopeStack CreateSymTabStack()
         {
-            return new SymTabStackImpl();
+            return new ScopeStackImpl();
         }
 
-        public static ISymTab CreateSymTab(int nestingLevel)
+        public static IScope CreateSymTab(int nestingLevel)
         {
-            return new SymTabImpl(nestingLevel);
+            return new ScopeImpl(nestingLevel);
         }
 
-        public static ISymTabEntry CreateSymTabEntry(string name, ISymTab symTab)
+        public static IScopeEntry CreateSymTabEntry(string name, IScope scope)
         {
-            return new SymTabEntryImpl(name, symTab);
+            return new ScopeEntryImpl(name, scope);
         }
     }
 }

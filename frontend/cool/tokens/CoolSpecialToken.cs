@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Compiler.frontend.cool.tokens
+﻿namespace Compiler.frontend.cool.tokens
 {
     public class CoolSpecialToken : CoolToken
     {
@@ -10,7 +8,7 @@ namespace Compiler.frontend.cool.tokens
 
         protected override void Extract()
         {
-            char currentChar = CurrentChar();
+            var currentChar = CurrentChar();
             char nextChar;
             #region process special symbols
             switch (currentChar)

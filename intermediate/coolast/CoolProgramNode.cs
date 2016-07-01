@@ -24,6 +24,11 @@ namespace Compiler.intermediate.coolast
             return programNode;
         }
 
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         public CoolClassNode AddClass(CoolClassNode classNode)
         {
             Classes.Add(classNode);

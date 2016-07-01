@@ -8,7 +8,7 @@ namespace Compiler.backend.compiler
 {
     internal class CodeGenerator : Backend
     {
-        public override void Process(IAst code, ISymTabStack symbol)
+        public override void Process(IAst code, IScopeStack symbol)
         {
             var s = new Stopwatch();
             s.Start();

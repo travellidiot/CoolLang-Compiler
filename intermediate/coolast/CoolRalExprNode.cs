@@ -24,5 +24,10 @@ namespace Compiler.intermediate.coolast
         {
             return new CoolRalExprNode(left: LeftSimpleExpr, op: Op, right: RightSimpleExpr);
         }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }

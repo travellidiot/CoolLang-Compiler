@@ -24,5 +24,10 @@ namespace Compiler.intermediate.coolast
         {
             return new CoolFactorNode(Factor, Op, Term);
         }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }

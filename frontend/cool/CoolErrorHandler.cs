@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Compiler.message;
 
 namespace Compiler.frontend.cool
@@ -10,7 +6,7 @@ namespace Compiler.frontend.cool
     public class CoolErrorHandler
     {
         private static int MaxErrors => 25;
-        public static int ErrorCount { get; private set; } = 0;
+        public static int ErrorCount { get; private set; }
 
         public void Flag(Token token, CoolErrorCode errorCode, Parser parser)
         {

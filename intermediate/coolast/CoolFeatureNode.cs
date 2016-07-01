@@ -39,6 +39,11 @@ namespace Compiler.intermediate.coolast
 
             return methodNode;
         }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 
     // feature ::= ID : TYPE[< -expr]
@@ -62,6 +67,11 @@ namespace Compiler.intermediate.coolast
         public override IAstNode Copy()
         {
             return new CoolAttrNode(AttrName, TypeName, Expr);
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

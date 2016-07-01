@@ -41,7 +41,7 @@ namespace Compiler
                 source.Close();
 
                 var ast = parser.AstRoot;
-                var symTabStack = Parser.SymTabStack;
+                var symTabStack = Parser.ScopeStack;
 
                 if (xref)
                 {

@@ -32,6 +32,11 @@ namespace Compiler.intermediate.coolast
             return classNode;
         }
 
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         public CoolAstNode AddFeature(CoolAstNode feature)
         {
             Features.Add(feature);

@@ -7,11 +7,11 @@ namespace Compiler.backend
 {
     public abstract class Backend : IMessageProducer
     {
-        public ISymTab SymbolTable { get; protected set; }
+        public IScope SymbolTable { get; protected set; }
         public IAst Code { get; protected set; }
         protected List<IMessageListener> Listeners = new List<IMessageListener>(); 
 
-        public abstract void Process(IAst code, ISymTabStack symbol);
+        public abstract void Process(IAst code, IScopeStack symbol);
 
         public void AddListener(IMessageListener listener)
         {

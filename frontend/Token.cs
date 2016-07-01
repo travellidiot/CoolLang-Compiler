@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Compiler.frontend
+﻿namespace Compiler.frontend
 {
     public class Token
     {
@@ -12,7 +10,7 @@ namespace Compiler.frontend
         protected Source Source;
 
 
-        public Token(Source source)
+        public Token(Source source) 
         {
             Source = source;
             LineNumber = source.LineNum;

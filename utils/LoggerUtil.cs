@@ -10,7 +10,7 @@ using Compiler.intermediate;
 
 namespace Compiler.utils
 {
-    class LoggerUtil
+    internal class LoggerUtil
     {
         private readonly StreamWriter _logger = new StreamWriter(Console.OpenStandardOutput());
         
@@ -50,9 +50,9 @@ namespace Compiler.utils
             _logger.WriteLine("{0, -20}\t{1, -20}\tline: {2}", token.Text, t, token.LineNumber);
         }
 
-        public void LogSymTabStack(ISymTabStack symTabStack)
+        public void LogSymTabStack(IScopeStack scopeStack)
         {
-            var table = symTabStack.LocalSymTab;
+            var table = scopeStack.LocalScope;
             var entries = table.SortedEntries();
 
             _logger.WriteLine("=====  Cross-Reference Table ========");

@@ -12,18 +12,18 @@ namespace Compiler.frontend.cool.tokens
 
         protected override void Extract()
         {
-            StringBuilder textBuffer = new StringBuilder();
-            StringBuilder valueBuffer = new StringBuilder();
+            var textBuffer = new StringBuilder();
+            var valueBuffer = new StringBuilder();
 
             textBuffer.Append('\"');
-            char currentChar = NextChar();
+            var currentChar = NextChar();
 
             while (currentChar != '\"')
             {
                 if (currentChar == Eol || currentChar == Eof)
                 {
                     Type = new CoolTokenType(TokenType.Error);
-                    Text = "EOL or EOF appears in string: " + textBuffer.ToString();
+                    Text = "EOL or EOF appears in string: " + textBuffer;
                     Value = null;
                     return;
                 }
@@ -31,7 +31,7 @@ namespace Compiler.frontend.cool.tokens
                 if (currentChar == '\\')
                 {
                     textBuffer.Append('\\');
-                    char prevChar = currentChar;
+                    var prevChar = currentChar;
                     currentChar = NextChar();
                     switch (currentChar)
                     {

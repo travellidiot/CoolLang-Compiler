@@ -11,7 +11,7 @@ namespace Compiler.frontend.cool
     public class CoolTdParser : Parser
     {
         protected static CoolErrorHandler ErrorHandler = new CoolErrorHandler();
-        
+
         public CoolTdParser(Scanner scanner) : base(scanner)
         {
         }

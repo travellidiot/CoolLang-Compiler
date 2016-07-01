@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Compiler.frontend.cool
+﻿namespace Compiler.frontend.cool
 {
     public enum CoolErrorCode
     {

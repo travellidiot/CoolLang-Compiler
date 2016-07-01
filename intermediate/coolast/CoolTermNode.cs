@@ -33,5 +33,10 @@ namespace Compiler.intermediate.coolast
         {
             return new CoolTermNode(Term, MethodName, Args, Type);
         }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }
