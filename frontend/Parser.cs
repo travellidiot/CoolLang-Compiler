@@ -6,7 +6,7 @@ namespace Compiler.frontend
 {
     public abstract class Parser : IMessageProducer
     {
-        public static IScopeStack ScopeStack { get; protected set; } = SymTabFactory.CreateSymTabStack();
+        public static SymbolTableStack ScopeStack { get; protected set; } = new SymbolTableStack();
         public Scanner Scanner { get; protected set; }
         public IAst AstRoot { get; protected set; }
         protected List<IMessageListener> Listeners = new List<IMessageListener>();

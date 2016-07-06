@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
 using Compiler.intermediate;
 using Compiler.intermediate.coolast;
+using Compiler.intermediate.coolsymtab;
+using System.Diagnostics;
+
+using static Compiler.frontend.cool.CoolErrorHandler;
 
 namespace Compiler.frontend.cool.parsers
 {
@@ -17,6 +21,18 @@ namespace Compiler.frontend.cool.parsers
         // program ::= 【class;】+
         public override IAstNode Parse()
         {
+            // progcessing symbol table
+            Debug.Assert(ScopeStack.Count != 0, "Can\'t find global symbol scope!!!");
+
+            var gScope = ScopeStack.Peek() as SymbolScope;
+            Debug.Assert(gScope?.SymName == "Global",
+                         $"Program \"{Scanner.FileName}\" is not in the Global namespace.");
+
+            var programScope = new SymbolScope(Scanner.FileName, gScope);
+            gScope.Enter(programScope.SymName, programScope);
+            ScopeStack.Push(programScope);
+
+            // parsing
             var classes = new List<IAstNode>();
 
             Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Class});
@@ -41,6 +57,8 @@ namespace Compiler.frontend.cool.parsers
                 Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic });
                 NextToken(); // eat ";"
             }
+
+            ScopeStack.Pop();
 
             return new CoolProgramNode(classes);
         }

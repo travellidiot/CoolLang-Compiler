@@ -4,9 +4,9 @@ namespace Compiler.intermediate
 {
     public interface IScope
     {
-        int NestingLevel { get; }
-        IScopeEntry Enter(string name);
-        IScopeEntry Lookup(string name);
-        List<IScopeEntry> SortedEntries();
+        ISymbol Enter(string name, ISymbol symbol);
+        ISymbol Lookup(string name);
+        Dictionary<string, ISymbol> Symbols { get; }
+        IScope EnclosingScope { get; }
     }
 }

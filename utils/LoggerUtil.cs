@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Compiler.frontend;
 using Compiler.frontend.cool;
 using Compiler.intermediate;
+using Compiler.intermediate.coolsymtab;
 
 namespace Compiler.utils
 {
@@ -50,27 +51,58 @@ namespace Compiler.utils
             _logger.WriteLine("{0, -20}\t{1, -20}\tline: {2}", token.Text, t, token.LineNumber);
         }
 
-        public void LogSymTabStack(IScopeStack scopeStack)
+        private string FTypeToString(List<IType> signature)
         {
-            var table = scopeStack.LocalScope;
-            var entries = table.SortedEntries();
-
-            _logger.WriteLine("=====  Cross-Reference Table ========");
-            _logger.WriteLine("{0, -20}\t{1, -20}", "Object ID", "Line Numbers");
-            _logger.WriteLine("{0, -20}\t{1, -20}", "---------", "------------");
-
-            foreach (var entry in entries)
+            var builder = new StringBuilder();
+            var prefix = "";
+            foreach (var t in signature)
             {
-                var lineNumbers = entry.LineNumbers;
-                if (lineNumbers != null)
+                builder.Append(prefix);
+                builder.Append(t.TypeName);
+                if (prefix == "")
+                    prefix = "->";
+            }
+
+            return builder.ToString();
+        }
+
+        public void LogSymbolScope(SymbolScope scope)
+        {
+            var queue = new Queue<SymbolScope>();
+            queue.Enqueue(scope);
+
+            while (queue.Count > 0)
+            {
+                var symScope = queue.Dequeue();
+                _logger.WriteLine("=====  Cross-Reference {0} Table ========", symScope.SymName);
+                _logger.WriteLine("{0, -20}\t{1, -20}\t{2, -20}", "ID", "Type", "TypeFlag");
+                _logger.WriteLine("{0, -20}\t{1, -20}\t{2, -20}", "--", "----", "--------");
+
+                var entries = symScope.Symbols;
+                foreach (var entry in entries)
                 {
-                    _logger.Write("{0, -20}\t", entry.Name);
-                    foreach (var num in lineNumbers)
+                    if (entry.Value.GetType() == typeof (ClassSymbolScope) || entry.Value.GetType() == typeof(SymbolScope))
+                        queue.Enqueue(entry.Value as SymbolScope);
+
+                    var key = entry.Key;
+                    var symType = entry.Value.SymType;
+                    
+
+                    var classType = symType as ClassSymbolScope;
+                    if (classType != null)
+                        _logger.WriteLine("{0, -20}\t{1, -20}\t{2, -20}", key, classType.SymName, classType.TypeName);
+                    else
                     {
-                        _logger.Write(" {0}", num);
+                        var methodType = entry.Value as MethodSymbolScope;
+                        if (methodType != null)
+                        {
+                            var signature = FTypeToString(methodType.TypeSignature);
+                            _logger.WriteLine("{0, -20}\t{1, -20}\t{2, -20}", key, signature, "--------");
+                        }
                     }
-                    _logger.WriteLine();
                 }
+
+                _logger.WriteLine("\n");
             }
         }
     }

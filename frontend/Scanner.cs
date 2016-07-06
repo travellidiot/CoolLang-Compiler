@@ -6,13 +6,15 @@ namespace Compiler.frontend
     public abstract class Scanner
     {
         protected Source Source;
+        public string FileName { get; private set; }
         public Token CurrentToken { get; private set; }
         private readonly List<Token> _lookahead;
         private int _begin;
 
-        public Scanner(Source source, int k)
+        protected Scanner(Source source, int k)
         {
             Source = source;
+            FileName = source.FileName;
             _lookahead = new List<Token>(k);
             _begin = 0;
             CurrentToken = ExtractToken();

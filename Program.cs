@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using Compiler.backend;
 using Compiler.frontend;
 using Compiler.frontend.cool;
+using Compiler.intermediate.coolsymtab;
 using Compiler.message;
 using Compiler.utils;
 using static Compiler.message.MessageType;
@@ -19,10 +16,11 @@ namespace Compiler
         {
             try
             {
-                bool intermediate = flags.IndexOf('i') > -1;
-                bool xref = flags.IndexOf('x') > -1;
+                var intermediate = flags.IndexOf('i') > -1;
+                var xref = flags.IndexOf('x') > -1;
 
-                var source = new Source(new StreamReader(filePath));
+                var fname = Path.GetFileNameWithoutExtension(filePath);
+                var source = new Source(new StreamReader(filePath), fname);
                 //_source.AddMessageListener(new SourceMessageListener());
                 var sourceMessageListener = new SourceMessageListener(source);
 
@@ -34,23 +32,23 @@ namespace Compiler
                 //_backend.AddMessageListener(new BackendMessageListener());
                 var backendMessageListener = new BackendMessageListener(backend);
 
-                StreamWriter swriter = new StreamWriter(Console.OpenStandardOutput());
+                var swriter = new StreamWriter(Console.OpenStandardOutput());
                 var logger = new LoggerUtil(swriter);
 
                 parser.Parse();
                 source.Close();
 
                 var ast = parser.AstRoot;
-                var symTabStack = Parser.ScopeStack;
+                var scope = Parser.ScopeStack.Peek() as SymbolScope;
 
                 if (xref)
                 {
                     logger.LogEmptyLines(5);
-                    logger.LogSymTabStack(symTabStack);
+                    logger.LogSymbolScope(scope);
                     logger.LogEmptyLines(5);
                 }
 
-                backend.Process(ast, symTabStack);
+                backend.Process(ast);
             }
             catch (CoolErrorHandler.FatalErrorException ex)
             {
@@ -74,15 +72,15 @@ namespace Compiler
         {
             try
             {
-                string operation = args[0];
+                var operation = args[0];
                 if (!(operation.Equals("compile")
                       || operation.Equals("execute")))
                 {
                     throw new Exception();
                 }
 
-                int i = 0;
-                string flags = "";
+                var i = 0;
+                var flags = "";
 
                 while ((++i < args.Length) && (args[i][0] == '-'))
                 {
@@ -91,7 +89,7 @@ namespace Compiler
 
                 if (i < args.Length)
                 {
-                    string path = args[i];
+                    var path = args[i];
                     new Program(operation, path, flags);
                 }
                 else
@@ -124,7 +122,7 @@ namespace Compiler
 
             public void MessageReceived(Message message)
             {
-                MessageType type = message.Type;
+                var type = message.Type;
 
                 switch (type)
                 {
@@ -213,9 +211,9 @@ namespace Compiler
                 {
                     case SourceLine:
                     {
-                        int lineNumber = (int) bodies[0];
-                        string lineText = (string) bodies[1];
-                        Console.WriteLine(String.Format(SourceLineFormat, lineNumber, lineText));
+                        var lineNumber = (int) bodies[0];
+                        var lineText = (string) bodies[1];
+                        Console.WriteLine(SourceLineFormat, lineNumber, lineText);
                         break;
                     }
                 }

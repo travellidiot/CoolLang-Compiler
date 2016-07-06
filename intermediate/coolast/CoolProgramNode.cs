@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Compiler.intermediate.coolsymtab;
 
 namespace Compiler.intermediate.coolast
 {

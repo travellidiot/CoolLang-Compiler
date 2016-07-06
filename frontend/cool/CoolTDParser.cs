@@ -4,13 +4,14 @@ using System.IO;
 using Compiler.frontend.cool.parsers;
 using Compiler.intermediate;
 using Compiler.intermediate.coolast;
+using Compiler.intermediate.coolsymtab;
 using Compiler.message;
 
 namespace Compiler.frontend.cool
 {
     public class CoolTdParser : Parser
     {
-        protected static CoolErrorHandler ErrorHandler = new CoolErrorHandler();
+        protected static CoolErrorHandler ErrorHandler = CoolErrorHandler.Instance;
 
         public CoolTdParser(Scanner scanner) : base(scanner)
         {
@@ -24,6 +25,8 @@ namespace Compiler.frontend.cool
         public override IAstNode Parse()
         {
             //var logger = new LoggerUtil(new StreamWriter(Console.OpenStandardOutput()));
+            var globalScope = new SymbolScope("Global", null);
+            ScopeStack.Push(globalScope);
 
             try
             {

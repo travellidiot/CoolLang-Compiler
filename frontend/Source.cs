@@ -9,6 +9,7 @@ namespace Compiler.frontend
     {
         public static char Eol => '\n';
         public static char Eof => unchecked((char)-1);
+        public string FileName { get; private set; }
         public int LineNum { get; private set; }
         public int CurrentPos { get; private set; }
 
@@ -16,9 +17,10 @@ namespace Compiler.frontend
         private readonly StreamReader _reader;
         private string _line;
 
-        public Source(StreamReader reader)
+        public Source(StreamReader reader, string fileName)
         {
             _reader = reader;
+            FileName = fileName;
             LineNum = 0;
             CurrentPos = -2;
         }

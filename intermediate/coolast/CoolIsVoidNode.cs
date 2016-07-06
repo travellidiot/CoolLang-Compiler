@@ -1,4 +1,6 @@
-﻿namespace Compiler.intermediate.coolast
+﻿using Compiler.intermediate.coolsymtab;
+
+namespace Compiler.intermediate.coolast
 {
     public class CoolIsVoidNode : CoolAstNode
     {

@@ -2,7 +2,7 @@
 using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
 using Compiler.intermediate.coolast;
-
+using Compiler.intermediate.coolsymtab;
 using static Compiler.frontend.cool.CoolScanner;
 
 namespace Compiler.frontend.cool.parsers
@@ -141,6 +141,11 @@ namespace Compiler.frontend.cool.parsers
 
                 case TokenType.Let:
                     var attrToken = NextToken(); // eat "let"
+
+                    var outLetScope = (SymbolScope)ScopeStack.Peek();
+                    var localLetScope = new SymbolScope($"{outLetScope.SymName}-Local-{attrToken.LineNumber}{attrToken.Position}", outLetScope);
+                    ScopeStack.Push(localLetScope);
+
                     var attrParser = new CoolFeatureParser(this);
                     var attrList = new List<CoolAttrNode>();
                     var attrNode = attrParser.Parse() as CoolAttrNode;
@@ -164,6 +169,8 @@ namespace Compiler.frontend.cool.parsers
                     var letBodyParser = new CoolExprParser(this);
                     var bodyExpr = letBodyParser.Parse();
 
+                    ScopeStack.Pop();
+
                     return new CoolLetNode(attrList, bodyExpr);
 
                 case TokenType.Case:
@@ -175,15 +182,26 @@ namespace Compiler.frontend.cool.parsers
                     var casesNode = new List<Case>();
                     do
                     {
+                        var curTok = CurrentToken();
+                        var outCaseScope = (SymbolScope)ScopeStack.Peek();
+                        var localCaseScope = new SymbolScope($"{outCaseScope.SymName}-Local-{curTok.LineNumber}{curTok.Position}", outCaseScope);
+                        ScopeStack.Push(localCaseScope);
+
                         var caseFormalParser = new CoolFormalParser(this);
                         var caseFormalNode = caseFormalParser.Parse();
                         Synchronize(new SortedSet<ITokenType>() { CoolTokenType.DArraw});
+
+                        var cNode = (CoolFormalNode) caseFormalNode;
+                        var caseType = outCaseScope.LookupForType(cNode.TypeName.Text);
+                        var caseId = new VariableSymbol(cNode.IdName.Text, caseType);
+                        localCaseScope.Enter(caseId.SymName, caseId);
 
                         NextToken(); // eat "=>"
                         var caseExprParser = new CoolExprParser(this);
                         var caseExprNode = caseExprParser.Parse();
                         Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic});
 
+                        ScopeStack.Pop();
                         casesNode.Add(new Case(caseFormalNode, caseExprNode));
                     } while (!Equals(NextToken().Type, CoolTokenType.Esac)); // eat ";"
 

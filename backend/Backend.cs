@@ -11,7 +11,7 @@ namespace Compiler.backend
         public IAst Code { get; protected set; }
         protected List<IMessageListener> Listeners = new List<IMessageListener>(); 
 
-        public abstract void Process(IAst code, IScopeStack symbol);
+        public abstract void Process(IAst code);
 
         public void AddListener(IMessageListener listener)
         {

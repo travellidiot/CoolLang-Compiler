@@ -6,7 +6,10 @@ namespace Compiler.frontend.cool
     public class CoolErrorHandler
     {
         private static int MaxErrors => 25;
+        public static CoolErrorHandler Instance { get; } = new CoolErrorHandler();
         public static int ErrorCount { get; private set; }
+
+        private CoolErrorHandler() { }
 
         public void Flag(Token token, CoolErrorCode errorCode, Parser parser)
         {

@@ -2,13 +2,15 @@
 {
     public enum CoolErrorCode
     {
+        TooManyErrors,
         InvalidCharacter,
         InvalidAssignment,
         InvalidConstant,
         InvalidSyntax,
-        TooManyErrors,
         IOError,
         UnExpectedToken,
-        UnExpectedEof
+        UnExpectedEof,
+
+        UndefinedType
     }
 }

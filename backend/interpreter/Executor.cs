@@ -7,7 +7,7 @@ namespace Compiler.backend.interpreter
 {
     internal class Executor : Backend
     {
-        public override void Process(IAst code, IScopeStack symbol)
+        public override void Process(IAst code)
         {
             var s = new Stopwatch();
             s.Start();
