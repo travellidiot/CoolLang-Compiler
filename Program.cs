@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Compiler.backend;
 using Compiler.frontend;
 using Compiler.frontend.cool;
-using Compiler.intermediate.coolsymtab;
+using Compiler.intermediate.cool.symtab;
 using Compiler.message;
 using Compiler.utils;
 using static Compiler.message.MessageType;
@@ -39,7 +40,11 @@ namespace Compiler
                 source.Close();
 
                 var ast = parser.AstRoot;
-                var scope = Parser.ScopeStack.Peek() as SymbolScope;
+
+                Debug.Assert(Parser.ScopeStack.Count == 1);
+
+                var scope = (GlobalSymbolScope)Parser.ScopeStack.Peek();
+                //scope.CompleteSymbolType();
 
                 if (xref)
                 {

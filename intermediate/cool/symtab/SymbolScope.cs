@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Compiler.intermediate.coolsymtab
+namespace Compiler.intermediate.cool.symtab
 {
     public class SymbolScope : ISymbol, IScope
     {
@@ -40,6 +39,12 @@ namespace Compiler.intermediate.coolsymtab
             _symbols.TryGetValue(type, out symbol);
 
             var typeSymbol = symbol as ClassSymbolScope;
+
+            if (typeSymbol != null)
+                return typeSymbol;
+
+            if (EnclosingScope != null)
+                typeSymbol = EnclosingScope.LookupForType(type);
 
             if (typeSymbol != null)
                 return typeSymbol;

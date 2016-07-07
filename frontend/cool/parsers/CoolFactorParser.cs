@@ -2,7 +2,7 @@
 using System.Linq;
 using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
-using Compiler.intermediate.coolast;
+using Compiler.intermediate.cool.ast;
 
 namespace Compiler.frontend.cool.parsers
 {

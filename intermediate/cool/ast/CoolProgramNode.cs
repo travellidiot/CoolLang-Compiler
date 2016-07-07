@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Compiler.intermediate.coolsymtab;
 
-namespace Compiler.intermediate.coolast
+namespace Compiler.intermediate.cool.ast
 {
     public class CoolProgramNode : CoolAstNode
     {
@@ -25,9 +24,9 @@ namespace Compiler.intermediate.coolast
             return programNode;
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
 
         public CoolClassNode AddClass(CoolClassNode classNode)

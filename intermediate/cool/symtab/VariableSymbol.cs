@@ -1,9 +1,9 @@
-﻿namespace Compiler.intermediate.coolsymtab
+﻿namespace Compiler.intermediate.cool.symtab
 {
     public class VariableSymbol : ISymbol
     {
         public string SymName { get; }
-        public IType SymType { get; }
+        public IType SymType { get; set; }
 
         public VariableSymbol(string symName, IType symType)
         {

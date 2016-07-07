@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Compiler.intermediate;
-using Compiler.intermediate.coolast;
+using Compiler.intermediate.cool.ast;
 
 namespace Compiler.frontend.cool.parsers
 {

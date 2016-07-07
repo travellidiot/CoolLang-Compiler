@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Compiler.intermediate.coolsymtab
+namespace Compiler.intermediate.cool.symtab
 {
     public class MethodSymbolScope : SymbolScope
     {

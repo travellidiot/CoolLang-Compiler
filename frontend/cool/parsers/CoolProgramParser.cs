@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using Compiler.intermediate;
-using Compiler.intermediate.coolast;
-using Compiler.intermediate.coolsymtab;
 using System.Diagnostics;
-
+using Compiler.intermediate.cool.ast;
+using Compiler.intermediate.cool.symtab;
 using static Compiler.frontend.cool.CoolErrorHandler;
 
 namespace Compiler.frontend.cool.parsers

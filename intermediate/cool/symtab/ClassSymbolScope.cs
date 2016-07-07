@@ -1,15 +1,20 @@
-﻿namespace Compiler.intermediate.coolsymtab
+﻿namespace Compiler.intermediate.cool.symtab
 {
     public class ClassSymbolScope : SymbolScope, IType
     {
+        public static string Undefined = "UD";
         public static ClassSymbolScope TypeClass { get; } = new ClassSymbolScope("Type", null);
+        public static ClassSymbolScope BuiltInTypeClass { get; } = new ClassSymbolScope("BuiltInType", null);
         public string TypeName { get; private set; }
         public ClassSymbolScope ParentScope { get; set; }
 
         public ClassSymbolScope(string clsName, IScope enclosing) : base(clsName, enclosing)
         {
             TypeName = clsName;
-            SymType = TypeClass;
+            if (clsName == "IO" || clsName == "Object" || clsName == "Int" || clsName == "String" || clsName == "Bool")
+                SymType = BuiltInTypeClass;
+            else
+                SymType = TypeClass;
         }
 
         public void DefineType(string type)
@@ -19,7 +24,7 @@
 
         public void UndefineType()
         {
-            TypeName = "UD";
+            TypeName = Undefined;
         }
 
         public override ISymbol Lookup(string name)

@@ -1,4 +1,4 @@
-﻿namespace Compiler.intermediate.coolast
+﻿namespace Compiler.intermediate.cool.ast
 {
     public class CoolAst : IAst
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Compiler.intermediate.coolast;
 using System.Text;
+using Compiler.intermediate.cool.ast;
 
 namespace Compiler.intermediate
 {

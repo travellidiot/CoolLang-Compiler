@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
-using Compiler.intermediate.coolast;
-using Compiler.intermediate.coolsymtab;
+using Compiler.intermediate.cool.ast;
+using Compiler.intermediate.cool.symtab;
 
 namespace Compiler.frontend.cool.parsers
 {

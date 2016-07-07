@@ -1,7 +1,6 @@
 ﻿using Compiler.frontend.cool.tokens;
-using Compiler.intermediate.coolsymtab;
 
-namespace Compiler.intermediate.coolast
+namespace Compiler.intermediate.cool.ast
 {
     public class CoolFormalNode : CoolAstNode
     {
@@ -18,9 +17,9 @@ namespace Compiler.intermediate.coolast
             return new CoolFormalNode(IdName, TypeName);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 }

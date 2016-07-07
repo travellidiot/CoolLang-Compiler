@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Compiler.intermediate.coolsymtab;
+using Compiler.intermediate.cool;
 
 namespace Compiler.intermediate
 {
@@ -8,6 +8,6 @@ namespace Compiler.intermediate
         IAstNode ParentNode { get; set; }
         IScope Scope { get; set; }
         IAstNode Copy();
-        void Accept(IVisitor visitor);
+        void Accept(ICoolVisitor coolVisitor);
     }
 }

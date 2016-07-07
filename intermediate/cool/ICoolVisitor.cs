@@ -1,8 +1,8 @@
-﻿using Compiler.intermediate.coolast;
+﻿using Compiler.intermediate.cool.ast;
 
-namespace Compiler.intermediate.coolsymtab
+namespace Compiler.intermediate.cool
 {
-    public interface IVisitor
+    public interface ICoolVisitor
     {
         void Visit(CoolProgramNode node);
         void Visit(CoolAntiNode node);

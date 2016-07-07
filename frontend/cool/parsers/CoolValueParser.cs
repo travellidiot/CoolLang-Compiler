@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
-using Compiler.intermediate.coolast;
-using Compiler.intermediate.coolsymtab;
+using Compiler.intermediate.cool.ast;
+using Compiler.intermediate.cool.symtab;
 using static Compiler.frontend.cool.CoolScanner;
 
 namespace Compiler.frontend.cool.parsers

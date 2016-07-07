@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Compiler.frontend.cool.tokens;
-using Compiler.intermediate.coolsymtab;
 
-namespace Compiler.intermediate.coolast
+namespace Compiler.intermediate.cool.ast
 {
     public abstract class CoolFeatureNode : CoolAstNode
     {
@@ -41,9 +40,9 @@ namespace Compiler.intermediate.coolast
             return methodNode;
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 
@@ -70,9 +69,9 @@ namespace Compiler.intermediate.coolast
             return new CoolAttrNode(AttrName, TypeName, Expr);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 }

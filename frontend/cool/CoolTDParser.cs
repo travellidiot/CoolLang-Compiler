@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using Compiler.frontend.cool.parsers;
 using Compiler.intermediate;
-using Compiler.intermediate.coolast;
-using Compiler.intermediate.coolsymtab;
+using Compiler.intermediate.cool.ast;
+using Compiler.intermediate.cool.symtab;
 using Compiler.message;
 
 namespace Compiler.frontend.cool
@@ -25,7 +25,8 @@ namespace Compiler.frontend.cool
         public override IAstNode Parse()
         {
             //var logger = new LoggerUtil(new StreamWriter(Console.OpenStandardOutput()));
-            var globalScope = new SymbolScope("Global", null);
+            var globalScope = GlobalSymbolScope.Instance;
+
             ScopeStack.Push(globalScope);
 
             try

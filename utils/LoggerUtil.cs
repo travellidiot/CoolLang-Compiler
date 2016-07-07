@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Compiler.frontend;
 using Compiler.frontend.cool;
 using Compiler.intermediate;
-using Compiler.intermediate.coolsymtab;
+using Compiler.intermediate.cool.symtab;
 
 namespace Compiler.utils
 {
@@ -45,13 +45,13 @@ namespace Compiler.utils
 
         public void LogToken(Token token)
         {
-            CoolTokenType tokenType = token.Type as CoolTokenType;
-            string t = tokenType?.Text;
+            var tokenType = token.Type as CoolTokenType;
+            var t = tokenType?.Text;
 
             _logger.WriteLine("{0, -20}\t{1, -20}\tline: {2}", token.Text, t, token.LineNumber);
         }
 
-        private string FTypeToString(List<IType> signature)
+        private static string FTypeToString(IEnumerable<IType> signature)
         {
             var builder = new StringBuilder();
             var prefix = "";
@@ -68,6 +68,7 @@ namespace Compiler.utils
 
         public void LogSymbolScope(SymbolScope scope)
         {
+            const string format = "{0, -20}\t{1, -40}\t{2, -20}";
             var queue = new Queue<SymbolScope>();
             queue.Enqueue(scope);
 
@@ -75,8 +76,8 @@ namespace Compiler.utils
             {
                 var symScope = queue.Dequeue();
                 _logger.WriteLine("=====  Cross-Reference {0} Table ========", symScope.SymName);
-                _logger.WriteLine("{0, -20}\t{1, -20}\t{2, -20}", "ID", "Type", "TypeFlag");
-                _logger.WriteLine("{0, -20}\t{1, -20}\t{2, -20}", "--", "----", "--------");
+                _logger.WriteLine(format, "ID", "Type", "TypeFlag");
+                _logger.WriteLine(format, "--", "----", "--------");
 
                 var entries = symScope.Symbols;
                 foreach (var entry in entries)
@@ -86,18 +87,17 @@ namespace Compiler.utils
 
                     var key = entry.Key;
                     var symType = entry.Value.SymType;
-                    
 
                     var classType = symType as ClassSymbolScope;
                     if (classType != null)
-                        _logger.WriteLine("{0, -20}\t{1, -20}\t{2, -20}", key, classType.SymName, classType.TypeName);
+                        _logger.WriteLine(format, key, classType.SymName, classType.TypeName);
                     else
                     {
                         var methodType = entry.Value as MethodSymbolScope;
                         if (methodType != null)
                         {
                             var signature = FTypeToString(methodType.TypeSignature);
-                            _logger.WriteLine("{0, -20}\t{1, -20}\t{2, -20}", key, signature, "--------");
+                            _logger.WriteLine(format, key, signature, "--------");
                         }
                     }
                 }

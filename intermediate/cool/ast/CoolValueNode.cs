@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using Compiler.frontend.cool.tokens;
-using Compiler.intermediate.coolsymtab;
 
-
-namespace Compiler.intermediate.coolast
+namespace Compiler.intermediate.cool.ast
 {
     // Tuple<CoolFormalNode, CoolExprNode>
     using Case = System.Tuple<IAstNode, IAstNode>;
@@ -23,9 +21,9 @@ namespace Compiler.intermediate.coolast
             return new CoolIdNode(IdToken);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 
@@ -39,9 +37,9 @@ namespace Compiler.intermediate.coolast
             return new CoolIntNode(IntToken);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 
@@ -55,9 +53,9 @@ namespace Compiler.intermediate.coolast
             return new CoolStringNode(StringToken);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
     public class CoolBoolNode : CoolValueNode
@@ -70,9 +68,9 @@ namespace Compiler.intermediate.coolast
             return new CoolBoolNode(BoolToken);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 
@@ -87,9 +85,9 @@ namespace Compiler.intermediate.coolast
             return new CoolParenExprNode(Expr);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 
@@ -120,9 +118,9 @@ namespace Compiler.intermediate.coolast
             return new CoolCallNode(Id, Args);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 
@@ -146,9 +144,9 @@ namespace Compiler.intermediate.coolast
             return new CoolIfNode(Pred, Expr, Alter);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 
@@ -169,9 +167,9 @@ namespace Compiler.intermediate.coolast
             return new CoolWhileNode(Pred, LoopExpr);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 
@@ -198,9 +196,9 @@ namespace Compiler.intermediate.coolast
             return new CoolLetNode(Attrs, Expr);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 
@@ -226,9 +224,9 @@ namespace Compiler.intermediate.coolast
             return new CoolCaseNode(CaseExpr, Cases);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 
@@ -242,9 +240,9 @@ namespace Compiler.intermediate.coolast
             return new CoolNewObjNode(TypeToken);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 
@@ -266,9 +264,9 @@ namespace Compiler.intermediate.coolast
             return new CoolBlockNode(Exprs);
         }
 
-        public override void Accept(IVisitor visitor)
+        public override void Accept(ICoolVisitor coolVisitor)
         {
-            visitor.Visit(this);
+            coolVisitor.Visit(this);
         }
     }
 }
