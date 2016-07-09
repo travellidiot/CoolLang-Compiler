@@ -1,6 +1,5 @@
 ﻿using Compiler.intermediate;
 using Compiler.message;
-using System;
 using System.Collections.Generic;
 
 namespace Compiler.backend

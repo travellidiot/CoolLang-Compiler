@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Compiler.intermediate.cool.symtab
+﻿namespace Compiler.intermediate.cool.symtab
 {
     public class GlobalSymbolScope : SymbolScope
     {

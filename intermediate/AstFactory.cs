@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Compiler.intermediate.cool.ast;
 
 namespace Compiler.intermediate

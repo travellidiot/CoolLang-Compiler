@@ -8,7 +8,7 @@ using static Compiler.frontend.cool.CoolScanner;
 namespace Compiler.frontend.cool.parsers
 {
     // Tuple<CoolFormalNode, CoolExprNode>
-    using Case = System.Tuple<IAstNode, IAstNode>;
+    using Pattern = System.Tuple<IAstNode, IAstNode>;
 
     public class CoolValueParser : CoolTdParser
     {
@@ -179,7 +179,7 @@ namespace Compiler.frontend.cool.parsers
                     var caseNode = caseParser.Parse();
                     Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Of});
                     NextToken(); // eat "of"
-                    var casesNode = new List<Case>();
+                    var casesNode = new List<Pattern>();
                     do
                     {
                         var curTok = CurrentToken();
@@ -202,7 +202,7 @@ namespace Compiler.frontend.cool.parsers
                         Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic});
 
                         ScopeStack.Pop();
-                        casesNode.Add(new Case(caseFormalNode, caseExprNode));
+                        casesNode.Add(new Pattern(caseFormalNode, caseExprNode));
                     } while (!Equals(NextToken().Type, CoolTokenType.Esac)); // eat ";"
 
                     NextToken(); // eat "esac"

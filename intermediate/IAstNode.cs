@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Compiler.intermediate.cool;
+﻿using Compiler.intermediate.cool;
 
 namespace Compiler.intermediate
 {
