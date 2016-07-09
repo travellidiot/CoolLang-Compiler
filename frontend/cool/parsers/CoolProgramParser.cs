@@ -3,6 +3,7 @@ using Compiler.intermediate;
 using System.Diagnostics;
 using Compiler.intermediate.cool.ast;
 using Compiler.intermediate.cool.symtab;
+using static Compiler.frontend.cool.CoolErrorHandler;
 
 namespace Compiler.frontend.cool.parsers
 {
