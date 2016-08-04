@@ -66,7 +66,7 @@ namespace Compiler.intermediate.cool.symtab
                     }
                     catch (System.ArgumentException)
                     {
-                        FlagSemanticsError(attr.AttrName, CoolErrorCode.RedefineVar, this);
+                        FlagSemanticsError(attr.AttrName, CoolErrorCode.RedefineVariable, this);
                     }
                 }
                 else if (feature is CoolMethodNode)
@@ -76,9 +76,22 @@ namespace Compiler.intermediate.cool.symtab
 
                     AssertTypeDefined(rtTypeSymbol, method.RetType, this);
 
+                    var methodSymbol = new MethodSymbol(method.MethodName.Text, clsSymbol) {RTType = rtTypeSymbol};
                     foreach (var formal in method.Formals)
                     {
                         var formalType = programScope.LookupForType(formal.TypeName.Text);
+                        AssertTypeDefined(formalType, formal.TypeName, this);
+                        methodSymbol.Formals.Add(formalType);
+                    }
+
+                    var mName = methodSymbol.MangleName();
+                    try
+                    {
+                        clsSymbol.Enter(mName, methodSymbol);
+                    }
+                    catch (System.ArgumentException)
+                    {
+                        FlagSemanticsError(method.MethodName, CoolErrorCode.RedefineMethod, this);
                     }
                 }
             }

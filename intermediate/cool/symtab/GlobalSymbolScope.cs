@@ -34,13 +34,10 @@
 
         private void InitObjectType()
         {
-            var abort = new MethodSymbol("abort", ObjectType);
-            abort.TypeSignature.Add(ObjectType);
             // ReSharper disable once InconsistentNaming
-            var type_name = new MethodSymbol("type_name", ObjectType);
-            type_name.TypeSignature.Add(StringType);
-            var copy = new MethodSymbol("copy", ObjectType);
-            copy.TypeSignature.Add(SelfType);
+            var type_name = new MethodSymbol("type_name", ObjectType) { RTType = StringType };
+            var abort = new MethodSymbol("abort", ObjectType) {RTType = ObjectType};
+            var copy = new MethodSymbol("copy", ObjectType) {RTType = SelfType};
 
             ObjectType.Enter(abort.SymName, abort);
             ObjectType.Enter(type_name.SymName, type_name);
@@ -51,21 +48,19 @@
         {
             // ReSharper disable once InconsistentNaming
             var out_string = new MethodSymbol("out_string", IOType);
-            out_string.TypeSignature.Add(StringType);
-            out_string.TypeSignature.Add(SelfType);
+            out_string.Formals.Add(StringType);
+            out_string.RTType = SelfType;
 
             // ReSharper disable once InconsistentNaming
             var out_int = new MethodSymbol("out_int", IOType);
-            out_int.TypeSignature.Add(IntType);
-            out_int.TypeSignature.Add(SelfType);
+            out_int.Formals.Add(IntType);
+            out_int.RTType = SelfType;
 
             // ReSharper disable once InconsistentNaming
-            var in_string = new MethodSymbol("in_string", IOType);
-            in_string.TypeSignature.Add(StringType);
+            var in_string = new MethodSymbol("in_string", IOType) {RTType = StringType};
 
             // ReSharper disable once InconsistentNaming
-            var in_int = new MethodSymbol("in_int", IOType);
-            in_int.TypeSignature.Add(IntType);
+            var in_int = new MethodSymbol("in_int", IOType) {RTType = IntType};
 
             IOType.Enter(out_string.SymName, out_string);
             IOType.Enter(out_int.SymName, out_int);
@@ -75,17 +70,14 @@
 
         private void InitString()
         {
-            var length = new MethodSymbol("length", StringType);
-            length.TypeSignature.Add(IntType);
+            var length = new MethodSymbol("length", StringType) { RTType = IntType };
 
-            var concat = new MethodSymbol("concat", StringType);
-            concat.TypeSignature.Add(StringType);
-            concat.TypeSignature.Add(StringType);
+            var concat = new MethodSymbol("concat", StringType) { RTType = StringType };
+            concat.Formals.Add(StringType);
 
-            var substr = new MethodSymbol("substr", StringType);
-            substr.TypeSignature.Add(IntType);
-            substr.TypeSignature.Add(IntType);
-            substr.TypeSignature.Add(StringType);
+            var substr = new MethodSymbol("substr", StringType) { RTType = StringType };
+            substr.Formals.Add(IntType);
+            substr.Formals.Add(IntType);
 
             StringType.Enter(length.SymName, length);
             StringType.Enter(concat.SymName, concat);

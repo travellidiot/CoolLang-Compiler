@@ -4,7 +4,7 @@ namespace Compiler.intermediate.cool.symtab
 {
     public class SymbolScope : ISymbol, IScope
     {
-        public string SymName { get; }
+        public string SymName { get; protected set; }
         public IScope EnclosingScope { get; }
 
         // ReSharper disable once InconsistentNaming
