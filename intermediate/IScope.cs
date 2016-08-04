@@ -7,7 +7,7 @@ namespace Compiler.intermediate
     {
         ISymbol Enter(string name, ISymbol symbol);
         ISymbol Lookup(string name);
-        ClassSymbolScope LookupForType(string type);
+        ClassSymbol LookupForType(string type);
         Dictionary<string, ISymbol> Symbols { get; }
         IScope EnclosingScope { get; }
     }

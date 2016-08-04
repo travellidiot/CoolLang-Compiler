@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
 using Compiler.intermediate.cool.ast;
-using Compiler.intermediate.cool.symtab;
 
 namespace Compiler.frontend.cool.parsers
 {
@@ -27,9 +25,6 @@ namespace Compiler.frontend.cool.parsers
             NextToken();
             var afterId = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.LeftParen, CoolTokenType.Colon });
 
-            Debug.Assert(ScopeStack.Count != 0, "Feature is not in the class");
-            var outerScope = (SymbolScope)ScopeStack.Peek();
-
             // Attribute
             if (Equals(afterId.Type, CoolTokenType.Colon))
             {
@@ -37,10 +32,7 @@ namespace Compiler.frontend.cool.parsers
                 var typeToken = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.TypeId });
                 NextToken(); // eat "TYPE"
 
-                // if type is undefined, create an temporary class symbol
-                var typeSymbol = outerScope.LookupForType(typeToken.Text);
-                var idSymbol = new VariableSymbol(token.Text, typeSymbol);
-                outerScope.Enter(idSymbol.SymName, idSymbol);
+         
                 
 
                 if (!Equals(CurrentToken().Type, CoolTokenType.Assign))
@@ -54,26 +46,15 @@ namespace Compiler.frontend.cool.parsers
             }
 
             // Method
-            var mScope = new MethodSymbolScope(token.Text, outerScope);
-            outerScope.Enter(mScope.SymName, mScope);
-            ScopeStack.Push(mScope);
-
             var formalParser = new CoolFormalParser(this);
-            var args = new List<IAstNode>();
+            var args = new List<CoolFormalNode>();
             if (!Equals(NextToken().Type, CoolTokenType.RightParen))
             {
                 // eat "("
-                var formalNode = formalParser.Parse();
+                var formalNode = formalParser.Parse() as CoolFormalNode;
                 if (formalNode != null)
                 {
                     args.Add(formalNode);
-
-                    var formal = (CoolFormalNode) formalNode;
-                    var idType = outerScope.LookupForType(formal.TypeName.Text);
-                    var idSymbol = new VariableSymbol(formal.IdName.Text, idType);
-
-                    mScope.Enter(idSymbol.SymName, idSymbol);
-                    mScope.TypeSignature.Add(idType);
                 }
             }
 
@@ -81,17 +62,10 @@ namespace Compiler.frontend.cool.parsers
             {
                 Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Comma });
                 NextToken(); // eat ","
-                var formalNode = formalParser.Parse();
+                var formalNode = formalParser.Parse() as CoolFormalNode;
                 if (formalNode != null)
                 {
                     args.Add(formalNode);
-
-                    var formal = (CoolFormalNode)formalNode;
-                    var idType = outerScope.LookupForType(formal.TypeName.Text);
-                    var idSymbol = new VariableSymbol(formal.IdName.Text, idType);
-
-                    mScope.Enter(idSymbol.SymName, idSymbol);
-                    mScope.TypeSignature.Add(idType);
                 }
             }
 
@@ -101,9 +75,6 @@ namespace Compiler.frontend.cool.parsers
             var rtToken = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.TypeId });
             NextToken(); // eat "TYPE"
             Synchronize(new SortedSet<ITokenType>() { CoolTokenType.LeftBracket });
-
-            var rtType = outerScope.LookupForType(rtToken.Text);
-            mScope.TypeSignature.Add(rtType);
 
             var bodyParser = new CoolExprParser(this);
             NextToken(); // eat "{"

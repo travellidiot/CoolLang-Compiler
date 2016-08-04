@@ -1,5 +1,7 @@
 ﻿using System;
 using Compiler.frontend.cool.tokens;
+using Compiler.message;
+using Compiler.message.cool;
 using static Compiler.frontend.Source;
 
 namespace Compiler.frontend.cool

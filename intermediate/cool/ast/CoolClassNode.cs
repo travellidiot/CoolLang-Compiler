@@ -10,9 +10,9 @@ namespace Compiler.intermediate.cool.ast
         public CoolWordToken ParentName { get; }
 
         // List<CoolFeatureNode>
-        public List<IAstNode> Features;
+        public List<CoolFeatureNode> Features;
 
-        public CoolClassNode(CoolWordToken clsName, CoolWordToken prtName, List<IAstNode> features)
+        public CoolClassNode(CoolWordToken clsName, CoolWordToken prtName, List<CoolFeatureNode> features)
         {
             ClassName = clsName;
             ParentName = prtName;
@@ -26,7 +26,7 @@ namespace Compiler.intermediate.cool.ast
 
         public override IAstNode Copy()
         {
-            var features = Features.Select((f) => f.Copy()) as List<IAstNode>;
+            var features = Features.Select((f) => f.Copy()) as List<CoolFeatureNode>;
             var classNode = new CoolClassNode(ClassName, ParentName, features);
 
             return classNode;
@@ -37,7 +37,7 @@ namespace Compiler.intermediate.cool.ast
             coolVisitor.Visit(this);
         }
 
-        public CoolAstNode AddFeature(CoolAstNode feature)
+        public CoolFeatureNode AddFeature(CoolFeatureNode feature)
         {
             Features.Add(feature);
             feature.ParentNode = this;

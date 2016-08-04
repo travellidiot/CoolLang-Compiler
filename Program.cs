@@ -6,6 +6,7 @@ using Compiler.frontend;
 using Compiler.frontend.cool;
 using Compiler.intermediate.cool.symtab;
 using Compiler.message;
+using Compiler.message.cool;
 using Compiler.utils;
 using static Compiler.message.MessageType;
 
@@ -53,7 +54,7 @@ namespace Compiler
                     logger.LogEmptyLines(5);
                 }
 
-                backend.Process(ast);
+                backend.Process(ast, scope);
             }
             catch (CoolErrorHandler.FatalErrorException ex)
             {

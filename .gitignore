@@ -1,3 +1,5 @@
 .vs/*
 obj/*
 bin/*
+/test/cool.exe
+/test/examples/.vscode

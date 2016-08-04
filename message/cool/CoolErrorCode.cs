@@ -1,4 +1,4 @@
-﻿namespace Compiler.frontend.cool
+﻿namespace Compiler.message.cool
 {
     public enum CoolErrorCode
     {
@@ -11,6 +11,8 @@
         UnExpectedToken,
         UnExpectedEof,
 
-        UndefinedType
+        UndefinedType,
+        RedefineVar,
+        TypeNotMatch,
     }
 }

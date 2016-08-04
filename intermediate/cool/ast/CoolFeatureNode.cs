@@ -13,13 +13,13 @@ namespace Compiler.intermediate.cool.ast
     {
         public CoolWordToken MethodName { get; }
         // List<CoolFormalNode>
-        public List<IAstNode> Formals { get; }
+        public List<CoolFormalNode> Formals { get; }
         public CoolWordToken RetType { get; }
         // CoolExprNode
         public IAstNode Expr { get; }
 
 
-        public CoolMethodNode(CoolWordToken methodName, List<IAstNode> formals, CoolWordToken retType, IAstNode expr)
+        public CoolMethodNode(CoolWordToken methodName, List<CoolFormalNode> formals, CoolWordToken retType, IAstNode expr)
         {
             MethodName = methodName;
             Formals = formals;
@@ -34,7 +34,7 @@ namespace Compiler.intermediate.cool.ast
         }
         public override IAstNode Copy()
         {
-            var formals = Formals.Select((fm) => fm) as List<IAstNode>;
+            var formals = Formals.Select((fm) => fm) as List<CoolFormalNode>;
             var methodNode = new CoolMethodNode(MethodName, formals, RetType, Expr);
 
             return methodNode;

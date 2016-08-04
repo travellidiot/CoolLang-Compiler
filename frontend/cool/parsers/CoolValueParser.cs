@@ -3,12 +3,14 @@ using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
 using Compiler.intermediate.cool.ast;
 using Compiler.intermediate.cool.symtab;
+using Compiler.message.cool;
 using static Compiler.frontend.cool.CoolScanner;
+using static Compiler.message.cool.CoolErrorHandler;
 
 namespace Compiler.frontend.cool.parsers
 {
     // Tuple<CoolFormalNode, CoolExprNode>
-    using Case = System.Tuple<IAstNode, IAstNode>;
+    using Pattern = System.Tuple<IAstNode, IAstNode>;
 
     public class CoolValueParser : CoolTdParser
     {
@@ -142,17 +144,13 @@ namespace Compiler.frontend.cool.parsers
                 case TokenType.Let:
                     var attrToken = NextToken(); // eat "let"
 
-                    var outLetScope = (SymbolScope)ScopeStack.Peek();
-                    var localLetScope = new SymbolScope($"{outLetScope.SymName}-Local-{attrToken.LineNumber}{attrToken.Position}", outLetScope);
-                    ScopeStack.Push(localLetScope);
-
                     var attrParser = new CoolFeatureParser(this);
                     var attrList = new List<CoolAttrNode>();
                     var attrNode = attrParser.Parse() as CoolAttrNode;
                     if (attrNode != null)
                         attrList.Add(attrNode);
                     else
-                        ErrorHandler.Flag(attrToken, CoolErrorCode.InvalidSyntax, attrParser);
+                        FlagSyntaxError(attrToken, CoolErrorCode.InvalidSyntax, attrParser);
 
                     while (!Equals(CurrentToken().Type, CoolTokenType.In))
                     {
@@ -162,14 +160,12 @@ namespace Compiler.frontend.cool.parsers
                         if (attrNode != null)
                             attrList.Add(attrNode);
                         else
-                            ErrorHandler.Flag(attrToken, CoolErrorCode.InvalidSyntax, attrParser);
+                            FlagSyntaxError(attrToken, CoolErrorCode.InvalidSyntax, attrParser);
                     }
 
                     NextToken(); // eat "in"
                     var letBodyParser = new CoolExprParser(this);
                     var bodyExpr = letBodyParser.Parse();
-
-                    ScopeStack.Pop();
 
                     return new CoolLetNode(attrList, bodyExpr);
 
@@ -179,34 +175,25 @@ namespace Compiler.frontend.cool.parsers
                     var caseNode = caseParser.Parse();
                     Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Of});
                     NextToken(); // eat "of"
-                    var casesNode = new List<Case>();
+                    var casesNode = new List<Pattern>();
                     do
                     {
-                        var curTok = CurrentToken();
-                        var outCaseScope = (SymbolScope)ScopeStack.Peek();
-                        var localCaseScope = new SymbolScope($"{outCaseScope.SymName}-Local-{curTok.LineNumber}{curTok.Position}", outCaseScope);
-                        ScopeStack.Push(localCaseScope);
+                        var curTok = CurrentToken();                      
 
                         var caseFormalParser = new CoolFormalParser(this);
                         var caseFormalNode = caseFormalParser.Parse();
                         Synchronize(new SortedSet<ITokenType>() { CoolTokenType.DArraw});
-
-                        var cNode = (CoolFormalNode) caseFormalNode;
-                        var caseType = outCaseScope.LookupForType(cNode.TypeName.Text);
-                        var caseId = new VariableSymbol(cNode.IdName.Text, caseType);
-                        localCaseScope.Enter(caseId.SymName, caseId);
 
                         NextToken(); // eat "=>"
                         var caseExprParser = new CoolExprParser(this);
                         var caseExprNode = caseExprParser.Parse();
                         Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic});
 
-                        ScopeStack.Pop();
-                        casesNode.Add(new Case(caseFormalNode, caseExprNode));
+                        casesNode.Add(new Pattern(caseFormalNode, caseExprNode));
                     } while (!Equals(NextToken().Type, CoolTokenType.Esac)); // eat ";"
 
                     NextToken(); // eat "esac"
-                    return new CoolCaseNode(caseNode, casesNode);
+                    return new CoolPatternNode(caseNode, casesNode);
 
                 case TokenType.New:
                     NextToken(); // eat "new"

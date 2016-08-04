@@ -4,7 +4,7 @@ using Compiler.frontend.cool.tokens;
 namespace Compiler.intermediate.cool.ast
 {
     // Tuple<CoolFormalNode, CoolExprNode>
-    using Case = System.Tuple<IAstNode, IAstNode>;
+    using Pattern = System.Tuple<IAstNode, IAstNode>;
 
     public abstract class CoolValueNode : CoolAstNode
     {
@@ -202,13 +202,13 @@ namespace Compiler.intermediate.cool.ast
         }
     }
 
-    public class CoolCaseNode : CoolValueNode
+    public class CoolPatternNode : CoolValueNode
     {
         // CoolExprNode
         public IAstNode CaseExpr;
-        public List<Case> Cases;
+        public List<Pattern> Cases;
 
-        public CoolCaseNode(IAstNode expr, List<Case> cases)
+        public CoolPatternNode(IAstNode expr, List<Pattern> cases)
         {
             CaseExpr = expr;
             CaseExpr.ParentNode = this;
@@ -221,7 +221,7 @@ namespace Compiler.intermediate.cool.ast
         }
         public override IAstNode Copy()
         {
-            return new CoolCaseNode(CaseExpr, Cases);
+            return new CoolPatternNode(CaseExpr, Cases);
         }
 
         public override void Accept(ICoolVisitor coolVisitor)

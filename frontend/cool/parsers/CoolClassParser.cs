@@ -27,18 +27,6 @@ namespace Compiler.frontend.cool.parsers
             var clsName = Synchronize(typeSet);
             CoolToken prtName = null;
 
-
-            // Construct class symbol table
-            Debug.Assert(ScopeStack.Count != 0, $"Class \"{clsName.Text}\" is not in any program namespace.");
-
-            var pScope = (SymbolScope)ScopeStack.Peek();
-            var classScope = new ClassSymbolScope(clsName.Text, pScope);
-            pScope.Enter(clsName.Text, classScope);
-
-            ScopeStack.Push(classScope);
-
-
-
             NextToken(); // eat "TYPE", the class name
             var token = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Inherits, CoolTokenType.LeftBracket});
             if (Equals(token.Type, CoolTokenType.Inherits))
@@ -47,18 +35,14 @@ namespace Compiler.frontend.cool.parsers
                 prtName = (CoolToken)Synchronize(typeSet);
                 NextToken(); // eat "TYPE", the parent class name
                 Synchronize(new SortedSet<ITokenType>() { CoolTokenType.LeftBracket});
-
-                // if parent type is undefined, create an temporary class symbol
-                var parentType = pScope.LookupForType(prtName.Text);
-                classScope.ParentScope = parentType;
             }
 
-            var features = new List<IAstNode>();
+            var features = new List<CoolFeatureNode>();
             NextToken(); // eat "{"
             while (!Equals(CurrentToken().Type, CoolTokenType.RightBracket))
             {
                 var parser = new CoolFeatureParser(this);
-                var feature = parser.Parse();
+                var feature = parser.Parse() as CoolFeatureNode;
                 features.Add(feature);
 
                 Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic});
@@ -66,8 +50,6 @@ namespace Compiler.frontend.cool.parsers
             }
 
             NextToken(); // eat "}"
-
-            ScopeStack.Pop();
 
             return new CoolClassNode(clsName as CoolWordToken, prtName as CoolWordToken, features);
         }

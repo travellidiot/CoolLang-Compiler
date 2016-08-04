@@ -51,14 +51,14 @@ namespace Compiler.utils
             _logger.WriteLine("{0, -20}\t{1, -20}\tline: {2}", token.Text, t, token.LineNumber);
         }
 
-        private static string FTypeToString(IEnumerable<IType> signature)
+        private static string FTypeToString(IEnumerable<ISymbol> signature)
         {
             var builder = new StringBuilder();
             var prefix = "";
             foreach (var t in signature)
             {
                 builder.Append(prefix);
-                builder.Append(t.TypeName);
+                builder.Append(t.SymName);
                 if (prefix == "")
                     prefix = "->";
             }
@@ -68,42 +68,7 @@ namespace Compiler.utils
 
         public void LogSymbolScope(SymbolScope scope)
         {
-            const string format = "{0, -20}\t{1, -40}\t{2, -20}";
-            var queue = new Queue<SymbolScope>();
-            queue.Enqueue(scope);
 
-            while (queue.Count > 0)
-            {
-                var symScope = queue.Dequeue();
-                _logger.WriteLine("=====  Cross-Reference {0} Table ========", symScope.SymName);
-                _logger.WriteLine(format, "ID", "Type", "TypeFlag");
-                _logger.WriteLine(format, "--", "----", "--------");
-
-                var entries = symScope.Symbols;
-                foreach (var entry in entries)
-                {
-                    if (entry.Value.GetType() == typeof (ClassSymbolScope) || entry.Value.GetType() == typeof(SymbolScope))
-                        queue.Enqueue(entry.Value as SymbolScope);
-
-                    var key = entry.Key;
-                    var symType = entry.Value.SymType;
-
-                    var classType = symType as ClassSymbolScope;
-                    if (classType != null)
-                        _logger.WriteLine(format, key, classType.SymName, classType.TypeName);
-                    else
-                    {
-                        var methodType = entry.Value as MethodSymbolScope;
-                        if (methodType != null)
-                        {
-                            var signature = FTypeToString(methodType.TypeSignature);
-                            _logger.WriteLine(format, key, signature, "--------");
-                        }
-                    }
-                }
-
-                _logger.WriteLine("\n");
-            }
         }
     }
 }

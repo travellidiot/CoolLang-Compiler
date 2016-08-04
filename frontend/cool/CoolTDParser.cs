@@ -6,13 +6,13 @@ using Compiler.intermediate;
 using Compiler.intermediate.cool.ast;
 using Compiler.intermediate.cool.symtab;
 using Compiler.message;
+using Compiler.message.cool;
+using static Compiler.message.cool.CoolErrorHandler;
 
 namespace Compiler.frontend.cool
 {
     public class CoolTdParser : Parser
-    {
-        protected static CoolErrorHandler ErrorHandler = CoolErrorHandler.Instance;
-
+    {        
         public CoolTdParser(Scanner scanner) : base(scanner)
         {
         }
@@ -24,11 +24,6 @@ namespace Compiler.frontend.cool
 
         public override IAstNode Parse()
         {
-            //var logger = new LoggerUtil(new StreamWriter(Console.OpenStandardOutput()));
-            var globalScope = GlobalSymbolScope.Instance;
-
-            ScopeStack.Push(globalScope);
-
             try
             {
                 var sw = new Stopwatch();
@@ -45,7 +40,7 @@ namespace Compiler.frontend.cool
             }
             catch (IOException)
             {
-                ErrorHandler.AbortTranslation(CoolErrorCode.IOError, this);
+                AbortTranslation(CoolErrorCode.IOError, this);
             }
 
             return AstRoot.Root;
@@ -73,7 +68,7 @@ namespace Compiler.frontend.cool
 
             if (syncSet.Contains(token.Type)) return token;
 
-            ErrorHandler.Flag(token, CoolErrorCode.UnExpectedToken, this);
+            FlagSyntaxError(token, CoolErrorCode.UnExpectedToken, this);
             do
             {
                 token = NextToken();
@@ -81,7 +76,7 @@ namespace Compiler.frontend.cool
 
             if (token.GetType() == typeof(EofToken))
             {
-                ErrorHandler.AbortTranslation(CoolErrorCode.UnExpectedEof, this);
+                AbortTranslation(CoolErrorCode.UnExpectedEof, this);
             }
 
             return token;

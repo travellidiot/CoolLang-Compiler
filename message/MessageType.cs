@@ -4,6 +4,7 @@
     {
         SourceLine,
         SyntaxError,
+        SemanticsError,
         ParserSummary,
         InterpreterSummary,
         CompilerSummary,

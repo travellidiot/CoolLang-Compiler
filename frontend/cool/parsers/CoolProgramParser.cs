@@ -3,7 +3,6 @@ using Compiler.intermediate;
 using System.Diagnostics;
 using Compiler.intermediate.cool.ast;
 using Compiler.intermediate.cool.symtab;
-using static Compiler.frontend.cool.CoolErrorHandler;
 
 namespace Compiler.frontend.cool.parsers
 {
@@ -20,23 +19,12 @@ namespace Compiler.frontend.cool.parsers
         // program ::= 【class;】+
         public override IAstNode Parse()
         {
-            // progcessing symbol table
-            Debug.Assert(ScopeStack.Count != 0, "Can\'t find global symbol scope!!!");
-
-            var gScope = ScopeStack.Peek() as SymbolScope;
-            Debug.Assert(gScope?.SymName == "Global",
-                         $"Program \"{Scanner.FileName}\" is not in the Global namespace.");
-
-            var programScope = new SymbolScope(Scanner.FileName, gScope);
-            gScope.Enter(programScope.SymName, programScope);
-            ScopeStack.Push(programScope);
-
             // parsing
-            var classes = new List<IAstNode>();
+            var classes = new List<CoolClassNode>();
 
             Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Class});
             var parser = new CoolClassParser(this);
-            var clsNode = parser.Parse();
+            var clsNode = parser.Parse() as CoolClassNode;
             classes.Add(clsNode);
 
             Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic});
@@ -50,16 +38,14 @@ namespace Compiler.frontend.cool.parsers
                     continue;
                 }
 
-                var node = parser.Parse();
+                var node = parser.Parse() as CoolClassNode;
                 classes.Add(node);
 
                 Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Semic });
                 NextToken(); // eat ";"
             }
 
-            ScopeStack.Pop();
-
-            return new CoolProgramNode(classes);
+            return new CoolProgramNode(Scanner.FileName, classes);
         }
     }
 }

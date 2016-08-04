@@ -1,4 +1,7 @@
-﻿namespace Compiler.frontend.cool.tokens
+﻿using Compiler.message;
+using Compiler.message.cool;
+
+namespace Compiler.frontend.cool.tokens
 {
     internal class CoolErrorToken : CoolToken
     {

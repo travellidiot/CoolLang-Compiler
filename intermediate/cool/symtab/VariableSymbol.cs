@@ -3,9 +3,9 @@
     public class VariableSymbol : ISymbol
     {
         public string SymName { get; }
-        public IType SymType { get; set; }
+        public ISymbol SymType { get; set; }
 
-        public VariableSymbol(string symName, IType symType)
+        public VariableSymbol(string symName, ISymbol symType)
         {
             SymName = symName;
             SymType = symType;

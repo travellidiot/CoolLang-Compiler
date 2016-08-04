@@ -39,6 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -64,8 +65,10 @@
     <Compile Include="backend\BackendFactory.cs" />
     <Compile Include="backend\compiler\CodeGenerator.cs" />
     <Compile Include="backend\interpreter\Executor.cs" />
-    <Compile Include="frontend\cool\CoolErrorCode.cs" />
-    <Compile Include="frontend\cool\CoolErrorHandler.cs" />
+    <Compile Include="intermediate\cool\symtab\TypeChecker.cs" />
+    <Compile Include="intermediate\cool\symtab\TypeGather.cs" />
+    <Compile Include="message\cool\CoolErrorCode.cs" />
+    <Compile Include="message\cool\CoolErrorHandler.cs" />
     <Compile Include="frontend\cool\CoolTDParser.cs" />
     <Compile Include="frontend\cool\parsers\CoolAntiTermParser.cs" />
     <Compile Include="frontend\cool\parsers\CoolClassParser.cs" />
@@ -91,16 +94,14 @@
     <Compile Include="frontend\EofToken.cs" />
     <Compile Include="frontend\FrontendFactory.cs" />
     <Compile Include="intermediate\AstFactory.cs" />
-    <Compile Include="intermediate\cool\CoolErrorHandler.cs" />
-    <Compile Include="intermediate\cool\symtab\BuiltInTypeSymbol.cs" />
     <Compile Include="intermediate\cool\ast\CoolAntiNode.cs" />
     <Compile Include="intermediate\cool\ast\CoolAssignNode.cs" />
     <Compile Include="intermediate\cool\ast\CoolIsVoidNode.cs" />
     <Compile Include="intermediate\cool\ast\CoolNotNode.cs" />
-    <Compile Include="intermediate\cool\symtab\ClassSymbolScope.cs" />
+    <Compile Include="intermediate\cool\symtab\ClassSymbol.cs" />
     <Compile Include="intermediate\cool\symtab\GlobalSymbolScope.cs" />
     <Compile Include="intermediate\cool\symtab\SymbolScope.cs" />
-    <Compile Include="intermediate\cool\symtab\MethodSymbolScope.cs" />
+    <Compile Include="intermediate\cool\symtab\MethodSymbol.cs" />
     <Compile Include="intermediate\SymbolTableStack.cs" />
     <Compile Include="intermediate\cool\symtab\VariableSymbol.cs" />
     <Compile Include="intermediate\IAstNode.cs" />
@@ -116,7 +117,6 @@
     <Compile Include="intermediate\cool\ast\CoolTermNode.cs" />
     <Compile Include="intermediate\cool\ast\CoolValueNode.cs" />
     <Compile Include="intermediate\ISymbol.cs" />
-    <Compile Include="intermediate\IType.cs" />
     <Compile Include="intermediate\cool\ICoolVisitor.cs" />
     <Compile Include="intermediate\SymTabFactory.cs" />
     <Compile Include="message\Message.cs" />
