@@ -9,7 +9,7 @@ namespace Compiler.intermediate
     {
         public static IAst CreateAst()
         {
-            return new CoolAst();
+            return new Ast();
         }
 
         //public static IAstNode CreateAstNode(string type)
@@ -17,7 +17,7 @@ namespace Compiler.intermediate
         //    switch (type)
         //    {
         //        case "Program":
-        //            return new CoolProgramNode(new List<IAstNode>());
+        //            return new ProgramNode(new List<IAstNode>());
         //        default:
         //            throw new Exception($"No such a type: {type}");
         //    }

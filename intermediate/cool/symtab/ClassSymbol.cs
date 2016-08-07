@@ -5,12 +5,11 @@
         public static ClassSymbol Undefined { get; } = new ClassSymbol("Undefined", null);
         public static ClassSymbol TypeClass { get; } = new ClassSymbol("Type", null);
         //public static ClassSymbol BuiltInTypeClass { get; } = new ClassSymbol("BuiltInType", null);
-        public string TypeName { get; private set; }
+        public ISymbol SymType { get; set; } = TypeClass;
         public ClassSymbol Parent { get; set; }
 
         public ClassSymbol(string clsName, IScope enclosing) : base(clsName, enclosing)
         {
-            TypeName = clsName;
         }
 
         public override ISymbol Lookup(string name)

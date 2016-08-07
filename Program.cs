@@ -56,7 +56,7 @@ namespace Compiler
 
                 backend.Process(ast, scope);
             }
-            catch (CoolErrorHandler.FatalErrorException ex)
+            catch (ErrorHandler.FatalErrorException ex)
             {
                 Console.WriteLine(ex.ToString());
                 Console.WriteLine(ex.StackTrace);
@@ -127,7 +127,7 @@ namespace Compiler
             }
 
             public void MessageReceived(Message message)
-            {
+            { 
                 var type = message.Type;
 
                 switch (type)

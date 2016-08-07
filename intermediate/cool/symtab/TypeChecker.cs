@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Compiler.intermediate.cool.ast;
 using Compiler.message;
 using Compiler.message.cool;
-using static Compiler.message.cool.CoolErrorHandler;
+using static Compiler.message.cool.ErrorHandler;
 
 namespace Compiler.intermediate.cool.symtab
 {
@@ -15,16 +16,33 @@ namespace Compiler.intermediate.cool.symtab
             _stack.Push(gScope);
         }
 
-        public void Visit(CoolProgramNode node)
+        /// <summary>
+        /// Check whether the 'cls' is subclass of parent
+        /// </summary>
+        /// <param name="cls"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        public bool IsSubClass(ClassSymbol cls, ClassSymbol parent)
+        {
+            var sub = cls;
+            while (sub.Parent != null)
+            {
+                if (sub.Parent == parent)
+                    return true;
+                sub = sub.Parent;
+            }
+            return false;
+        }
+
+
+
+        public void Visit(ProgramNode node)
         {
             var gScope = _stack.Peek();
-            var programScope = new SymbolScope(node.Name, gScope);
-            gScope.Enter(node.Name, programScope);
+            var pScope = new SymbolScope(node.Name, gScope);
+            gScope.Enter(node.Name, pScope);
 
-            var gather = new TypeGather();
-            gather.Gather(node, programScope);
-
-            _stack.Push(programScope);
+            _stack.Push(pScope);
 
             foreach (var cls in node.Classes)
             {
@@ -34,170 +52,134 @@ namespace Compiler.intermediate.cool.symtab
             _stack.Pop();
         }
 
-        public void Visit(CoolAntiNode node)
+        public void Visit(AntiNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolAssignNode node)
+        public void Visit(AssignNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolClassNode node)
+        public void Visit(ClassNode node)
         {
-            var programScope = _stack.Peek();
-            var clsSymbol = programScope.LookupForType(node.ClassName.Text);
-            AssertTypeDefined(clsSymbol, node.ClassName, this);
+            var pScope = _stack.Peek();
+            var clsScope = pScope.LookupForType(node.ClassName.Text);
+            AssertTypeDefined(clsScope, node.ClassName, this);
 
-            foreach (var feature in node.Features)
+            _stack.Push(clsScope);
+
+            foreach (var feature in node.Features.Where(feature => feature is MethodNode))
             {
-                if (feature is CoolAttrNode)
-                {
-                    var attr = feature as CoolAttrNode;
-                    var attrTypeSymbol = programScope.LookupForType(attr.TypeName.Text);
-
-                    AssertTypeDefined(attrTypeSymbol, attr.TypeName, this);
-
-                    var variable = new VariableSymbol(attr.AttrName.Text, attrTypeSymbol);
-                    try
-                    {
-                        clsSymbol.Enter(variable.SymName, variable);
-                    }
-                    catch (System.ArgumentException)
-                    {
-                        FlagSemanticsError(attr.AttrName, CoolErrorCode.RedefineVariable, this);
-                    }
-                }
-                else if (feature is CoolMethodNode)
-                {
-                    var method = feature as CoolMethodNode;
-                    var rtTypeSymbol = programScope.LookupForType(method.RetType.Text);
-
-                    AssertTypeDefined(rtTypeSymbol, method.RetType, this);
-
-                    var methodSymbol = new MethodSymbol(method.MethodName.Text, clsSymbol) {RTType = rtTypeSymbol};
-                    foreach (var formal in method.Formals)
-                    {
-                        var formalType = programScope.LookupForType(formal.TypeName.Text);
-                        AssertTypeDefined(formalType, formal.TypeName, this);
-                        methodSymbol.Formals.Add(formalType);
-                    }
-
-                    var mName = methodSymbol.MangleName();
-                    try
-                    {
-                        clsSymbol.Enter(mName, methodSymbol);
-                    }
-                    catch (System.ArgumentException)
-                    {
-                        FlagSemanticsError(method.MethodName, CoolErrorCode.RedefineMethod, this);
-                    }
-                }
+                feature.Accept(this);
             }
+
+            _stack.Pop();
         }
 
-        public void Visit(CoolFactorNode node)
+        public void Visit(FactorNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolMethodNode node)
+        public void Visit(MethodNode node)
+        {
+            var clsScope = _stack.Peek();
+            var mScope = clsScope.Lookup(node.MangledName);
+        }
+
+        public void Visit(AttrNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolAttrNode node)
+        public void Visit(FormalNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolFormalNode node)
+        public void Visit(IsVoidNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolIsVoidNode node)
+        public void Visit(NotNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolNotNode node)
+        public void Visit(RalExprNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolRalExprNode node)
+        public void Visit(SimpleExprNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolSimpleExprNode node)
+        public void Visit(TermNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolTermNode node)
+        public void Visit(IdNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolIdNode node)
+        public void Visit(IntNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolIntNode node)
+        public void Visit(StringNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolStringNode node)
+        public void Visit(BoolNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolBoolNode node)
+        public void Visit(ParenExprNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolParenExprNode node)
+        public void Visit(CallNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolCallNode node)
+        public void Visit(IfNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolIfNode node)
+        public void Visit(WhileNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolWhileNode node)
+        public void Visit(LetNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolLetNode node)
+        public void Visit(PatternNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolPatternNode node)
+        public void Visit(NewObjNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Visit(CoolNewObjNode node)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Visit(CoolBlockNode node)
+        public void Visit(BlockNode node)
         {
             throw new System.NotImplementedException();
         }

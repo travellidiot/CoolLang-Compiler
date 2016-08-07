@@ -10,18 +10,5 @@ namespace Compiler.intermediate.cool.symtab
         public MethodSymbol(string symName, IScope enclosing) : base(symName, enclosing)
         {
         }
-
-        public string MangleName()
-        {
-            var mangleName = new StringBuilder();
-            mangleName.Append(SymName);
-
-            foreach (var formal in Formals)
-            {
-                mangleName.Append(formal.SymName);
-            }
-            SymName = mangleName.ToString();
-            return SymName;
-        }
     }
 }

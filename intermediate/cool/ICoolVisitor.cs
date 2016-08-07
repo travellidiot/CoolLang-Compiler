@@ -4,30 +4,30 @@ namespace Compiler.intermediate.cool
 {
     public interface ICoolVisitor
     {
-        void Visit(CoolProgramNode node); 
-        void Visit(CoolAntiNode node);
-        void Visit(CoolAssignNode node);
-        void Visit(CoolClassNode node);
-        void Visit(CoolFactorNode node);
-        void Visit(CoolMethodNode node);
-        void Visit(CoolAttrNode node);
-        void Visit(CoolFormalNode node);
-        void Visit(CoolIsVoidNode node);
-        void Visit(CoolNotNode node);
-        void Visit(CoolRalExprNode node);
-        void Visit(CoolSimpleExprNode node);
-        void Visit(CoolTermNode node);
-        void Visit(CoolIdNode node);
-        void Visit(CoolIntNode node);
-        void Visit(CoolStringNode node);
-        void Visit(CoolBoolNode node);
-        void Visit(CoolParenExprNode node);
-        void Visit(CoolCallNode node);
-        void Visit(CoolIfNode node);
-        void Visit(CoolWhileNode node);
-        void Visit(CoolLetNode node);
-        void Visit(CoolPatternNode node);
-        void Visit(CoolNewObjNode node);
-        void Visit(CoolBlockNode node);
+        void Visit(ProgramNode node); 
+        void Visit(AntiNode node);
+        void Visit(AssignNode node);
+        void Visit(ClassNode node);
+        void Visit(FactorNode node);
+        void Visit(MethodNode node);
+        void Visit(AttrNode node);
+        void Visit(FormalNode node);
+        void Visit(IsVoidNode node);
+        void Visit(NotNode node);
+        void Visit(RalExprNode node);
+        void Visit(SimpleExprNode node);
+        void Visit(TermNode node);
+        void Visit(IdNode node);
+        void Visit(IntNode node);
+        void Visit(StringNode node);
+        void Visit(BoolNode node);
+        void Visit(ParenExprNode node);
+        void Visit(CallNode node);
+        void Visit(IfNode node);
+        void Visit(WhileNode node);
+        void Visit(LetNode node);
+        void Visit(PatternNode node);
+        void Visit(NewObjNode node);
+        void Visit(BlockNode node);
     }
 }

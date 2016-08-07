@@ -8,6 +8,7 @@ using Compiler.frontend;
 using Compiler.frontend.cool;
 using Compiler.intermediate;
 using Compiler.intermediate.cool.symtab;
+using Token = Compiler.frontend.Token;
 
 namespace Compiler.utils
 {
