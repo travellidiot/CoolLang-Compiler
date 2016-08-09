@@ -17,9 +17,8 @@ namespace Compiler.frontend.cool.parsers
 
         public override IAstNode Parse()
         {
-            var syncSet = ValueParser.ValueFirstSet.Union(new SortedSet<ITokenType>() { CoolTokenType.Isvoid });
-            var firstSet = new SortedSet<ITokenType>(syncSet);
-            var first = Synchronize(firstSet);
+            var syncSet = ValueParser.ValueFirstSet;
+            var first = Synchronize(syncSet);
 
             var parser = new AntiTermParser(this);
             if (!Equals(first.Type, CoolTokenType.Isvoid))
@@ -27,7 +26,11 @@ namespace Compiler.frontend.cool.parsers
 
             NextToken(); // eat "isvoid"
             var expr = parser.Parse();
-            return new IsVoidNode(expr);
+            return new IsVoidNode(expr)
+            {
+                LineNumber = first.LineNumber,
+                Position = first.Position 
+            };
         }
     }
 }

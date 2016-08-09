@@ -5,9 +5,10 @@ namespace Compiler.intermediate
 {
     public interface IAstNode
     {
-        IScope LocalScope { get; set; }
+        int LineNumber { get; set; }
+        int Position { get; set; }
         IAstNode ParentNode { get; set; }
-        IScope Scope { get; set; }
+        ISymbol ValType { get; set; }
         IAstNode Copy();
         void Accept(ICoolVisitor coolVisitor);
     }

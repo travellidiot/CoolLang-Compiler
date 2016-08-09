@@ -23,6 +23,8 @@ namespace Compiler.frontend.cool.parsers
             Synchronize(new SortedSet<ITokenType>() {CoolTokenType.Class});
             var typeSet = new SortedSet<ITokenType>() { CoolTokenType.TypeId};
 
+            var lineNum = CurrentToken().LineNumber;
+            var position = CurrentToken().Position;
             NextToken(); // eat "class"
             var clsName = Synchronize(typeSet);
             Token prtName = null;
@@ -51,7 +53,11 @@ namespace Compiler.frontend.cool.parsers
 
             NextToken(); // eat "}"
 
-            return new ClassNode(clsName as WordToken, prtName as WordToken, features);
+            return new ClassNode(clsName as WordToken, prtName as WordToken, features)
+            {
+                LineNumber = lineNum,
+                Position = position
+            };
         }
     }
 }

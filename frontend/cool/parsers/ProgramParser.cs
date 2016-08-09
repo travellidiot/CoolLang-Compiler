@@ -45,7 +45,7 @@ namespace Compiler.frontend.cool.parsers
                 NextToken(); // eat ";"
             }
 
-            return new ProgramNode(Scanner.FileName, classes);
+            return new ProgramNode(Scanner.FileName, classes) {LineNumber = 0, Position = 0};
         }
     }
 }

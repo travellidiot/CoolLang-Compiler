@@ -57,7 +57,11 @@ namespace Compiler.frontend.cool.parsers
                     args.Add(exprNode);
                 }
 
-                valueNode = new TermNode(valueNode, mName, args, type);
+                valueNode = new TermNode(valueNode, mName, args, type)
+                {
+                    LineNumber = valueNode.LineNumber,
+                    Position = valueNode.Position
+                };
 
                 token = NextToken(); // eat ")"
             }

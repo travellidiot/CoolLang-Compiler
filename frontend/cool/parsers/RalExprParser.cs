@@ -37,7 +37,11 @@ namespace Compiler.frontend.cool.parsers
             NextToken(); // eat op
             //simExprParser = new SimpleExprParser(this);
             var node = simExprParser.Parse();
-            exprNode = new RalExprNode(exprNode, current as SpecialToken, node);
+            exprNode = new RalExprNode(exprNode, current as SpecialToken, node)
+            {
+                LineNumber = current.LineNumber,
+                Position = current.Position
+            };
 
             return exprNode;
         }

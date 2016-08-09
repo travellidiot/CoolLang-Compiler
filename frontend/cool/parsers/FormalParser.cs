@@ -24,7 +24,11 @@ namespace Compiler.frontend.cool.parsers
             var typeToken = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.TypeId});
 
             NextToken(); // eat "TYPE"
-            return new FormalNode(token as WordToken, typeToken as WordToken);
+            return new FormalNode(token as WordToken, typeToken as WordToken)
+            {
+                LineNumber = token.LineNumber,
+                Position = token.Position
+            };
         }
     }
 }

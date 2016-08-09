@@ -36,13 +36,21 @@ namespace Compiler.frontend.cool.parsers
                 
 
                 if (!Equals(CurrentToken().Type, CoolTokenType.Assign))
-                    return new AttrNode(token as WordToken, typeToken as WordToken);
+                    return new AttrNode(token as WordToken, typeToken as WordToken)
+                    {
+                        LineNumber = token.LineNumber,
+                        Position = token.Position
+                    };
 
                 NextToken(); // eat "<-"
                 var exprParser = new ExprParser(this);
                 var exprNode = exprParser.Parse();
 
-                return new AttrNode(token as WordToken, typeToken as WordToken, exprNode);
+                return new AttrNode(token as WordToken, typeToken as WordToken, exprNode)
+                {
+                    LineNumber = token.LineNumber,
+                    Position = token.Position
+                };
             }
 
             // Method
@@ -84,7 +92,11 @@ namespace Compiler.frontend.cool.parsers
 
             ScopeStack.Pop();
 
-            return new MethodNode(token as WordToken, args, rtToken as WordToken, bodyNode);
+            return new MethodNode(token as WordToken, args, rtToken as WordToken, bodyNode)
+            {
+                LineNumber = token.LineNumber,
+                Position = token.Position
+            };
         }
     }
 }

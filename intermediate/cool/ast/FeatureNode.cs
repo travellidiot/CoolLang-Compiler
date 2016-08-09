@@ -41,6 +41,8 @@ namespace Compiler.intermediate.cool.ast
         {
             var builder = new StringBuilder();
             builder.Append(MethodName.Text);
+            builder.Append("_");
+
             foreach (var formal in Formals)
             {
                 builder.Append("_");

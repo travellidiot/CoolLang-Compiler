@@ -81,7 +81,11 @@ namespace Compiler.frontend.cool.parsers
                         }
 
                         NextToken(); // eat ")"
-                        return new CallNode(idNode, args);
+                        return new CallNode(idNode, args)
+                        {
+                            LineNumber = idNode.LineNumber,
+                            Position = idNode.Position
+                        };
                     }
 
                     NextToken();
@@ -89,15 +93,28 @@ namespace Compiler.frontend.cool.parsers
 
                 case TokenType.IntConst:
                     NextToken();
-                    return new IntNode(coolToken as NumberToken);
+                    return new IntNode(coolToken as NumberToken)
+                    {
+                        LineNumber = coolToken.LineNumber,
+                        Position = coolToken.Position
+                    };
 
                 case TokenType.StringConst:
                     NextToken();
-                    return new StringNode(coolToken as StringToken);
+                    return new StringNode(coolToken as StringToken)
+                    {
+                        LineNumber = coolToken.LineNumber,
+                        Position = coolToken.Position
+                    };
 
                 case TokenType.BoolConst:
                     NextToken();
-                    return new BoolNode(coolToken as WordToken);
+                    return new BoolNode(coolToken as WordToken)
+                    {
+                        LineNumber = coolToken.LineNumber,
+                        Position = coolToken.Position
+                    };
+;
 
                 case TokenType.LeftParen:
                     var parSubParser = new ExprParser(this);
@@ -105,7 +122,12 @@ namespace Compiler.frontend.cool.parsers
                     var parSubNode = parSubParser.Parse();
                     Synchronize(new SortedSet<ITokenType>() { CoolTokenType.RightParen});
                     NextToken(); // eat ")" 
-                    return new ParenExprNode(parSubNode);
+                    return new ParenExprNode(parSubNode)
+                    {
+                        LineNumber = coolToken.LineNumber,
+                        Position = coolToken.Position
+                    };
+
 
                 case TokenType.If:
                     IAstNode elseNode = null;
@@ -126,7 +148,12 @@ namespace Compiler.frontend.cool.parsers
                     }
 
                     NextToken(); // eat "fi"
-                    return new IfNode(preNode, thenNode, elseNode);
+                    return new IfNode(preNode, thenNode, elseNode)
+                    {
+                        LineNumber = coolToken.LineNumber,
+                        Position = coolToken.Position
+                    };
+
 
                 case TokenType.While:
                     var whileParser = new ExprParser(this);
@@ -139,7 +166,11 @@ namespace Compiler.frontend.cool.parsers
                     Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Pool});
 
                     NextToken(); // eat "pool"
-                    return new WhileNode(condNode, loopNode);
+                    return new WhileNode(condNode, loopNode)
+                    {
+                        LineNumber = coolToken.LineNumber,
+                        Position = coolToken.Position
+                    };
 
                 case TokenType.Let:
                     var attrToken = NextToken(); // eat "let"
@@ -167,7 +198,12 @@ namespace Compiler.frontend.cool.parsers
                     var letBodyParser = new ExprParser(this);
                     var bodyExpr = letBodyParser.Parse();
 
-                    return new LetNode(attrList, bodyExpr);
+                    return new LetNode(attrList, bodyExpr)
+                    {
+                        LineNumber = coolToken.LineNumber,
+                        Position = coolToken.Position
+                    };
+                    
 
                 case TokenType.Case:
                     NextToken(); // eat "case"
@@ -193,13 +229,21 @@ namespace Compiler.frontend.cool.parsers
                     } while (!Equals(NextToken().Type, CoolTokenType.Esac)); // eat ";"
 
                     NextToken(); // eat "esac"
-                    return new PatternNode(caseNode, casesNode);
+                    return new PatternNode(caseNode, casesNode)
+                    {
+                        LineNumber = coolToken.LineNumber,
+                        Position = coolToken.Position
+                    };
 
                 case TokenType.New:
                     NextToken(); // eat "new"
                     var typeToken = Synchronize(new SortedSet<ITokenType>() { CoolTokenType.TypeId});
                     NextToken(); // eat "Type;
-                    return new NewObjNode(typeToken as WordToken);
+                    return new NewObjNode(typeToken as WordToken)
+                    {
+                        LineNumber = coolToken.LineNumber,
+                        Position = coolToken.Position
+                    };
 
                 case TokenType.LeftBracket:
                     var blockExprs = new List<IAstNode>();
@@ -214,7 +258,11 @@ namespace Compiler.frontend.cool.parsers
                     } while (!Equals(NextToken().Type, CoolTokenType.RightBracket)); // eat ";"
 
                     NextToken(); // eat "}"
-                    return new BlockNode(blockExprs);
+                    return new BlockNode(blockExprs)
+                    {
+                        LineNumber = coolToken.LineNumber,
+                        Position = coolToken.Position
+                    };
 
                 default:
                     return null;

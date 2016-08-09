@@ -19,12 +19,7 @@ namespace Compiler.frontend.cool.parsers
 
         public override IAstNode Parse()
         {
-            var syncSet = ValueParser.ValueFirstSet.Union(new SortedSet<ITokenType>()
-            {
-                CoolTokenType.Anti,
-                CoolTokenType.Not,
-                CoolTokenType.Isvoid
-            });
+            var syncSet = ValueParser.ValueFirstSet;
             var firstSet = new SortedSet<ITokenType>(syncSet);
             var first = Synchronize(firstSet);
 
@@ -38,12 +33,22 @@ namespace Compiler.frontend.cool.parsers
                 if (afterId.Type.Is(TokenType.Assign))
                 {
                     /* assignment expression */
-                    var idNode = new IdNode(first as WordToken);
+                    var idNode = new IdNode(first as WordToken)
+                    {
+                        LineNumber = first.LineNumber,
+                        Position = first.Position
+                    };
                     NextToken(); // eat id
+                    var assignLine = CurrentToken().LineNumber;
+                    var assignPos = CurrentToken().Position;
                     NextToken(); // eat assign
                     var exprParser = new ExprParser(this);
                     var expr = exprParser.Parse();
-                    return new AssignNode(idNode, expr);
+                    return new AssignNode(idNode, expr)
+                    {
+                        LineNumber = assignLine,
+                        Position = assignPos
+                    };
                 }
             }
             

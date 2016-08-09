@@ -17,16 +17,19 @@ namespace Compiler.frontend.cool.parsers
 
         public override IAstNode Parse()
         {
-            var syncSet = ValueParser.ValueFirstSet.Union(new SortedSet<ITokenType>() { CoolTokenType.Not });
-            var firstSet = new SortedSet<ITokenType>(syncSet);
-            var first = Synchronize(firstSet);
+            var syncSet = ValueParser.ValueFirstSet;
+            var first = Synchronize(syncSet);
 
             if (Equals(first.Type, CoolTokenType.Not))
             {
                 NextToken(); // eat "not"
                 var parser = new NotExprParser(this);
                 var expr = parser.Parse();
-                return new NotNode(expr);
+                return new NotNode(expr)
+                {
+                    LineNumber = first.LineNumber,
+                    Position = first.Position
+                };
             }
 
             var ralParser = new RalExprParser(this);

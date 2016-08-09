@@ -17,7 +17,7 @@ namespace Compiler.frontend.cool.parsers
 
         public override IAstNode Parse()
         {
-            var syncSet = ValueParser.ValueFirstSet.Union(new SortedSet<ITokenType>() { CoolTokenType.Not });
+            var syncSet = ValueParser.ValueFirstSet;
             var firstSet = new SortedSet<ITokenType>(syncSet);
             var first = Synchronize(firstSet);
 
@@ -26,7 +26,11 @@ namespace Compiler.frontend.cool.parsers
                 NextToken(); // eat "~"
                 var antiParser = new AntiTermParser(this);
                 var termNode = antiParser.Parse();
-                return new AntiNode(termNode);
+                return new AntiNode(termNode)
+                {
+                    LineNumber = first.LineNumber,
+                    Position = first.Position
+                };
             }
 
             var termParser = new TermParser(this);

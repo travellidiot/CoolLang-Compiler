@@ -1,8 +1,0 @@
-comment start
-label Article_initBook_0
-title <- title_p
-t$1 <- title
-author <- author_p
-t$2 <- author
-t$0 <- self
-return t$0

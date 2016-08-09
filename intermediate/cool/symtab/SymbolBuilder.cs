@@ -123,6 +123,16 @@ namespace Compiler.intermediate.cool.symtab
 
             node.Expr.Accept(this);
         }
+        public void Visit(LetNode node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Visit(PatternNode node)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public void Visit(AntiNode node)
         {
@@ -210,16 +220,6 @@ namespace Compiler.intermediate.cool.symtab
         }
 
         public void Visit(WhileNode node)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Visit(LetNode node)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Visit(PatternNode node)
         {
             throw new NotImplementedException();
         }

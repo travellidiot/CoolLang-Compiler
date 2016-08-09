@@ -24,7 +24,11 @@ namespace Compiler.frontend.cool.parsers
             {
                 NextToken(); // eat op
                 var node = factorParser.Parse();
-                factorNode = new SimpleExprNode(factorNode, current as SpecialToken, node);
+                factorNode = new SimpleExprNode(factorNode, current as SpecialToken, node)
+                {
+                    LineNumber = current.LineNumber,
+                    Position = current.Position
+                };
                 current = CurrentToken();
             }
 
