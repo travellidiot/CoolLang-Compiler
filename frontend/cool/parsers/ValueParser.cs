@@ -2,15 +2,15 @@
 using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
 using Compiler.intermediate.cool.ast;
-using Compiler.intermediate.cool.symtab;
 using Compiler.message.cool;
 using static Compiler.frontend.cool.CoolScanner;
 using static Compiler.message.cool.ErrorHandler;
 
+
 namespace Compiler.frontend.cool.parsers
 {
     // Tuple<FormalNode, CoolExprNode>
-    using Pattern = System.Tuple<IAstNode, IAstNode>;
+    using Pattern = System.Tuple<FormalNode, IAstNode>;
 
     public class ValueParser : TdParser
     {
@@ -21,7 +21,7 @@ namespace Compiler.frontend.cool.parsers
             CoolTokenType.StringConst,
             CoolTokenType.BoolConst,
             CoolTokenType.Not,
-            CoolTokenType.Anti,
+            CoolTokenType.Neg,
             CoolTokenType.Isvoid,
             CoolTokenType.LeftParen,
             CoolTokenType.If,
@@ -32,7 +32,7 @@ namespace Compiler.frontend.cool.parsers
             CoolTokenType.LeftBracket
         };
 
-        public ValueParser(frontend.Scanner scanner) : base(scanner)
+        public ValueParser(Scanner scanner) : base(scanner)
         {
         }
 
@@ -81,10 +81,10 @@ namespace Compiler.frontend.cool.parsers
                         }
 
                         NextToken(); // eat ")"
-                        return new CallNode(idNode, args)
+                        return new CallNode((WordToken)coolToken, args)
                         {
-                            LineNumber = idNode.LineNumber,
-                            Position = idNode.Position
+                            LineNumber = coolToken.LineNumber,
+                            Position = coolToken.Position
                         };
                     }
 
@@ -114,7 +114,6 @@ namespace Compiler.frontend.cool.parsers
                         LineNumber = coolToken.LineNumber,
                         Position = coolToken.Position
                     };
-;
 
                 case TokenType.LeftParen:
                     var parSubParser = new ExprParser(this);
@@ -148,7 +147,7 @@ namespace Compiler.frontend.cool.parsers
                     }
 
                     NextToken(); // eat "fi"
-                    return new IfNode(preNode, thenNode, elseNode)
+                    return new IfNode((WordToken)coolToken, preNode, thenNode, elseNode)
                     {
                         LineNumber = coolToken.LineNumber,
                         Position = coolToken.Position
@@ -166,7 +165,7 @@ namespace Compiler.frontend.cool.parsers
                     Synchronize(new SortedSet<ITokenType>() { CoolTokenType.Pool});
 
                     NextToken(); // eat "pool"
-                    return new WhileNode(condNode, loopNode)
+                    return new WhileNode((WordToken)coolToken, condNode, loopNode)
                     {
                         LineNumber = coolToken.LineNumber,
                         Position = coolToken.Position
@@ -214,10 +213,8 @@ namespace Compiler.frontend.cool.parsers
                     var casesNode = new List<Pattern>();
                     do
                     {
-                        var curTok = CurrentToken();                      
-
                         var caseFormalParser = new FormalParser(this);
-                        var caseFormalNode = caseFormalParser.Parse();
+                        var caseFormalNode = (FormalNode)caseFormalParser.Parse();
                         Synchronize(new SortedSet<ITokenType>() { CoolTokenType.DArraw});
 
                         NextToken(); // eat "=>"

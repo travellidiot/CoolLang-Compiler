@@ -65,8 +65,9 @@
     <Compile Include="backend\BackendFactory.cs" />
     <Compile Include="backend\compiler\CodeGenerator.cs" />
     <Compile Include="backend\interpreter\Executor.cs" />
-    <Compile Include="intermediate\cool\symtab\TypeChecker.cs" />
+    <Compile Include="intermediate\cool\symtab\SemantChecker.cs" />
     <Compile Include="intermediate\cool\symtab\SymbolBuilder.cs" />
+    <Compile Include="message\BackendMessageListener.cs" />
     <Compile Include="message\cool\ErrorCode.cs" />
     <Compile Include="message\cool\ErrorHandler.cs" />
     <Compile Include="frontend\cool\TdParser.cs" />
@@ -94,7 +95,7 @@
     <Compile Include="frontend\EofToken.cs" />
     <Compile Include="frontend\FrontendFactory.cs" />
     <Compile Include="intermediate\AstFactory.cs" />
-    <Compile Include="intermediate\cool\ast\AntiNode.cs" />
+    <Compile Include="intermediate\cool\ast\NegNode.cs" />
     <Compile Include="intermediate\cool\ast\AssignNode.cs" />
     <Compile Include="intermediate\cool\ast\IsVoidNode.cs" />
     <Compile Include="intermediate\cool\ast\NotNode.cs" />
@@ -130,6 +131,9 @@
     <Compile Include="intermediate\IScope.cs" />
     <Compile Include="message\IMessageProducer.cs" />
     <Compile Include="message\MessageType.cs" />
+    <Compile Include="message\ParserMessageListener.cs" />
+    <Compile Include="message\SemantMessageListener.cs" />
+    <Compile Include="message\SourceMessageListener.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="utils\LoggerUtil.cs" />

@@ -22,12 +22,13 @@ namespace Compiler.intermediate.cool.ast
 
         public override IAstNode Copy()
         {
-            return new RalExprNode(left: LeftSimpleExpr, op: Op, right: RightSimpleExpr);
+            return new RalExprNode(left: LeftSimpleExpr.Copy(), op: Op, right: RightSimpleExpr.Copy());
         }
 
-        public override void Accept(ICoolVisitor coolVisitor)
+        public override IAstNode Accept(ICoolVisitor coolVisitor)
         {
             coolVisitor.Visit(this);
+            return this;
         }
     }
 }

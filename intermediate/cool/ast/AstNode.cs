@@ -7,6 +7,6 @@
         public IAstNode ParentNode { get; set; }
         public ISymbol ValType { get; set; }
         public abstract IAstNode Copy();
-        public abstract void Accept(ICoolVisitor coolVisitor);
+        public abstract IAstNode Accept(ICoolVisitor coolVisitor);
     }
 }

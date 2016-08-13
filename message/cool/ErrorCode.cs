@@ -3,6 +3,7 @@
     public enum ErrorCode
     {
         TooManyErrors,
+        // syntax error
         InvalidCharacter,
         InvalidAssignment,
         InvalidConstant,
@@ -11,12 +12,19 @@
         UnExpectedToken,
         UnExpectedEof,
 
+        // semantics error
         UndefinedType,
         UndefinedVariable,
         UndefinedMethod,
         RedefineType,
         RedefineVariable,
         RedefineMethod,
-        TypeNotMatch,
+        BadAssignment,
+        BadNegation,
+        BadBinaryOperaton,
+        BadNotExpression,
+        BadComparation,
+        NotSuperType,
+        CondNotBoolean,
     }
 }

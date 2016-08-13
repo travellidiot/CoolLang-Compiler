@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
 using Compiler.intermediate.cool.ast;
 
@@ -25,7 +26,7 @@ namespace Compiler.frontend.cool.parsers
                 NextToken(); // eat "not"
                 var parser = new NotExprParser(this);
                 var expr = parser.Parse();
-                return new NotNode(expr)
+                return new NotNode(expr, (WordToken)first)
                 {
                     LineNumber = first.LineNumber,
                     Position = first.Position

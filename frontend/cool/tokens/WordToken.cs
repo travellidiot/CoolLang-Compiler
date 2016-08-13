@@ -8,6 +8,11 @@ namespace Compiler.frontend.cool.tokens
         {
         }
 
+        public string GenMethodName()
+        {
+            return $"{Text}_";
+        }
+
         protected override void Extract()
         {
             var currentChar = CurrentChar();

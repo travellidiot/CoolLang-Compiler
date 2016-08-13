@@ -32,9 +32,10 @@ namespace Compiler.intermediate.cool.ast
             return classNode;
         }
 
-        public override void Accept(ICoolVisitor coolVisitor)
+        public override IAstNode Accept(ICoolVisitor coolVisitor)
         {
             coolVisitor.Visit(this);
+            return this;
         }
 
         public FeatureNode AddFeature(FeatureNode feature)

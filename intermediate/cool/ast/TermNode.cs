@@ -7,7 +7,7 @@ namespace Compiler.intermediate.cool.ast
     {
         // TermNode
         public IAstNode Term { get; }
-        public WordToken Type { get; }
+        public WordToken DispatchType { get; }
         public WordToken MethodName { get; }
         public List<IAstNode> Args { get; }
 
@@ -16,7 +16,7 @@ namespace Compiler.intermediate.cool.ast
             Term = term;
             Term.ParentNode = this;
 
-            Type = type;
+            DispatchType = type;
             MethodName = mName;
 
             Args = args;
@@ -31,12 +31,13 @@ namespace Compiler.intermediate.cool.ast
          
         public override IAstNode Copy()
         {
-            return new TermNode(Term, MethodName, Args, Type);
+            return new TermNode(Term, MethodName, Args, DispatchType);
         }
 
-        public override void Accept(ICoolVisitor coolVisitor)
+        public override IAstNode Accept(ICoolVisitor coolVisitor)
         {
             coolVisitor.Visit(this);
+            return this;
         }
     }
 }

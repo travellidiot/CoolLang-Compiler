@@ -32,7 +32,7 @@ namespace Compiler.intermediate.cool.symtab
                 {
                     pScope.Enter(cls.ClassName.Text, clsScope);
                 }
-                catch (System.ArgumentException)
+                catch (ArgumentException)
                 {
                     FlagSemanticsError(cls.ClassName, ErrorCode.RedefineType, this);
                 }
@@ -51,26 +51,23 @@ namespace Compiler.intermediate.cool.symtab
             var pScope = _symbolStack.Peek();
             var clsSymbol = pScope.LookupForType(node.ClassName.Text);
             AssertTypeDefined(clsSymbol, node.ClassName, this);
+            if (node.ParentName != null)
+            {
+                var parent = pScope.LookupForType(node.ParentName.Text);
+                AssertTypeDefined(parent, node.ParentName, this);
+                clsSymbol.Parent = parent;
+            }
+            else
+            {
+                clsSymbol.Parent = GlobalSymbolScope.Instance.ObjectType;
+            }
 
             _symbolStack.Push(clsSymbol);
             foreach (var feature in node.Features)
             {
                 if (feature is AttrNode)
                 {
-                    var attr = feature as AttrNode;
-                    var attrTypeSymbol = pScope.LookupForType(attr.TypeName.Text);
-
-                    AssertTypeDefined(attrTypeSymbol, attr.TypeName, this);
-
-                    var variable = new VariableSymbol(attr.AttrName.Text, attrTypeSymbol);
-                    try
-                    {
-                        clsSymbol.Enter(variable.SymName, variable);
-                    }
-                    catch (System.ArgumentException)
-                    {
-                        FlagSemanticsError(attr.AttrName, ErrorCode.RedefineVariable, this);
-                    }
+                    feature.Accept(this);
                 }
                 else if (feature is MethodNode)
                 {
@@ -79,7 +76,9 @@ namespace Compiler.intermediate.cool.symtab
 
                     AssertTypeDefined(rtTypeSymbol, method.RetType, this);
 
-                    var methodSymbol = new MethodSymbol(method.MethodName.Text, clsSymbol) { RTType = rtTypeSymbol };
+                    var methodSymbol = new MethodSymbol(method.MethodNameToken.GenMethodName(),
+                        clsSymbol) {RTType = rtTypeSymbol};
+
                     foreach (var formal in method.Formals)
                     {
                         var formalType = pScope.LookupForType(formal.TypeName.Text);
@@ -87,14 +86,13 @@ namespace Compiler.intermediate.cool.symtab
                         methodSymbol.Formals.Add(formalType);
                     }
 
-                    var mName = method.MangledName;
                     try
                     {
-                        clsSymbol.Enter(mName, methodSymbol);
+                        clsSymbol.Enter(methodSymbol.SymName, methodSymbol);
                     }
-                    catch (System.ArgumentException)
+                    catch (ArgumentException)
                     {
-                        FlagSemanticsError(method.MethodName, ErrorCode.RedefineMethod, this);
+                        FlagSemanticsError(method.MethodNameToken, ErrorCode.RedefineMethod, this);
                     }
                 }
             }
@@ -105,10 +103,34 @@ namespace Compiler.intermediate.cool.symtab
             }
         }
 
+        public void Visit(AttrNode node)
+        {
+            var clsScope = _symbolStack.Peek();
+            var typeSymbol = clsScope.LookupForType(node.TypeName.Text);
+            if (typeSymbol == null)
+            {
+                FlagSemanticsError(node.TypeName, ErrorCode.UndefinedType, this);
+            }
+            else
+            {
+                var varName = node.AttrName.Text;
+                var variable = new VariableSymbol(varName, typeSymbol);
+                try
+                {
+                    clsScope.Enter(variable.SymName, variable);
+                }
+                catch (ArgumentException)
+                {
+                    FlagSemanticsError(node.AttrName, ErrorCode.RedefineVariable, this);
+                }
+            }
+
+        }
+
         public void Visit(MethodNode node)
         {
             var clsScope = _symbolStack.Peek();
-            var methodScope = clsScope.Lookup(node.MangledName) as SymbolScope;
+            var methodScope = clsScope.Lookup(node.MethodNameToken.GenMethodName()) as SymbolScope;
             Debug.Assert(methodScope != null);
 
             foreach (var variable in
@@ -118,11 +140,8 @@ namespace Compiler.intermediate.cool.symtab
             {
                 methodScope.Enter(variable.SymName, variable);
             }
-
-            _symbolStack.Push(methodScope);
-
-            node.Expr.Accept(this);
         }
+
         public void Visit(LetNode node)
         {
             throw new NotImplementedException();
@@ -134,7 +153,7 @@ namespace Compiler.intermediate.cool.symtab
         }
 
 
-        public void Visit(AntiNode node)
+        public void Visit(NegNode node)
         {
             throw new NotImplementedException();
         }
@@ -149,10 +168,6 @@ namespace Compiler.intermediate.cool.symtab
             throw new NotImplementedException();
         }
 
-        public void Visit(AttrNode node)
-        {
-            throw new NotImplementedException();
-        }
 
         public void Visit(FormalNode node)
         {

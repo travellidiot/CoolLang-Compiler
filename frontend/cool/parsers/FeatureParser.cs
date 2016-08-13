@@ -90,8 +90,6 @@ namespace Compiler.frontend.cool.parsers
             Synchronize(new SortedSet<ITokenType>() { CoolTokenType.RightBracket});
             NextToken(); // eat "}"
 
-            ScopeStack.Pop();
-
             return new MethodNode(token as WordToken, args, rtToken as WordToken, bodyNode)
             {
                 LineNumber = token.LineNumber,

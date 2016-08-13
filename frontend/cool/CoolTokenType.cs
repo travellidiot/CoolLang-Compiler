@@ -77,7 +77,7 @@ namespace Compiler.frontend.cool
         public static readonly CoolTokenType LeftComment    = new CoolTokenType(TokenType.LeftComment);
         public static readonly CoolTokenType RightParen     = new CoolTokenType(TokenType.RightParen);
         public static readonly CoolTokenType Dispatch       = new CoolTokenType(TokenType.Dispatch);
-        public static readonly CoolTokenType Anti           = new CoolTokenType(TokenType.Anti);
+        public static readonly CoolTokenType Neg           = new CoolTokenType(TokenType.Anti);
         public static readonly CoolTokenType Comma          = new CoolTokenType(TokenType.Comma);
         public static readonly CoolTokenType Semic          = new CoolTokenType(TokenType.Semic);
         public static readonly CoolTokenType Colon          = new CoolTokenType(TokenType.Colon);

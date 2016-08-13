@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Compiler.frontend.cool.tokens;
 using Compiler.intermediate;
 using Compiler.intermediate.cool.ast;
 
@@ -21,12 +22,12 @@ namespace Compiler.frontend.cool.parsers
             var firstSet = new SortedSet<ITokenType>(syncSet);
             var first = Synchronize(firstSet);
 
-            if (Equals(first.Type, CoolTokenType.Anti))
+            if (Equals(first.Type, CoolTokenType.Neg))
             {
                 NextToken(); // eat "~"
                 var antiParser = new AntiTermParser(this);
                 var termNode = antiParser.Parse();
-                return new AntiNode(termNode)
+                return new NegNode(termNode, (WordToken)first)
                 {
                     LineNumber = first.LineNumber,
                     Position = first.Position

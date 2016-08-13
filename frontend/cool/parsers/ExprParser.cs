@@ -39,12 +39,13 @@ namespace Compiler.frontend.cool.parsers
                         Position = first.Position
                     };
                     NextToken(); // eat id
+                    var assignToken = CurrentToken();
                     var assignLine = CurrentToken().LineNumber;
                     var assignPos = CurrentToken().Position;
                     NextToken(); // eat assign
                     var exprParser = new ExprParser(this);
                     var expr = exprParser.Parse();
-                    return new AssignNode(idNode, expr)
+                    return new AssignNode(idNode, expr, (SpecialToken)assignToken)
                     {
                         LineNumber = assignLine,
                         Position = assignPos

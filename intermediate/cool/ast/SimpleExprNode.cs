@@ -25,9 +25,10 @@ namespace Compiler.intermediate.cool.ast
             return new SimpleExprNode(SimpleExpr, Op, Factor);
         }
 
-        public override void Accept(ICoolVisitor coolVisitor)
+        public override IAstNode Accept(ICoolVisitor coolVisitor)
         {
             coolVisitor.Visit(this);
+            return this;
         }
     }
 }

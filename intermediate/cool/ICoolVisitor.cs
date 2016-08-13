@@ -5,7 +5,7 @@ namespace Compiler.intermediate.cool
     public interface ICoolVisitor
     {
         void Visit(ProgramNode node); 
-        void Visit(AntiNode node);
+        void Visit(NegNode node);
         void Visit(AssignNode node);
         void Visit(ClassNode node);
         void Visit(FactorNode node);

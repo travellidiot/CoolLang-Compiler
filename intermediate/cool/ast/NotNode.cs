@@ -1,19 +1,23 @@
-﻿namespace Compiler.intermediate.cool.ast
+﻿using Compiler.frontend.cool.tokens;
+
+namespace Compiler.intermediate.cool.ast
 {
     public class NotNode : AstNode
     {
         // CoolExprNode
         public IAstNode Expr { get; }
+        public WordToken NotToken { get; }
 
-        public NotNode(IAstNode expr) { Expr = expr; Expr.ParentNode = this; }
+        public NotNode(IAstNode expr, WordToken not) { Expr = expr; NotToken = not; Expr.ParentNode = this; }
         public override IAstNode Copy()
         {
-            return new NotNode(Expr);
+            return new NotNode(Expr.Copy(), NotToken);
         }
 
-        public override void Accept(ICoolVisitor coolVisitor)
+        public override IAstNode Accept(ICoolVisitor coolVisitor)
         {
             coolVisitor.Visit(this);
+            return this;
         }
     }
 }

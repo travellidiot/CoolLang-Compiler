@@ -12,8 +12,7 @@ namespace Compiler.intermediate.cool.ast
     // feature ::= ID([formal 【, formal】*]) : TYPE { expr }
     public class MethodNode : FeatureNode
     {
-        public WordToken MethodName { get; }
-        public string MangledName { get; }
+        public WordToken MethodNameToken { get; }
         // List<FormalNode>
         public List<FormalNode> Formals { get; }
         public WordToken RetType { get; }
@@ -21,9 +20,9 @@ namespace Compiler.intermediate.cool.ast
         public IAstNode Expr { get; }
 
 
-        public MethodNode(WordToken methodName, List<FormalNode> formals, WordToken retType, IAstNode expr)
+        public MethodNode(WordToken methodNameToken, List<FormalNode> formals, WordToken retType, IAstNode expr)
         {
-            MethodName = methodName;
+            MethodNameToken = methodNameToken;
             Formals = formals;
             RetType = retType;
             Expr = expr;
@@ -33,34 +32,25 @@ namespace Compiler.intermediate.cool.ast
             {
                 formal.ParentNode = this;
             }
-
-            MangledName = MangleName();
         }
 
         private string MangleName()
         {
-            var builder = new StringBuilder();
-            builder.Append(MethodName.Text);
-            builder.Append("_");
-
-            foreach (var formal in Formals)
-            {
-                builder.Append("_");
-                builder.Append(formal.TypeName.Text);
-            }
-            return builder.ToString();
+            var typePost = string.Join("_", Formals.Select(formal => formal.TypeName.Text));
+            return $"{MethodNameToken.Text}_{typePost}";
         }
         public override IAstNode Copy()
         {
             var formals = Formals.Select((fm) => fm) as List<FormalNode>;
-            var methodNode = new MethodNode(MethodName, formals, RetType, Expr);
+            var methodNode = new MethodNode(MethodNameToken, formals, RetType, Expr);
 
             return methodNode;
         }
 
-        public override void Accept(ICoolVisitor coolVisitor)
+        public override IAstNode Accept(ICoolVisitor coolVisitor)
         {
             coolVisitor.Visit(this);
+            return this;
         }
     }
 
@@ -87,9 +77,10 @@ namespace Compiler.intermediate.cool.ast
             return new AttrNode(AttrName, TypeName, Expr);
         }
 
-        public override void Accept(ICoolVisitor coolVisitor)
+        public override IAstNode Accept(ICoolVisitor coolVisitor)
         {
             coolVisitor.Visit(this);
+            return this;
         }
     }
 }

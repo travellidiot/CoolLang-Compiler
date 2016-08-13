@@ -2,19 +2,21 @@
 
 namespace Compiler.intermediate.cool.ast
 {
-    public class FormalNode : AstNode
+    public class NegNode : AstNode
     {
-        public WordToken IdName { get; }
-        public WordToken TypeName { get; }
+        // CoolExprNode
+        public IAstNode Expr { get; }
+        public WordToken Neg { get; }
 
-        public FormalNode(WordToken id, WordToken type)
+        public NegNode(IAstNode expr, WordToken neg)
         {
-            IdName = id;
-            TypeName = type;
+            Expr = expr;
+            Neg = neg;
+            Expr.ParentNode = this;
         }
         public override IAstNode Copy()
         {
-            return new FormalNode(IdName, TypeName);
+            return new NegNode(Expr.Copy(), Neg);
         }
 
         public override IAstNode Accept(ICoolVisitor coolVisitor)

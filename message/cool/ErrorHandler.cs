@@ -13,7 +13,8 @@ namespace Compiler.message.cool
 
         private ErrorHandler() { }
 
-        public static void FlagSyntaxError(Token token, ErrorCode errorCode, IMessageProducer producer)
+        public static void FlagSyntaxError(Token token, ErrorCode errorCode,
+            IMessageProducer producer)
         {
             producer.SendMessage(new Message(MessageType.SyntaxError,
                                             new object[]
@@ -30,7 +31,8 @@ namespace Compiler.message.cool
             }
         }
 
-        public static void FlagSemanticsError(Token token, ErrorCode errorCode, IMessageProducer producer)
+        public static void FlagSemanticsError(Token token, ErrorCode errorCode,
+            IMessageProducer producer)
         {
             producer.SendMessage(new Message(MessageType.SemanticsError,
                                             new object[]
@@ -47,7 +49,8 @@ namespace Compiler.message.cool
             }
         }
 
-        public static void AssertTypeDefined(ClassSymbol clsSymbol, WordToken clsName, IMessageProducer producer)
+        public static void AssertTypeDefined(ClassSymbol clsSymbol, WordToken clsName,
+            IMessageProducer producer)
         {
             if (clsSymbol == null)
             {

@@ -1,4 +1,6 @@
-﻿namespace Compiler.intermediate.cool.ast
+﻿using Compiler.frontend.cool.tokens;
+
+namespace Compiler.intermediate.cool.ast
 {
     public class AssignNode : AstNode
     {
@@ -6,22 +8,25 @@
         public IAstNode Id { get; }
         // CoolExprNode
         public IAstNode Expr { get; }
+        public SpecialToken AssignToken { get; }
 
-        public AssignNode(IAstNode id, IAstNode expr)
+        public AssignNode(IAstNode id, IAstNode expr, SpecialToken assignToken)
         {
             Id = id;
             Expr = expr;
+            AssignToken = assignToken;
             Id.ParentNode = this;
             Expr.ParentNode = this;
         }
         public override IAstNode Copy()
         {
-            return new AssignNode(Id, Expr);
+            return new AssignNode(Id.Copy(), Expr.Copy(), AssignToken);
         }
 
-        public override void Accept(ICoolVisitor coolVisitor)
+        public override IAstNode Accept(ICoolVisitor coolVisitor)
         {
             coolVisitor.Visit(this);
+            return this;
         }
     }
 }

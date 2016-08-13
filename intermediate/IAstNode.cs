@@ -10,6 +10,6 @@ namespace Compiler.intermediate
         IAstNode ParentNode { get; set; }
         ISymbol ValType { get; set; }
         IAstNode Copy();
-        void Accept(ICoolVisitor coolVisitor);
+        IAstNode Accept(ICoolVisitor coolVisitor);
     }
 }

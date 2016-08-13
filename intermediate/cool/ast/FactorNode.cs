@@ -22,12 +22,13 @@ namespace Compiler.intermediate.cool.ast
 
         public override IAstNode Copy()
         {
-            return new FactorNode(Factor, Op, Term);
+            return new FactorNode(Factor.Copy(), Op, Term.Copy());
         }
 
-        public override void Accept(ICoolVisitor coolVisitor)
+        public override IAstNode Accept(ICoolVisitor coolVisitor)
         {
             coolVisitor.Visit(this);
+            return this;
         }
     }
 }
