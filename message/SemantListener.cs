@@ -4,11 +4,11 @@ using Compiler.frontend.cool;
 
 namespace Compiler.message
 {
-    class SemantMessageListener : IMessageListener
+    class SemantListener : IMessageListener
     {
         private static string SemanticsErrorFormat =>
             "\nline {0}, col {1}: \"{2}\":{3}, {4}.\n";
-        public SemantMessageListener(IMessageProducer producer)
+        public SemantListener(IMessageProducer producer)
         {
             producer.AddListener(this);
         }

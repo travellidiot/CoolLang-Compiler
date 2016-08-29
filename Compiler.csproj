@@ -132,7 +132,7 @@
     <Compile Include="message\IMessageProducer.cs" />
     <Compile Include="message\MessageType.cs" />
     <Compile Include="message\ParserMessageListener.cs" />
-    <Compile Include="message\SemantMessageListener.cs" />
+    <Compile Include="message\SemantListener.cs" />
     <Compile Include="message\SourceMessageListener.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

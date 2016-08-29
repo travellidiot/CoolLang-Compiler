@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Compiler.backend;
 using Compiler.frontend;
 using Compiler.frontend.cool;
@@ -18,6 +19,7 @@ namespace Compiler
         {
             try
             {
+                Console.WriteLine("{0}", filePath);
                 var intermediate = flags.IndexOf('i') > -1;
                 var xref = flags.IndexOf('x') > -1;
 
@@ -44,11 +46,11 @@ namespace Compiler
                 var gScope = GlobalSymbolScope.Instance;
 
                 var symbolBuilder = new SymbolBuilder(gScope);
-                var sbMessageListener = new SemantMessageListener(symbolBuilder);
+                var sbMessageListener = new SemantListener(symbolBuilder);
                 ast.Root.Accept(symbolBuilder);
 
                 var semantChecker = new SemantChecker(gScope);
-                var scMessageListener = new SemantMessageListener(semantChecker);
+                var scMessageListener = new SemantListener(semantChecker);
                 ast.Root.Accept(semantChecker);
 
                 backend.Process(ast, gScope);
@@ -67,9 +69,7 @@ namespace Compiler
 
         private static string Flags => "[-ix]";
         private static string Usage =>
-            "Usage: Pascal execute|compile " + Flags + " <source file path>";
-
-
+            "Usage: Program execute|compile " + Flags + " <source file path>";
 
         static void Main(string[] args)
         {
@@ -92,8 +92,13 @@ namespace Compiler
 
                 if (i < args.Length)
                 {
-                    var path = args[i];
-                    new Program(operation, path, flags);
+                    var dirInfo  = new DirectoryInfo(args[i]);
+                    Console.WriteLine("{0}", dirInfo.ToString()); 
+                    foreach (var program in dirInfo.GetFiles()
+                                                   .Select(fi => Path.Combine(dirInfo.ToString(), fi.Name))
+                                                   .Select(path => new Program(operation, path, flags)))
+                    {
+                    }
                 }
                 else
                 {
